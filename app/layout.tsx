@@ -23,7 +23,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.variable} font-sans antialiased`}
+        className={`${inter.variable} font-sans antialiased overflow-x-hidden`}
         style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif' }}
       >
         <Header />
