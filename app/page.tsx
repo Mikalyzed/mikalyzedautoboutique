@@ -36,7 +36,7 @@ export default function HomePage() {
               Premium Automotive Experience
             </p>
 
-            <h1 className="text-2xl sm:text-4xl md:text-6xl font-extralight tracking-tight mb-4 sm:mb-8 animate-fade-in-up uppercase" style={{ animationDelay: '0.2s' }}>
+            <h1 className="text-3xl sm:text-5xl md:text-6xl font-extralight tracking-tight mb-4 sm:mb-8 animate-fade-in-up uppercase" style={{ animationDelay: '0.2s' }}>
               <span className="bg-gradient-to-r from-[#dffd6e] via-[#dffd6e] to-[#dffd6e] bg-clip-text text-transparent font-light">
                 Mikalyzed
               </span>
