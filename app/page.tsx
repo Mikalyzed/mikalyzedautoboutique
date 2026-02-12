@@ -30,13 +30,13 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-[#dffd6e]/20 via-transparent to-transparent animate-pulse-slow" />
 
         {/* Content */}
-        <div className="relative z-10 w-full px-8 md:px-16 lg:px-24">
+        <div className="relative z-10 w-full px-5 sm:px-8 md:px-16 lg:px-24">
           <div className="max-w-2xl">
-            <p className="text-[#dffd6e] text-xs font-light tracking-[0.4em] mb-6 animate-fade-in-up uppercase">
+            <p className="text-[#dffd6e] text-[10px] sm:text-xs font-light tracking-[0.3em] sm:tracking-[0.4em] mb-4 sm:mb-6 animate-fade-in-up uppercase">
               Premium Automotive Experience
             </p>
 
-            <h1 className="text-4xl md:text-6xl font-extralight tracking-tight mb-8 animate-fade-in-up uppercase" style={{ animationDelay: '0.2s' }}>
+            <h1 className="text-2xl sm:text-4xl md:text-6xl font-extralight tracking-tight mb-4 sm:mb-8 animate-fade-in-up uppercase" style={{ animationDelay: '0.2s' }}>
               <span className="bg-gradient-to-r from-[#dffd6e] via-[#dffd6e] to-[#dffd6e] bg-clip-text text-transparent font-light">
                 Mikalyzed
               </span>
@@ -44,21 +44,21 @@ export default function HomePage() {
               Auto Boutique
             </h1>
 
-            <p className="text-gray-300 text-lg md:text-xl font-extralight mb-12 leading-relaxed animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
-              Discover our curated collection of the world&apos;s finest luxury and performance vehicles. Experience excellence at every turn.
+            <p className="text-gray-300 text-sm sm:text-lg md:text-xl font-extralight mb-8 sm:mb-12 leading-relaxed animate-fade-in-up max-w-md sm:max-w-none" style={{ animationDelay: '0.4s' }}>
+              Discover our curated collection of luxury and performance vehicles.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-6 animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
+            <div className="flex flex-row gap-3 sm:gap-6 animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
               <Link
                 href="/inventory"
-                className="group relative bg-gradient-to-r from-[#dffd6e] to-[#dffd6e] text-black px-10 py-5 rounded-full font-light tracking-wider hover:shadow-2xl hover:shadow-[#dffd6e]/50 transition-all duration-500 overflow-hidden"
+                className="group relative bg-gradient-to-r from-[#dffd6e] to-[#dffd6e] text-black px-6 py-3 sm:px-10 sm:py-5 rounded-full text-sm sm:text-base font-light tracking-wider hover:shadow-2xl hover:shadow-[#dffd6e]/50 transition-all duration-500 overflow-hidden"
               >
                 <span className="relative z-10">Explore Inventory</span>
                 <div className="absolute inset-0 bg-gradient-to-r from-[#dffd6e] to-[#dffd6e] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               </Link>
               <Link
                 href="/reserve"
-                className="group relative bg-transparent border-2 border-white/30 text-white px-10 py-5 rounded-full font-extralight tracking-wider hover:border-[#dffd6e] hover:text-[#dffd6e] transition-all duration-500 backdrop-blur-sm"
+                className="group relative bg-transparent border-2 border-white/30 text-white px-6 py-3 sm:px-10 sm:py-5 rounded-full text-sm sm:text-base font-extralight tracking-wider hover:border-[#dffd6e] hover:text-[#dffd6e] transition-all duration-500 backdrop-blur-sm"
               >
                 Storage
               </Link>
