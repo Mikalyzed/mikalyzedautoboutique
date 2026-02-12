@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getInventoryFromCSV } from "@/lib/parseInventory";
 import Image from "next/image";
+import ContactForm from "./components/ContactForm";
 
 export default function HomePage() {
   const inventory = getInventoryFromCSV();
@@ -196,54 +197,230 @@ export default function HomePage() {
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Purchase */}
-            <Link
-              href="/inventory"
-              className="group relative h-96 rounded-2xl overflow-hidden scroll-reveal"
-              style={{ animationDelay: '0ms' }}
-            >
-              <div className="absolute inset-0 bg-[url('/showroom.jpg')] bg-cover bg-center" />
-              <div className="absolute inset-0 bg-black/60 group-hover:bg-black/40 transition-all duration-500" />
-              <div className="relative h-full flex flex-col items-center justify-center text-center p-8">
-                <h3 className="text-5xl font-light tracking-tight text-[#dffd6e] mb-4">PURCHASE</h3>
-                <p className="text-white text-lg font-light">Elevate Your Drive</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Secure Storage */}
+            <div className="group scroll-reveal bg-zinc-900/50 backdrop-blur-sm p-12 rounded-3xl border border-zinc-800/50 hover:border-[#dffd6e]/30 transition-all duration-700 hover:-translate-y-2">
+              <div className="w-20 h-20 bg-gradient-to-br from-[#dffd6e]/20 to-[#dffd6e]/20 rounded-2xl flex items-center justify-center mb-8">
+                <svg className="w-10 h-10 text-[#dffd6e]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
               </div>
-            </Link>
 
-            {/* Storage */}
-            <Link
-              href="/reserve"
-              className="group relative h-96 rounded-2xl overflow-hidden scroll-reveal"
-              style={{ animationDelay: '150ms' }}
-            >
-              <div className="absolute inset-0 bg-[url('/showroom.jpg')] bg-cover bg-center" />
-              <div className="absolute inset-0 bg-black/60 group-hover:bg-black/40 transition-all duration-500" />
-              <div className="relative h-full flex flex-col items-center justify-center text-center p-8">
-                <h3 className="text-5xl font-light tracking-tight text-[#dffd6e] mb-4">STORAGE</h3>
-                <p className="text-white text-lg font-light">Protect What Matters</p>
-              </div>
-            </Link>
+              <h3 className="text-3xl font-light tracking-tight mb-6 text-white">Secure Storage</h3>
 
-            {/* Sell */}
-            <Link
-              href="/sell"
-              className="group relative h-96 rounded-2xl overflow-hidden scroll-reveal"
-              style={{ animationDelay: '300ms' }}
-            >
-              <div className="absolute inset-0 bg-[url('/showroom.jpg')] bg-cover bg-center" />
-              <div className="absolute inset-0 bg-black/60 group-hover:bg-black/40 transition-all duration-500" />
-              <div className="relative h-full flex flex-col items-center justify-center text-center p-8">
-                <h3 className="text-5xl font-light tracking-tight text-[#dffd6e] mb-4">SELL</h3>
-                <p className="text-white text-lg font-light">Cash In. Drive On.</p>
+              <p className="text-gray-400 font-extralight text-lg leading-relaxed mb-8">
+                Climate-controlled, 24/7 monitored storage facilities designed to preserve your vehicle in pristine condition.
+              </p>
+
+              <ul className="space-y-3 mb-8">
+                <li className="flex items-center gap-3 text-sm text-gray-400 font-light">
+                  <span className="text-[#dffd6e]">•</span>
+                  Climate controlled
+                </li>
+                <li className="flex items-center gap-3 text-sm text-gray-400 font-light">
+                  <span className="text-[#dffd6e]">•</span>
+                  GPS tracking
+                </li>
+                <li className="flex items-center gap-3 text-sm text-gray-400 font-light">
+                  <span className="text-[#dffd6e]">•</span>
+                  Full insurance
+                </li>
+              </ul>
+
+              <Link href="/reserve" className="inline-flex items-center gap-2 text-[#dffd6e] font-light tracking-wider hover:gap-3 transition-all">
+                LEARN MORE
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </Link>
+            </div>
+
+            {/* Buy a Car */}
+            <div className="group scroll-reveal bg-zinc-900/50 backdrop-blur-sm p-12 rounded-3xl border border-zinc-800/50 hover:border-[#dffd6e]/30 transition-all duration-700 hover:-translate-y-2" style={{ animationDelay: '150ms' }}>
+              <div className="w-20 h-20 bg-gradient-to-br from-[#dffd6e]/20 to-[#dffd6e]/20 rounded-2xl flex items-center justify-center mb-8">
+                <svg className="w-10 h-10 text-[#dffd6e]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                </svg>
               </div>
-            </Link>
+
+              <h3 className="text-3xl font-light tracking-tight mb-6 text-white">Buy a Car</h3>
+
+              <p className="text-gray-400 font-extralight text-lg leading-relaxed mb-8">
+                Access our curated collection of the world&apos;s most sought-after luxury and performance vehicles.
+              </p>
+
+              <ul className="space-y-3 mb-8">
+                <li className="flex items-center gap-3 text-sm text-gray-400 font-light">
+                  <span className="text-[#dffd6e]">•</span>
+                  Certified vehicles
+                </li>
+                <li className="flex items-center gap-3 text-sm text-gray-400 font-light">
+                  <span className="text-[#dffd6e]">•</span>
+                  Financing options
+                </li>
+                <li className="flex items-center gap-3 text-sm text-gray-400 font-light">
+                  <span className="text-[#dffd6e]">•</span>
+                  Nationwide delivery
+                </li>
+              </ul>
+
+              <Link href="/inventory" className="inline-flex items-center gap-2 text-[#dffd6e] font-light tracking-wider hover:gap-3 transition-all">
+                LEARN MORE
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </Link>
+            </div>
+
+            {/* Sell Your Car */}
+            <div className="group scroll-reveal bg-zinc-900/50 backdrop-blur-sm p-12 rounded-3xl border border-zinc-800/50 hover:border-[#dffd6e]/30 transition-all duration-700 hover:-translate-y-2" style={{ animationDelay: '300ms' }}>
+              <div className="w-20 h-20 bg-gradient-to-br from-[#dffd6e]/20 to-[#dffd6e]/20 rounded-2xl flex items-center justify-center mb-8">
+                <svg className="w-10 h-10 text-[#dffd6e]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+
+              <h3 className="text-3xl font-light tracking-tight mb-6 text-white">Sell Your Car</h3>
+
+              <p className="text-gray-400 font-extralight text-lg leading-relaxed mb-8">
+                Maximize your vehicle&apos;s value with our expert appraisal and premium consignment service.
+              </p>
+
+              <ul className="space-y-3 mb-8">
+                <li className="flex items-center gap-3 text-sm text-gray-400 font-light">
+                  <span className="text-[#dffd6e]">•</span>
+                  Free appraisal
+                </li>
+                <li className="flex items-center gap-3 text-sm text-gray-400 font-light">
+                  <span className="text-[#dffd6e]">•</span>
+                  Market analysis
+                </li>
+                <li className="flex items-center gap-3 text-sm text-gray-400 font-light">
+                  <span className="text-[#dffd6e]">•</span>
+                  White-glove service
+                </li>
+              </ul>
+
+              <Link href="/sell" className="inline-flex items-center gap-2 text-[#dffd6e] font-light tracking-wider hover:gap-3 transition-all">
+                LEARN MORE
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </Link>
+            </div>
           </div>
         </div>
       </section>
 
       {/* SEPARATOR */}
       <div className="h-px bg-gradient-to-r from-transparent via-[#dffd6e]/30 to-transparent" />
+
+      {/* FACILITY GALLERY */}
+      <section className="relative py-32 px-6 bg-gradient-to-b from-zinc-950 via-black to-zinc-950 overflow-hidden">
+        {/* Decorative elements */}
+        <div className="absolute top-1/4 left-0 w-[500px] h-[500px] bg-[#dffd6e]/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 right-0 w-[500px] h-[500px] bg-zinc-700/20 rounded-full blur-3xl" />
+
+        <div className="max-w-7xl mx-auto relative z-10">
+          <div className="text-center mb-16 scroll-reveal">
+            <p className="text-[#dffd6e] text-sm font-light tracking-[0.4em] mb-6 uppercase">
+              Our Facility
+            </p>
+            <h2 className="text-5xl md:text-7xl font-extralight tracking-tighter mb-8">
+              Where Excellence
+              <br />
+              <span className="bg-gradient-to-r from-[#dffd6e] to-[#dffd6e] bg-clip-text text-transparent">Lives</span>
+            </h2>
+            <p className="text-gray-400 text-lg font-light max-w-3xl mx-auto leading-relaxed">
+              Step inside our state-of-the-art facility where luxury vehicles receive world-class care and presentation
+            </p>
+          </div>
+
+          {/* Gallery Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Large Featured Image - Spans 2 columns */}
+            <div className="lg:col-span-2 lg:row-span-2 scroll-reveal">
+              <div className="relative h-[500px] rounded-3xl overflow-hidden border border-zinc-800/50 hover:border-[#dffd6e]/30 transition-all duration-700 group bg-zinc-900">
+                <Image
+                  src="/gallery/P1900928.jpg"
+                  alt="Mikalyzed Auto Boutique Facility"
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                <div className="absolute bottom-8 left-8">
+                  <p className="text-white text-2xl font-light tracking-tight">Main Showroom</p>
+                  <p className="text-gray-300 text-sm font-light mt-2">Climate-controlled luxury display</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Smaller Gallery Images */}
+            <div className="scroll-reveal" style={{ animationDelay: '100ms' }}>
+              <div className="relative h-[240px] rounded-3xl overflow-hidden border border-zinc-800/50 hover:border-[#dffd6e]/30 transition-all duration-700 group bg-zinc-900">
+                <Image
+                  src="/gallery/P1901157.jpg"
+                  alt="The Reserve Storage"
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                <div className="absolute bottom-6 left-6">
+                  <p className="text-white text-lg font-light">The Reserve</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="scroll-reveal" style={{ animationDelay: '200ms' }}>
+              <div className="relative h-[240px] rounded-3xl overflow-hidden border border-zinc-800/50 hover:border-[#dffd6e]/30 transition-all duration-700 group bg-zinc-900">
+                <Image
+                  src="/gallery/P1901200.jpg"
+                  alt="Cigar Lounge"
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                <div className="absolute bottom-6 left-6">
+                  <p className="text-white text-lg font-light">Cigar Lounge</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="scroll-reveal" style={{ animationDelay: '300ms' }}>
+              <div className="relative h-[240px] rounded-3xl overflow-hidden border border-zinc-800/50 hover:border-[#dffd6e]/30 transition-all duration-700 group bg-zinc-900">
+                <Image
+                  src="/gallery/P1900950.jpg"
+                  alt="Client Lounge"
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                <div className="absolute bottom-6 left-6">
+                  <p className="text-white text-lg font-light">Client Lounge</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="lg:col-span-2 scroll-reveal" style={{ animationDelay: '400ms' }}>
+              <div className="relative h-[240px] rounded-3xl overflow-hidden border border-zinc-800/50 hover:border-[#dffd6e]/30 transition-all duration-700 group bg-zinc-900">
+                <Image
+                  src="/gallery/P1901037.jpg"
+                  alt="Full Bar"
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                <div className="absolute bottom-6 left-6">
+                  <p className="text-white text-lg font-light">Full Bar</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SEPARATOR */}
+      <div className="h-px bg-gradient-to-r from-transparent via-zinc-700/50 to-transparent" />
 
       {/* EXPERIENCE SECTION */}
       <section className="relative py-32 px-6 bg-gradient-to-b from-black via-zinc-950 to-black overflow-hidden">
@@ -263,47 +440,84 @@ export default function HomePage() {
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-            <div className="group scroll-reveal" style={{ animationDelay: '0ms' }}>
-              <div className="relative bg-zinc-900/50 backdrop-blur-sm p-12 rounded-3xl border border-zinc-800/50 hover:border-[#dffd6e]/30 transition-all duration-700 hover:transform hover:-translate-y-2">
-                <div className="w-20 h-20 bg-gradient-to-br from-[#dffd6e]/20 to-[#dffd6e]/20 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-500">
-                  <svg className="w-10 h-10 text-[#dffd6e]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-                <h3 className="text-3xl font-light tracking-tight mb-6">Curated Selection</h3>
-                <p className="text-gray-400 font-extralight text-lg leading-relaxed">
-                  Every vehicle handpicked from the world&apos;s most prestigious manufacturers, inspected to perfection
-                </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {/* Curated Inventory */}
+            <div className="group scroll-reveal bg-zinc-900/50 backdrop-blur-sm p-10 rounded-3xl border border-zinc-800/50 hover:border-[#dffd6e]/30 transition-all duration-700 hover:-translate-y-2">
+              <div className="w-16 h-16 bg-gradient-to-br from-[#dffd6e]/20 to-[#dffd6e]/20 rounded-2xl flex items-center justify-center mb-6">
+                <svg className="w-8 h-8 text-[#dffd6e]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
               </div>
+              <h3 className="text-2xl font-light tracking-tight mb-4 text-white">Curated Inventory</h3>
+              <p className="text-gray-400 font-extralight leading-relaxed">
+                Hand-selected vehicles only. Condition, spec, and provenance matter here.
+              </p>
             </div>
 
-            <div className="group scroll-reveal" style={{ animationDelay: '150ms' }}>
-              <div className="relative bg-zinc-900/50 backdrop-blur-sm p-12 rounded-3xl border border-zinc-800/50 hover:border-[#dffd6e]/30 transition-all duration-700 hover:transform hover:-translate-y-2">
-                <div className="w-20 h-20 bg-gradient-to-br from-[#dffd6e]/20 to-[#dffd6e]/20 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-500">
-                  <svg className="w-10 h-10 text-[#dffd6e]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
-                  </svg>
-                </div>
-                <h3 className="text-3xl font-light tracking-tight mb-6">White Glove Service</h3>
-                <p className="text-gray-400 font-extralight text-lg leading-relaxed">
-                  Personalized attention from acquisition to delivery, ensuring your journey is seamless
-                </p>
+            {/* The Reserve */}
+            <div className="group scroll-reveal bg-zinc-900/50 backdrop-blur-sm p-10 rounded-3xl border border-zinc-800/50 hover:border-[#dffd6e]/30 transition-all duration-700 hover:-translate-y-2" style={{ animationDelay: '100ms' }}>
+              <div className="w-16 h-16 bg-gradient-to-br from-[#dffd6e]/20 to-[#dffd6e]/20 rounded-2xl flex items-center justify-center mb-6">
+                <svg className="w-8 h-8 text-[#dffd6e]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
               </div>
+              <h3 className="text-2xl font-light tracking-tight mb-4 text-white">The Reserve</h3>
+              <p className="text-gray-400 font-extralight leading-relaxed">
+                Climate-controlled luxury storage designed for serious car collections.
+              </p>
             </div>
 
-            <div className="group scroll-reveal" style={{ animationDelay: '300ms' }}>
-              <div className="relative bg-zinc-900/50 backdrop-blur-sm p-12 rounded-3xl border border-zinc-800/50 hover:border-[#dffd6e]/30 transition-all duration-700 hover:transform hover:-translate-y-2">
-                <div className="w-20 h-20 bg-gradient-to-br from-[#dffd6e]/20 to-[#dffd6e]/20 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-500">
-                  <svg className="w-10 h-10 text-[#dffd6e]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                  </svg>
-                </div>
-                <h3 className="text-3xl font-light tracking-tight mb-6">Uncompromising Quality</h3>
-                <p className="text-gray-400 font-extralight text-lg leading-relaxed">
-                  Rigorous certification process guarantees authenticity and condition beyond compare
-                </p>
+            {/* Nationwide Reach */}
+            <div className="group scroll-reveal bg-zinc-900/50 backdrop-blur-sm p-10 rounded-3xl border border-zinc-800/50 hover:border-[#dffd6e]/30 transition-all duration-700 hover:-translate-y-2" style={{ animationDelay: '200ms' }}>
+              <div className="w-16 h-16 bg-gradient-to-br from-[#dffd6e]/20 to-[#dffd6e]/20 rounded-2xl flex items-center justify-center mb-6">
+                <svg className="w-8 h-8 text-[#dffd6e]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
               </div>
+              <h3 className="text-2xl font-light tracking-tight mb-4 text-white">Nationwide Reach</h3>
+              <p className="text-gray-400 font-extralight leading-relaxed">
+                Seamless buying and selling anywhere in the United States.
+              </p>
+            </div>
+
+            {/* Global Transactions */}
+            <div className="group scroll-reveal bg-zinc-900/50 backdrop-blur-sm p-10 rounded-3xl border border-zinc-800/50 hover:border-[#dffd6e]/30 transition-all duration-700 hover:-translate-y-2" style={{ animationDelay: '300ms' }}>
+              <div className="w-16 h-16 bg-gradient-to-br from-[#dffd6e]/20 to-[#dffd6e]/20 rounded-2xl flex items-center justify-center mb-6">
+                <svg className="w-8 h-8 text-[#dffd6e]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-light tracking-tight mb-4 text-white">Global Transactions</h3>
+              <p className="text-gray-400 font-extralight leading-relaxed">
+                Experience handling international buyers, sellers, and logistics.
+              </p>
+            </div>
+
+            {/* White-Glove Experience */}
+            <div className="group scroll-reveal bg-zinc-900/50 backdrop-blur-sm p-10 rounded-3xl border border-zinc-800/50 hover:border-[#dffd6e]/30 transition-all duration-700 hover:-translate-y-2" style={{ animationDelay: '400ms' }}>
+              <div className="w-16 h-16 bg-gradient-to-br from-[#dffd6e]/20 to-[#dffd6e]/20 rounded-2xl flex items-center justify-center mb-6">
+                <svg className="w-8 h-8 text-[#dffd6e]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-light tracking-tight mb-4 text-white">White-Glove Experience</h3>
+              <p className="text-gray-400 font-extralight leading-relaxed">
+                A refined, concierge-level process from first conversation to delivery.
+              </p>
+            </div>
+
+            {/* Consignment Done Right */}
+            <div className="group scroll-reveal bg-zinc-900/50 backdrop-blur-sm p-10 rounded-3xl border border-zinc-800/50 hover:border-[#dffd6e]/30 transition-all duration-700 hover:-translate-y-2" style={{ animationDelay: '500ms' }}>
+              <div className="w-16 h-16 bg-gradient-to-br from-[#dffd6e]/20 to-[#dffd6e]/20 rounded-2xl flex items-center justify-center mb-6">
+                <svg className="w-8 h-8 text-[#dffd6e]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-light tracking-tight mb-4 text-white">Consignment Done Right</h3>
+              <p className="text-gray-400 font-extralight leading-relaxed">
+                Maximum exposure, proper representation, and a smooth selling process.
+              </p>
             </div>
           </div>
         </div>
@@ -349,24 +563,7 @@ export default function HomePage() {
               </Link>
             </div>
 
-            <div className="grid grid-cols-2 gap-6 scroll-reveal" style={{ animationDelay: '200ms' }}>
-              <div className="bg-gradient-to-br from-zinc-900 to-black p-10 rounded-3xl border border-zinc-800/50 hover:border-[#dffd6e]/30 transition-all duration-700">
-                <div className="text-5xl font-extralight text-[#dffd6e] mb-4">25+</div>
-                <p className="text-gray-400 font-light text-sm tracking-wider">Years of Excellence</p>
-              </div>
-              <div className="bg-gradient-to-br from-zinc-900 to-black p-10 rounded-3xl border border-zinc-800/50 hover:border-[#dffd6e]/30 transition-all duration-700">
-                <div className="text-5xl font-extralight text-[#dffd6e] mb-4">15K+</div>
-                <p className="text-gray-400 font-light text-sm tracking-wider">Satisfied Clients</p>
-              </div>
-              <div className="bg-gradient-to-br from-zinc-900 to-black p-10 rounded-3xl border border-zinc-800/50 hover:border-[#dffd6e]/30 transition-all duration-700">
-                <div className="text-5xl font-extralight text-[#dffd6e] mb-4">500+</div>
-                <p className="text-gray-400 font-light text-sm tracking-wider">Annual Sales</p>
-              </div>
-              <div className="bg-gradient-to-br from-zinc-900 to-black p-10 rounded-3xl border border-zinc-800/50 hover:border-[#dffd6e]/30 transition-all duration-700">
-                <div className="text-5xl font-extralight text-[#dffd6e] mb-4">100%</div>
-                <p className="text-gray-400 font-light text-sm tracking-wider">Satisfaction</p>
-              </div>
-            </div>
+            <ContactForm />
           </div>
         </div>
       </section>
@@ -375,36 +572,32 @@ export default function HomePage() {
       <div className="h-px bg-gradient-to-r from-transparent via-[#dffd6e]/30 to-transparent" />
 
       {/* FINAL CTA */}
-      <section className="relative py-40 px-6 bg-gradient-to-b from-black via-zinc-950 to-black overflow-hidden">
+      <section className="relative py-24 px-6 bg-gradient-to-b from-black via-zinc-950 to-black overflow-hidden">
         {/* Decorative gradient */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#dffd6e]/10 via-transparent to-transparent" />
 
-        <div className="max-w-4xl mx-auto text-center relative z-10 scroll-reveal">
-          <p className="text-[#dffd6e] text-sm font-light tracking-[0.4em] mb-6 uppercase">
+        <div className="max-w-3xl mx-auto text-center relative z-10 scroll-reveal">
+          <p className="text-[#dffd6e] text-xs font-light tracking-[0.4em] mb-4 uppercase">
             Begin Your Journey
           </p>
-          <h2 className="text-5xl md:text-7xl font-extralight tracking-tighter mb-10">
-            Your Dream
-            <br />
-            <span className="bg-gradient-to-r from-[#dffd6e] to-[#dffd6e] bg-clip-text text-transparent">
-              Awaits
-            </span>
+          <h2 className="text-5xl md:text-6xl lg:text-7xl font-extralight tracking-tighter mb-6">
+            Your Dream <span className="bg-gradient-to-r from-[#dffd6e] to-[#dffd6e] bg-clip-text text-transparent">Awaits</span>
           </h2>
-          <p className="text-gray-300 text-xl font-extralight mb-16 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-gray-300 text-lg font-extralight mb-10 max-w-xl mx-auto leading-relaxed">
             Let us guide you to the perfect vehicle. Experience automotive luxury redefined.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-6 justify-center">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/contact"
-              className="group relative bg-gradient-to-r from-[#dffd6e] to-[#dffd6e] text-black px-12 py-6 rounded-full font-light tracking-wider hover:shadow-2xl hover:shadow-[#dffd6e]/50 transition-all duration-500 overflow-hidden"
+              className="group relative bg-gradient-to-r from-[#dffd6e] to-[#dffd6e] text-black px-10 py-4 rounded-full font-light tracking-wider hover:shadow-2xl hover:shadow-[#dffd6e]/50 transition-all duration-500 overflow-hidden"
             >
               <span className="relative z-10">Schedule Consultation</span>
               <div className="absolute inset-0 bg-gradient-to-r from-[#dffd6e] to-[#dffd6e] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             </Link>
             <Link
               href="/inventory"
-              className="group bg-transparent border-2 border-zinc-700 text-white px-12 py-6 rounded-full font-extralight tracking-wider hover:border-[#dffd6e] hover:text-[#dffd6e] transition-all duration-500"
+              className="group bg-transparent border-2 border-zinc-700 text-white px-10 py-4 rounded-full font-extralight tracking-wider hover:border-[#dffd6e] hover:text-[#dffd6e] transition-all duration-500"
             >
               Browse Collection
             </Link>

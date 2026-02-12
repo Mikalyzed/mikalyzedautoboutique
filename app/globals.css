@@ -1,3 +1,5 @@
+@import url('https://fonts.cdnfonts.com/css/tt-octosquares-trl');
+@import url('https://fonts.cdnfonts.com/css/sansation');
 @import "tailwindcss";
 
 :root {
@@ -144,3 +146,102 @@ html {
   background-size: 200% 200%;
   animation: gradient-shift 8s ease infinite;
 }
+
+/* Floating parallax animations for form section */
+@keyframes float-slow {
+  0%, 100% {
+    transform: translateY(0) translateX(0);
+  }
+  25% {
+    transform: translateY(-20px) translateX(10px);
+  }
+  50% {
+    transform: translateY(-10px) translateX(-5px);
+  }
+  75% {
+    transform: translateY(-30px) translateX(15px);
+  }
+}
+
+@keyframes float-reverse {
+  0%, 100% {
+    transform: translateY(0) translateX(0);
+  }
+  25% {
+    transform: translateY(15px) translateX(-10px);
+  }
+  50% {
+    transform: translateY(5px) translateX(8px);
+  }
+  75% {
+    transform: translateY(20px) translateX(-15px);
+  }
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    border-color: rgba(223, 253, 110, 0.15);
+    box-shadow: 0 0 30px rgba(223, 253, 110, 0.05);
+  }
+  50% {
+    border-color: rgba(223, 253, 110, 0.35);
+    box-shadow: 0 0 60px rgba(223, 253, 110, 0.1);
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-float-slow {
+  animation: float-slow 12s ease-in-out infinite;
+}
+
+.animate-float-reverse {
+  animation: float-reverse 10s ease-in-out infinite;
+}
+
+.animate-glow-pulse {
+  animation: glow-pulse 4s ease-in-out infinite;
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slide-in-left {
+  animation: slide-in-left 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Staggered form field animation */
+.form-field-reveal {
+  opacity: 0;
+  animation: fade-in-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.form-field-reveal:nth-child(1) { animation-delay: 0.1s; }
+.form-field-reveal:nth-child(2) { animation-delay: 0.2s; }
+.form-field-reveal:nth-child(3) { animation-delay: 0.3s; }
+.form-field-reveal:nth-child(4) { animation-delay: 0.4s; }
+.form-field-reveal:nth-child(5) { animation-delay: 0.5s; }
+.form-field-reveal:nth-child(6) { animation-delay: 0.6s; }
+.form-field-reveal:nth-child(7) { animation-delay: 0.7s; }
+.form-field-reveal:nth-child(8) { animation-delay: 0.8s; }

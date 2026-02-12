@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Vehicle } from "@/lib/parseInventory";
 import Image from "next/image";
 import Link from "next/link";
@@ -13,6 +13,7 @@ export default function InventoryClient({ inventory }: InventoryClientProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeCategory, setActiveCategory] = useState("All Vehicles");
   const [sortOrder, setSortOrder] = useState("price-high");
+  const [displayCount, setDisplayCount] = useState(15);
 
   // Filter and sort logic
   const filteredInventory = useMemo(() => {
@@ -49,6 +50,19 @@ export default function InventoryClient({ inventory }: InventoryClientProps) {
 
     return filtered;
   }, [inventory, searchTerm, activeCategory, sortOrder]);
+
+  // Reset display count when filters change
+  useEffect(() => {
+    setDisplayCount(15);
+  }, [searchTerm, activeCategory, sortOrder]);
+
+  // Get vehicles to display (paginated)
+  const displayedInventory = filteredInventory.slice(0, displayCount);
+  const hasMore = displayCount < filteredInventory.length;
+
+  const loadMore = () => {
+    setDisplayCount(prev => prev + 15);
+  };
 
   return (
     <>
@@ -121,15 +135,15 @@ export default function InventoryClient({ inventory }: InventoryClientProps) {
       <section className="px-6 mb-8">
         <div className="max-w-7xl mx-auto">
           <p className="text-gray-400 text-sm font-light tracking-wide">
-            Showing {filteredInventory.length} vehicle{filteredInventory.length !== 1 ? "s" : ""}
+            Showing {displayedInventory.length} of {filteredInventory.length} vehicle{filteredInventory.length !== 1 ? "s" : ""}
           </p>
         </div>
       </section>
 
       {/* VEHICLE GRID */}
       <section className="px-6 pb-20">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredInventory.map((car, index) => (
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+          {displayedInventory.map((car, index) => (
             <Link
               key={car.vin}
               href={`/inventory/${car.slug}/${car.vin}`}
@@ -212,6 +226,21 @@ export default function InventoryClient({ inventory }: InventoryClientProps) {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             <p className="text-gray-400">No vehicles found matching your criteria</p>
+          </div>
+        )}
+
+        {/* LOAD MORE BUTTON */}
+        {hasMore && (
+          <div className="max-w-7xl mx-auto text-center mt-12">
+            <button
+              onClick={loadMore}
+              className="group inline-flex items-center gap-3 bg-transparent border border-zinc-700 text-white px-10 py-4 rounded-full font-light tracking-wider hover:border-[#dffd6e] hover:text-[#dffd6e] transition-all duration-500"
+            >
+              Load More Vehicles
+              <svg className="w-5 h-5 group-hover:translate-y-1 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
           </div>
         )}
       </section>

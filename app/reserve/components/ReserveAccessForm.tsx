@@ -11,14 +11,35 @@ export default function ReserveAccessForm() {
     message: "",
   });
 
+  const [vehicleDetails, setVehicleDetails] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
+    const { name, value } = e.target;
+
+    if (name === "vehicles") {
+      const count = value === "4+" ? 0 : parseInt(value) || 0;
+      setVehicleDetails((prev) => {
+        const next = [...prev];
+        // Expand or shrink array to match count
+        while (next.length < count) next.push("");
+        return next.slice(0, count);
+      });
+    }
+
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: value,
+    });
+  };
+
+  const handleVehicleDetail = (index: number, value: string) => {
+    setVehicleDetails((prev) => {
+      const next = [...prev];
+      next[index] = value;
+      return next;
     });
   };
 
@@ -27,7 +48,7 @@ export default function ReserveAccessForm() {
     setIsSubmitting(true);
 
     // TODO: Implement form submission logic
-    console.log("Reserve access request:", formData);
+    console.log("Reserve access request:", { ...formData, vehicleDetails });
 
     setTimeout(() => {
       setIsSubmitting(false);
@@ -39,12 +60,14 @@ export default function ReserveAccessForm() {
         vehicles: "",
         message: "",
       });
+      setVehicleDetails([]);
     }, 1000);
   };
 
+  const vehicleCount = formData.vehicles === "4+" ? 0 : parseInt(formData.vehicles) || 0;
+
   return (
     <form
-      id="request-access"
       onSubmit={handleSubmit}
       className="bg-zinc-900/30 backdrop-blur-xl p-8 rounded-3xl border border-zinc-800/40 hover:border-[#dffd6e]/30 transition-all duration-700 scroll-reveal shadow-2xl"
       style={{ animationDelay: "200ms" }}
@@ -131,12 +154,33 @@ export default function ReserveAccessForm() {
           >
             <option value="" disabled>Select</option>
             <option value="1">1 Vehicle</option>
-            <option value="2-3">2 - 3 Vehicles</option>
-            <option value="4-6">4 - 6 Vehicles</option>
-            <option value="7+">7+ Vehicles</option>
+            <option value="2">2 Vehicles</option>
+            <option value="3">3 Vehicles</option>
+            <option value="4+">4+ Vehicles</option>
           </select>
         </div>
       </div>
+
+      {/* Vehicle Details — appears after selection */}
+      {vehicleCount > 0 && (
+        <div className="mb-5 overflow-hidden animate-fade-in">
+          <label className="block text-xs font-light tracking-wider text-gray-400 mb-3">
+            Vehicle{vehicleCount > 1 ? "s" : ""} to Be Stored
+          </label>
+          <div className="space-y-3">
+            {vehicleDetails.map((detail, i) => (
+              <input
+                key={i}
+                type="text"
+                value={detail}
+                onChange={(e) => handleVehicleDetail(i, e.target.value)}
+                className="w-full bg-black/20 backdrop-blur-sm border border-zinc-800/50 rounded-lg px-4 py-2.5 text-white placeholder-gray-600 focus:outline-none focus:border-[#dffd6e] transition font-light"
+                placeholder={`Vehicle ${i + 1} — Year, Make, Model`}
+              />
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Message */}
       <div className="mb-6">
@@ -153,7 +197,7 @@ export default function ReserveAccessForm() {
           onChange={handleChange}
           rows={3}
           className="w-full bg-black/20 backdrop-blur-sm border border-zinc-800/50 rounded-lg px-4 py-2.5 text-white placeholder-gray-600 focus:outline-none focus:border-[#dffd6e] transition font-light resize-none"
-          placeholder="Vehicle makes, models, any specific requirements..."
+          placeholder="Any specific requirements or notes..."
         />
       </div>
 

@@ -29,12 +29,37 @@ export function getInventoryFromCSV(): Vehicle[] {
     "DealerCenter_20260204_22887597.csv"
   );
 
-  const fileContent = fs.readFileSync(filePath);
+  const raw = fs.readFileSync(filePath, "utf-8");
+  // The CSV was exported with corrupted encoding — all special chars became U+FFFD.
+  // Replace with a safe placeholder before CSV parsing (to avoid breaking CSV quoting),
+  // then do context-aware recovery on parsed field values.
+  const PLACEHOLDER = "\uE000";
+  const fileContent = raw.replace(/\uFFFD/g, PLACEHOLDER);
 
   const records = parse(fileContent, {
     columns: true,
     skip_empty_lines: true,
   }) as Record<string, string>[];
+
+  // Recover original characters from placeholder using surrounding context
+  function fixEncoding(text: string): string {
+    return text.replace(new RegExp(PLACEHOLDER, "g"), (_, offset) => {
+      const before = text.slice(Math.max(0, offset - 2), offset);
+      const after = text.slice(offset + 1, offset + 3);
+      // " _ " (space-surrounded) → em dash
+      if (before.endsWith(" ") && after.startsWith(" ")) return "—";
+      // 10_, 24_, 33_ → inch mark (double prime)
+      if (/\d$/.test(before) && /[ \s",.)]/.test(after[0] || "")) return "\u2033";
+      // word_s, word_re, word_d, word_t, word_ll, word_ve, word_m → apostrophe
+      if (/[a-zA-Z]$/.test(before)) return "\u2019";
+      // _90s, _70s → apostrophe
+      if (/\d/.test(after[0] || "")) return "\u2019";
+      return "\u2019";
+    })
+    // Clean up stray spaces before commas/periods left by encoding artifacts
+    .replace(/ +,/g, ",")
+    .replace(/ +\./g, ".");
+  }
 
   return records
     .map((row) => {
@@ -79,7 +104,7 @@ export function getInventoryFromCSV(): Vehicle[] {
         exteriorColor: row["ExteriorColor"]?.trim() || undefined,
         interiorColor: row["InteriorColor"]?.trim() || undefined,
         transmission: row["Transmission"]?.trim() || undefined,
-        description: row["WebDescription"]?.trim() || undefined,
+        description: row["WebDescription"]?.trim() ? fixEncoding(row["WebDescription"].trim()) : undefined,
         images: row["PhotoUrl"] ? row["PhotoUrl"] .split(",") .map((url: string) => url.trim())
         .filter(Boolean)
             : [],
