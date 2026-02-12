@@ -101,24 +101,24 @@ export default async function VehicleDetailPage({ params }: PageProps) {
           </p>
 
           {/* ACTION BUTTONS */}
-          <div className="inline-flex flex-col gap-3 mb-10">
-            <div className="flex flex-wrap gap-3">
-              <button className="flex items-center gap-2 bg-[#dffd6e] text-black px-6 py-3 rounded-lg font-normal tracking-wide hover:bg-[#dffd6e]/90 transition">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="flex flex-col gap-3 mb-10">
+            <div className="flex gap-2 sm:gap-3">
+              <button className="flex-1 flex items-center justify-center gap-1.5 sm:gap-2 bg-[#dffd6e] text-black px-3 py-2.5 sm:px-6 sm:py-3 rounded-lg text-sm sm:text-base font-normal tracking-wide hover:bg-[#dffd6e]/90 transition">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                 </svg>
                 Contact Us
               </button>
 
-              <button className="flex items-center gap-2 bg-black border border-zinc-700 text-white px-6 py-3 rounded-lg font-light tracking-wide hover:border-[#dffd6e] transition">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <button className="flex-1 flex items-center justify-center gap-1.5 sm:gap-2 bg-black border border-zinc-700 text-white px-3 py-2.5 sm:px-6 sm:py-3 rounded-lg text-sm sm:text-base font-light tracking-wide hover:border-[#dffd6e] transition">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                Apply for Financing
+                Financing
               </button>
 
-              <button className="bg-black border border-zinc-700 text-white p-3 rounded-lg hover:border-[#dffd6e] transition">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <button className="bg-black border border-zinc-700 text-white p-2.5 sm:p-3 rounded-lg hover:border-[#dffd6e] transition">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
                 </svg>
               </button>

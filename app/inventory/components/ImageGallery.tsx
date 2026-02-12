@@ -86,12 +86,12 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
           );
         })}
       </div>
-      {!showAllThumbs && images.length > 6 && (
+      {images.length > 6 && (
         <button
-          onClick={() => setShowAllThumbs(true)}
+          onClick={() => setShowAllThumbs(!showAllThumbs)}
           className="sm:hidden w-full mt-3 py-2 text-sm font-light text-[#dffd6e] border border-zinc-700 rounded-lg hover:border-[#dffd6e] transition"
         >
-          Show all {images.length} photos
+          {showAllThumbs ? "Hide photos" : `Show all ${images.length} photos`}
         </button>
       )}
 
