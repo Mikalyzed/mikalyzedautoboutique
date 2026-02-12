@@ -63,6 +63,19 @@ export default async function VehicleDetailPage({ params }: PageProps) {
         </nav>
       </div>
 
+      {/* VEHICLE TITLE + PRICE - above gallery on mobile, hidden on desktop */}
+      <div className="max-w-7xl mx-auto lg:hidden mb-4">
+        <p className="text-sm font-light tracking-[0.3em] text-[#dffd6e] mb-2 leading-tight block">
+          {vehicle.year} {vehicle.make.toUpperCase()}
+        </p>
+        <h1 className="text-5xl font-light tracking-tight leading-tight mb-2">
+          {vehicle.model}
+        </h1>
+        <p className="text-2xl font-light text-[#dffd6e]">
+          {vehicle.price}
+        </p>
+      </div>
+
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-12 lg:items-start">
 
         {/* IMAGE GALLERY */}
@@ -72,18 +85,18 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 
         {/* VEHICLE INFO */}
         <div className="m-0 p-0">
-          {/* YEAR & MAKE BADGE */}
-          <p className="text-sm font-light tracking-[0.3em] text-[#dffd6e] mb-2 leading-tight block">
+          {/* YEAR & MAKE BADGE - hidden on mobile, shown on desktop */}
+          <p className="hidden lg:block text-sm font-light tracking-[0.3em] text-[#dffd6e] mb-2 leading-tight">
             {vehicle.year} {vehicle.make.toUpperCase()}
           </p>
 
-          {/* MODEL NAME */}
-          <h1 className="text-5xl font-light tracking-tight leading-tight mb-4">
+          {/* MODEL NAME - hidden on mobile, shown on desktop */}
+          <h1 className="hidden lg:block text-5xl font-light tracking-tight leading-tight mb-4">
             {vehicle.model}
           </h1>
 
-          {/* PRICE */}
-          <p className="text-4xl font-light text-[#dffd6e] mb-8">
+          {/* PRICE - hidden on mobile (shown above gallery), visible on desktop */}
+          <p className="hidden lg:block text-4xl font-light text-[#dffd6e] mb-8">
             {vehicle.price}
           </p>
 

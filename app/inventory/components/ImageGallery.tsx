@@ -10,6 +10,7 @@ interface ImageGalleryProps {
 export default function ImageGallery({ images }: ImageGalleryProps) {
   const [active, setActive] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
+  const [showAllThumbs, setShowAllThumbs] = useState(false);
   const imageRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   // Scroll to active image when modal opens
@@ -39,7 +40,7 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
     <>
       {/* MAIN IMAGE */}
       <div
-        className="relative h-[420px] w-full overflow-hidden cursor-zoom-in mb-4 bg-zinc-900"
+        className="relative h-[240px] sm:h-[420px] w-full overflow-hidden cursor-zoom-in mb-4 bg-zinc-900"
         style={{ borderRadius: '32px' }}
         onClick={() => openFullscreen(active)}
       >
@@ -61,26 +62,38 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
 
       {/* THUMBNAILS */}
       <div className="grid grid-cols-[repeat(auto-fill,minmax(112px,1fr))] gap-3 w-full">
-        {images.map((img, index) => (
-          <button
-            key={index}
-            onClick={() => openFullscreen(index)}
-            className={`relative h-20 w-full rounded-lg overflow-hidden border-2 transition
-              ${
-                index === active
-                  ? "border-[#dffd6e]"
-                  : "border-zinc-700 hover:border-[#dffd6e]"
-              }`}
-          >
-            <Image
-              src={img}
-              alt={`Thumbnail ${index + 1}`}
-              fill
-              className="object-cover"
-            />
-          </button>
-        ))}
+        {images.map((img, index) => {
+          const hiddenOnMobile = !showAllThumbs && index >= 6;
+          return (
+            <button
+              key={index}
+              onClick={() => openFullscreen(index)}
+              className={`relative h-20 w-full rounded-lg overflow-hidden border-2 transition
+                ${hiddenOnMobile ? "hidden sm:block" : ""}
+                ${
+                  index === active
+                    ? "border-[#dffd6e]"
+                    : "border-zinc-700 hover:border-[#dffd6e]"
+                }`}
+            >
+              <Image
+                src={img}
+                alt={`Thumbnail ${index + 1}`}
+                fill
+                className="object-cover"
+              />
+            </button>
+          );
+        })}
       </div>
+      {!showAllThumbs && images.length > 6 && (
+        <button
+          onClick={() => setShowAllThumbs(true)}
+          className="sm:hidden w-full mt-3 py-2 text-sm font-light text-[#dffd6e] border border-zinc-700 rounded-lg hover:border-[#dffd6e] transition"
+        >
+          Show all {images.length} photos
+        </button>
+      )}
 
       {/* FULLSCREEN MODAL */}
       {isOpen && (
