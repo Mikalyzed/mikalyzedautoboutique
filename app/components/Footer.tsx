@@ -9,17 +9,20 @@ export default function Footer() {
           <div>
             <Link href="/" className="inline-block mb-6">
               <span className="text-2xl font-light tracking-[0.3em] text-white">
-                MKLYZD
+                MIKALYZED
+              </span>
+              <span className="text-sm text-gray-400 font-extralight tracking-[0.25em] block">
+                AUTO BOUTIQUE
               </span>
             </Link>
             <p className="text-gray-400 text-sm font-light leading-relaxed mb-6">
-              Your premier destination for luxury and performance vehicles. Experience automotive excellence since 1999.
+              Your premier destination for luxury and performance vehicles. Experience automotive excellence since 2024.
             </p>
 
             {/* Social Media Icons */}
             <div className="flex gap-3">
               <a
-                href="https://facebook.com"
+                href="https://www.facebook.com/p/Mikalyzed-Auto-Boutique-61559979093260/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-gray-400 hover:text-[#dffd6e] hover:border-[#dffd6e] transition"
@@ -30,7 +33,7 @@ export default function Footer() {
               </a>
 
               <a
-                href="https://instagram.com"
+                href="https://www.instagram.com/mikalyzed_autoboutique/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-gray-400 hover:text-[#dffd6e] hover:border-[#dffd6e] transition"
@@ -41,24 +44,24 @@ export default function Footer() {
               </a>
 
               <a
-                href="https://twitter.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-gray-400 hover:text-[#dffd6e] hover:border-[#dffd6e] transition"
-              >
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
-                </svg>
-              </a>
-
-              <a
-                href="https://youtube.com"
+                href="https://www.youtube.com/@mikalyzedautoboutique"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-gray-400 hover:text-[#dffd6e] hover:border-[#dffd6e] transition"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                </svg>
+              </a>
+
+              <a
+                href="https://www.tiktok.com/@mikalyzed_autoboutique"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-gray-400 hover:text-[#dffd6e] hover:border-[#dffd6e] transition"
+              >
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 00-.79-.05A6.34 6.34 0 003.15 15.2a6.34 6.34 0 0010.86 4.46v-7.15a8.16 8.16 0 005.58 2.17v-3.45a4.85 4.85 0 01-2-.54z"/>
                 </svg>
               </a>
             </div>

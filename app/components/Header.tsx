@@ -25,7 +25,7 @@ export default function Header() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3">
             <span className="text-xl font-light tracking-[0.3em] text-white">
-              MKLYZD
+              MIKALYZED
             </span>
             <span className="text-sm text-gray-400 font-extralight tracking-[0.25em]">
               AUTO BOUTIQUE
