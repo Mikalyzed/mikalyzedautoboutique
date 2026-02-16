@@ -72,17 +72,34 @@ export async function upsertVehicles(vehicles: Vehicle[]): Promise<void> {
   const now = new Date().toISOString();
   const BATCH_SIZE = 25;
 
+  // Fetch existing vehicles to preserve images when new CSV has fewer
+  const existingMap = new Map<string, DynamoVehicle>();
+  for (const v of vehicles) {
+    const existing = await getVehicleByVin(v.vin);
+    if (existing) existingMap.set(v.vin, existing);
+  }
+
   for (let i = 0; i < vehicles.length; i += BATCH_SIZE) {
     const batch = vehicles.slice(i, i + BATCH_SIZE);
-    const requests = batch.map((v) => ({
-      PutRequest: {
-        Item: {
-          ...v,
-          updatedAt: now,
-          createdAt: now,
+    const requests = batch.map((v) => {
+      const existing = existingMap.get(v.vin);
+      // Keep existing images if the new CSV has fewer (DealerCenter sometimes sends only 1 thumbnail)
+      const images =
+        existing && existing.images && existing.images.length > v.images.length
+          ? existing.images
+          : v.images;
+
+      return {
+        PutRequest: {
+          Item: {
+            ...v,
+            images,
+            updatedAt: now,
+            createdAt: existing?.createdAt || now,
+          },
         },
-      },
-    }));
+      };
+    });
 
     await docClient.send(
       new BatchWriteCommand({
