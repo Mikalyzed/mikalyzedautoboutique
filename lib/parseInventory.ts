@@ -1,5 +1,3 @@
-import fs from "fs";
-import path from "path";
 import { parse } from "csv-parse/sync";
 
 export type VehicleStatus = "available" | "sold" | "call";
@@ -14,7 +12,7 @@ export interface Vehicle {
   status: VehicleStatus;
 
   trim?: string;
-  odometer?: string;
+  odometer?: number;
   exteriorColor?: string;
   interiorColor?: string;
   transmission?: string;
@@ -22,19 +20,16 @@ export interface Vehicle {
   images: string[];
 }
 
-export function getInventoryFromCSV(): Vehicle[] {
-  const filePath = path.join(
-    process.cwd(),
-    "data",
-    "DealerCenter_20260204_22887597.csv"
-  );
-
-  const raw = fs.readFileSync(filePath, "utf-8");
+/**
+ * Parse a DealerCenter CSV string into an array of Vehicle objects.
+ * Handles encoding recovery for corrupted special characters.
+ */
+export function parseCSV(csvContent: string): Vehicle[] {
   // The CSV was exported with corrupted encoding — all special chars became U+FFFD.
   // Replace with a safe placeholder before CSV parsing (to avoid breaking CSV quoting),
   // then do context-aware recovery on parsed field values.
   const PLACEHOLDER = "\uE000";
-  const fileContent = raw.replace(/\uFFFD/g, PLACEHOLDER);
+  const fileContent = csvContent.replace(/\uFFFD/g, PLACEHOLDER);
 
   const records = parse(fileContent, {
     columns: true,
@@ -105,10 +100,8 @@ export function getInventoryFromCSV(): Vehicle[] {
         interiorColor: row["InteriorColor"]?.trim() || undefined,
         transmission: row["Transmission"]?.trim() || undefined,
         description: row["WebDescription"]?.trim() ? fixEncoding(row["WebDescription"].trim()) : undefined,
-        images: row["PhotoUrl"] ? row["PhotoUrl"] .split(",") .map((url: string) => url.trim())
-        .filter(Boolean)
-            : [],
-        };
+        images: row["PhotoUrl"] ? row["PhotoUrl"].split(",").map((url: string) => url.trim()).filter(Boolean) : [],
+      };
     })
     .filter(Boolean) as Vehicle[];
 }

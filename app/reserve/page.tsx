@@ -133,7 +133,7 @@ export default function ReservePage() {
           {/* Service Cards — 3x2 grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 scroll-reveal" style={{ animationDelay: '200ms' }}>
             {/* Climate Controlled Storage */}
-            <div className="group bg-zinc-900/40 backdrop-blur-sm p-10 rounded-2xl border border-zinc-800/40 hover:border-[#dffd6e]/20 transition-all duration-700">
+            <div className="group bg-zinc-900/40 backdrop-blur-sm p-10 rounded-2xl border border-zinc-800/40 hover:border-[#dffd6e]/20 hover:scale-[1.02] transition-all duration-700">
               <div className="w-12 h-12 rounded-xl bg-[#dffd6e]/5 border border-[#dffd6e]/10 flex items-center justify-center mb-7" style={{ boxShadow: '0 0 20px rgba(223,253,110,0.04)' }}>
                 <svg className="w-5 h-5 text-[#dffd6e]/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
@@ -146,7 +146,7 @@ export default function ReservePage() {
             </div>
 
             {/* 24/7 Surveillance & Biometric Access */}
-            <div className="group bg-zinc-900/40 backdrop-blur-sm p-10 rounded-2xl border border-zinc-800/40 hover:border-[#dffd6e]/20 transition-all duration-700">
+            <div className="group bg-zinc-900/40 backdrop-blur-sm p-10 rounded-2xl border border-zinc-800/40 hover:border-[#dffd6e]/20 hover:scale-[1.02] transition-all duration-700">
               <div className="w-12 h-12 rounded-xl bg-[#dffd6e]/5 border border-[#dffd6e]/10 flex items-center justify-center mb-7" style={{ boxShadow: '0 0 20px rgba(223,253,110,0.04)' }}>
                 <svg className="w-5 h-5 text-[#dffd6e]/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
@@ -159,7 +159,7 @@ export default function ReservePage() {
             </div>
 
             {/* Concierge Vehicle Oversight */}
-            <div className="group bg-zinc-900/40 backdrop-blur-sm p-10 rounded-2xl border border-zinc-800/40 hover:border-[#dffd6e]/20 transition-all duration-700">
+            <div className="group bg-zinc-900/40 backdrop-blur-sm p-10 rounded-2xl border border-zinc-800/40 hover:border-[#dffd6e]/20 hover:scale-[1.02] transition-all duration-700">
               <div className="w-12 h-12 rounded-xl bg-[#dffd6e]/5 border border-[#dffd6e]/10 flex items-center justify-center mb-7" style={{ boxShadow: '0 0 20px rgba(223,253,110,0.04)' }}>
                 <svg className="w-5 h-5 text-[#dffd6e]/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
@@ -172,7 +172,7 @@ export default function ReservePage() {
             </div>
 
             {/* Battery Maintenance & Start Cycles */}
-            <div className="group bg-zinc-900/40 backdrop-blur-sm p-10 rounded-2xl border border-zinc-800/40 hover:border-[#dffd6e]/20 transition-all duration-700">
+            <div className="group bg-zinc-900/40 backdrop-blur-sm p-10 rounded-2xl border border-zinc-800/40 hover:border-[#dffd6e]/20 hover:scale-[1.02] transition-all duration-700">
               <div className="w-12 h-12 rounded-xl bg-[#dffd6e]/5 border border-[#dffd6e]/10 flex items-center justify-center mb-7" style={{ boxShadow: '0 0 20px rgba(223,253,110,0.04)' }}>
                 <svg className="w-5 h-5 text-[#dffd6e]/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -185,7 +185,7 @@ export default function ReservePage() {
             </div>
 
             {/* Enclosed Transport & Logistics */}
-            <div className="group bg-zinc-900/40 backdrop-blur-sm p-10 rounded-2xl border border-zinc-800/40 hover:border-[#dffd6e]/20 transition-all duration-700">
+            <div className="group bg-zinc-900/40 backdrop-blur-sm p-10 rounded-2xl border border-zinc-800/40 hover:border-[#dffd6e]/20 hover:scale-[1.02] transition-all duration-700">
               <div className="w-12 h-12 rounded-xl bg-[#dffd6e]/5 border border-[#dffd6e]/10 flex items-center justify-center mb-7" style={{ boxShadow: '0 0 20px rgba(223,253,110,0.04)' }}>
                 <svg className="w-5 h-5 text-[#dffd6e]/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
@@ -198,7 +198,7 @@ export default function ReservePage() {
             </div>
 
             {/* Discreet Private Showings */}
-            <div className="group bg-zinc-900/40 backdrop-blur-sm p-10 rounded-2xl border border-zinc-800/40 hover:border-[#dffd6e]/20 transition-all duration-700">
+            <div className="group bg-zinc-900/40 backdrop-blur-sm p-10 rounded-2xl border border-zinc-800/40 hover:border-[#dffd6e]/20 hover:scale-[1.02] transition-all duration-700">
               <div className="w-12 h-12 rounded-xl bg-[#dffd6e]/5 border border-[#dffd6e]/10 flex items-center justify-center mb-7" style={{ boxShadow: '0 0 20px rgba(223,253,110,0.04)' }}>
                 <svg className="w-5 h-5 text-[#dffd6e]/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -241,7 +241,7 @@ export default function ReservePage() {
           {/* 5-Grid Bento Layout: 1 large featured + 4 smaller */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 scroll-reveal" style={{ animationDelay: '200ms' }}>
             {/* Featured — Private Lounge Access */}
-            <div className="group bg-zinc-900/40 backdrop-blur-sm p-8 rounded-2xl border border-zinc-800/40 hover:border-[#dffd6e]/20 transition-all duration-700 md:col-span-2 lg:col-span-1 lg:row-span-2 flex flex-col justify-between">
+            <div className="group bg-zinc-900/40 backdrop-blur-sm p-8 rounded-2xl border border-zinc-800/40 hover:border-[#dffd6e]/20 hover:scale-[1.02] transition-all duration-700 md:col-span-2 lg:col-span-1 lg:row-span-2 flex flex-col justify-between">
               <div>
                 <div className="w-10 h-10 rounded-xl bg-[#dffd6e]/5 border border-[#dffd6e]/10 flex items-center justify-center mb-6" style={{ boxShadow: '0 0 20px rgba(223,253,110,0.04)' }}>
                   <svg className="w-4 h-4 text-[#dffd6e]/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -273,7 +273,7 @@ export default function ReservePage() {
             </div>
 
             {/* Curated Community */}
-            <div className="group bg-zinc-900/40 backdrop-blur-sm p-8 rounded-2xl border border-zinc-800/40 hover:border-[#dffd6e]/20 transition-all duration-700 flex flex-col">
+            <div className="group bg-zinc-900/40 backdrop-blur-sm p-8 rounded-2xl border border-zinc-800/40 hover:border-[#dffd6e]/20 hover:scale-[1.02] transition-all duration-700 flex flex-col">
               <div className="w-10 h-10 rounded-xl bg-[#dffd6e]/5 border border-[#dffd6e]/10 flex items-center justify-center mb-6" style={{ boxShadow: '0 0 20px rgba(223,253,110,0.04)' }}>
                 <svg className="w-4 h-4 text-[#dffd6e]/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -286,7 +286,7 @@ export default function ReservePage() {
             </div>
 
             {/* Private Event Access */}
-            <div className="group bg-zinc-900/40 backdrop-blur-sm p-8 rounded-2xl border border-zinc-800/40 hover:border-[#dffd6e]/20 transition-all duration-700 flex flex-col">
+            <div className="group bg-zinc-900/40 backdrop-blur-sm p-8 rounded-2xl border border-zinc-800/40 hover:border-[#dffd6e]/20 hover:scale-[1.02] transition-all duration-700 flex flex-col">
               <div className="w-10 h-10 rounded-xl bg-[#dffd6e]/5 border border-[#dffd6e]/10 flex items-center justify-center mb-6" style={{ boxShadow: '0 0 20px rgba(223,253,110,0.04)' }}>
                 <svg className="w-4 h-4 text-[#dffd6e]/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -299,7 +299,7 @@ export default function ReservePage() {
             </div>
 
             {/* Asset Advisory */}
-            <div className="group bg-zinc-900/40 backdrop-blur-sm p-8 rounded-2xl border border-zinc-800/40 hover:border-[#dffd6e]/20 transition-all duration-700 flex flex-col">
+            <div className="group bg-zinc-900/40 backdrop-blur-sm p-8 rounded-2xl border border-zinc-800/40 hover:border-[#dffd6e]/20 hover:scale-[1.02] transition-all duration-700 flex flex-col">
               <div className="w-10 h-10 rounded-xl bg-[#dffd6e]/5 border border-[#dffd6e]/10 flex items-center justify-center mb-6" style={{ boxShadow: '0 0 20px rgba(223,253,110,0.04)' }}>
                 <svg className="w-4 h-4 text-[#dffd6e]/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
@@ -312,7 +312,7 @@ export default function ReservePage() {
             </div>
 
             {/* White-Glove Service */}
-            <div className="group bg-zinc-900/40 backdrop-blur-sm p-8 rounded-2xl border border-zinc-800/40 hover:border-[#dffd6e]/20 transition-all duration-700 flex flex-col">
+            <div className="group bg-zinc-900/40 backdrop-blur-sm p-8 rounded-2xl border border-zinc-800/40 hover:border-[#dffd6e]/20 hover:scale-[1.02] transition-all duration-700 flex flex-col">
               <div className="w-10 h-10 rounded-xl bg-[#dffd6e]/5 border border-[#dffd6e]/10 flex items-center justify-center mb-6" style={{ boxShadow: '0 0 20px rgba(223,253,110,0.04)' }}>
                 <svg className="w-4 h-4 text-[#dffd6e]/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />

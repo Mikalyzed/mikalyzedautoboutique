@@ -14,6 +14,7 @@ export default function Header() {
     { name: "Sold", href: "/sold" },
     { name: "The Reserve", href: "/reserve" },
     { name: "Sell Your Car", href: "/sell" },
+    { name: "Gallery", href: "/gallery" },
     { name: "About", href: "/about" },
     { name: "Contact", href: "/contact" },
   ];

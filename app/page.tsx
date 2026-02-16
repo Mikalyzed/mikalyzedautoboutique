@@ -1,10 +1,12 @@
 import Link from "next/link";
-import { getInventoryFromCSV } from "@/lib/parseInventory";
+import { getAvailableVehicles } from "@/lib/vehicles";
 import Image from "next/image";
 import ContactForm from "./components/ContactForm";
 
-export default function HomePage() {
-  const inventory = getInventoryFromCSV();
+export const dynamic = "force-dynamic";
+
+export default async function HomePage() {
+  const inventory = await getAvailableVehicles();
   const featuredVehicles = inventory.slice(0, 6);
 
   return (

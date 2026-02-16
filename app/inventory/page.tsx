@@ -1,8 +1,10 @@
-import { getInventoryFromCSV } from "@/lib/parseInventory";
+import { getAvailableVehicles } from "@/lib/vehicles";
 import InventoryClient from "./components/InventoryClient";
 
-export default function InventoryPage() {
-  const inventory = getInventoryFromCSV();
+export const dynamic = "force-dynamic";
+
+export default async function InventoryPage() {
+  const inventory = await getAvailableVehicles();
 
   return (
     <main className="min-h-screen bg-black text-white">
