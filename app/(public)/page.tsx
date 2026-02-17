@@ -7,7 +7,12 @@ export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   const inventory = await getAvailableVehicles();
-  const featuredVehicles = inventory.slice(0, 6);
+  const sorted = [...inventory].sort((a, b) => {
+    const aFeat = (a as unknown as Record<string, unknown>).featured ? 1 : 0;
+    const bFeat = (b as unknown as Record<string, unknown>).featured ? 1 : 0;
+    return bFeat - aFeat;
+  });
+  const featuredVehicles = sorted.slice(0, 6);
 
   return (
     <main className="min-h-screen bg-black text-white">

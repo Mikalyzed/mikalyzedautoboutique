@@ -192,13 +192,14 @@ export async function markVehiclesAsSold(vins: string[]): Promise<void> {
       new UpdateCommand({
         TableName: TABLE_NAME,
         Key: { vin },
-        UpdateExpression: "SET #s = :sold, soldDate = :date, updatedAt = :now, price = :price",
+        UpdateExpression: "SET #s = :sold, soldDate = :date, updatedAt = :now, price = :price, featured = :f",
         ExpressionAttributeNames: { "#s": "status" },
         ExpressionAttributeValues: {
           ":sold": "sold",
           ":date": today,
           ":now": now,
           ":price": "Sold",
+          ":f": false,
         },
       })
     )

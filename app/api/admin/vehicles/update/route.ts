@@ -41,6 +41,11 @@ export async function PATCH(request: NextRequest) {
       }
     }
 
+    // If marking as sold, automatically remove featured
+    if (sanitized.manuallyMarkedSold === true) {
+      sanitized.featured = false;
+    }
+
     await updateVehicleOverrides(vin, sanitized);
     const updated = await getVehicleByVin(vin);
 
