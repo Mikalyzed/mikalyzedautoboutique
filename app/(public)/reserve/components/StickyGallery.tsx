@@ -15,6 +15,7 @@ export default function StickyGallery() {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [progress, setProgress] = useState(0);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -24,6 +25,10 @@ export default function StickyGallery() {
       const wrapperHeight = wrapperRef.current.offsetHeight;
       const viewportHeight = window.innerHeight;
       const scrollableDistance = wrapperHeight - viewportHeight;
+
+      // Is the wrapper in view?
+      const inView = rect.top <= 0 && rect.bottom >= viewportHeight;
+      setVisible(inView);
 
       // How far we've scrolled into the wrapper (0 to 1)
       const scrolled = Math.max(0, Math.min(1, -rect.top / scrollableDistance));
@@ -38,6 +43,7 @@ export default function StickyGallery() {
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -47,7 +53,15 @@ export default function StickyGallery() {
       style={{ height: `${images.length * 100}vh` }}
       className="relative"
     >
-      <div className="sticky top-0 h-screen w-full overflow-hidden">
+      {/* Fixed overlay that shows while scrolling through the wrapper */}
+      <div
+        className="fixed inset-0 w-full h-screen overflow-hidden transition-opacity duration-300"
+        style={{
+          opacity: visible ? 1 : 0,
+          pointerEvents: visible ? "auto" : "none",
+          zIndex: 40,
+        }}
+      >
         {/* Images */}
         {images.map((img, i) => (
           <div
