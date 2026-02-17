@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import type { DynamoVehicle } from "@/lib/vehicles";
 import StatusBadge from "../../components/StatusBadge";
 import ToggleSwitch from "../../components/ToggleSwitch";
@@ -69,6 +70,12 @@ export default function VehiclesClient({ vehicles: initialVehicles }: VehiclesCl
     (v.manualImages && v.manualImages.length > 0) ||
     v.manuallyMarkedSold;
 
+  const getDisplayImage = (v: DynamoVehicle) => {
+    if (v.manualImages && v.manualImages.length > 0) return v.manualImages[0];
+    if (v.images && v.images.length > 0) return v.images[0];
+    return null;
+  };
+
   return (
     <div>
       {/* Filters */}
@@ -96,116 +103,137 @@ export default function VehiclesClient({ vehicles: initialVehicles }: VehiclesCl
         {filtered.length} vehicle{filtered.length !== 1 ? "s" : ""}
       </p>
 
-      {/* Table */}
-      <div className="bg-zinc-900/30 backdrop-blur-xl border border-zinc-800/40 rounded-2xl overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-zinc-800/40">
-                <th className="text-left px-4 py-3 text-zinc-400 font-medium text-xs uppercase tracking-wider">
-                  Vehicle
-                </th>
-                <th className="text-left px-4 py-3 text-zinc-400 font-medium text-xs uppercase tracking-wider hidden md:table-cell">
-                  VIN
-                </th>
-                <th className="text-left px-4 py-3 text-zinc-400 font-medium text-xs uppercase tracking-wider">
-                  Price
-                </th>
-                <th className="text-left px-4 py-3 text-zinc-400 font-medium text-xs uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="text-center px-4 py-3 text-zinc-400 font-medium text-xs uppercase tracking-wider hidden lg:table-cell">
-                  Featured
-                </th>
-                <th className="text-center px-4 py-3 text-zinc-400 font-medium text-xs uppercase tracking-wider hidden lg:table-cell">
-                  Hidden
-                </th>
-                <th className="text-right px-4 py-3 text-zinc-400 font-medium text-xs uppercase tracking-wider">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map((v) => (
-                <tr
-                  key={v.vin}
-                  className="border-b border-zinc-800/20 hover:bg-zinc-800/30 transition-colors"
+      {/* Card Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        {filtered.map((v) => {
+          const img = getDisplayImage(v);
+          return (
+            <div
+              key={v.vin}
+              className="bg-zinc-900/30 backdrop-blur-xl border border-zinc-800/40 rounded-xl overflow-hidden hover:border-zinc-700/60 transition-all duration-300 group"
+            >
+              {/* Thumbnail */}
+              <div
+                className="relative aspect-[16/10] bg-zinc-800 cursor-pointer overflow-hidden"
+                onClick={() => setEditVin(v.vin)}
+              >
+                {img ? (
+                  <Image
+                    src={img}
+                    alt={`${v.year} ${v.make} ${v.model}`}
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                  />
+                ) : (
+                  <div className="flex items-center justify-center h-full">
+                    <svg className="w-10 h-10 text-zinc-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0 0 22.5 18.75V5.25A2.25 2.25 0 0 0 20.25 3H3.75A2.25 2.25 0 0 0 1.5 5.25v13.5A2.25 2.25 0 0 0 3.75 21Z" />
+                    </svg>
+                  </div>
+                )}
+
+                {/* Status badge overlay */}
+                <div className="absolute top-2 left-2">
+                  <StatusBadge status={v.manuallyMarkedSold ? "sold" : v.status} />
+                </div>
+
+                {/* Override indicator */}
+                {hasOverride(v) && (
+                  <div className="absolute top-2 right-2">
+                    <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] bg-black/60 backdrop-blur-sm text-[#dffd6e] border border-[#dffd6e]/30">
+                      Override
+                    </span>
+                  </div>
+                )}
+
+                {/* Photo count */}
+                {v.images.length > 0 && (
+                  <div className="absolute bottom-2 right-2 bg-black/60 backdrop-blur-sm rounded px-1.5 py-0.5 text-[10px] text-zinc-300">
+                    {v.images.length} photos
+                  </div>
+                )}
+              </div>
+
+              {/* Info */}
+              <div className="p-3">
+                <div className="flex items-start justify-between gap-2 mb-1">
+                  <h3 className="text-white text-sm font-light leading-tight truncate">
+                    {v.year} {v.make} {v.model}
+                  </h3>
+                </div>
+                {v.trim && (
+                  <p className="text-zinc-500 text-xs truncate mb-1">{v.trim}</p>
+                )}
+                <p className="text-sm">
+                  {v.manualPrice ? (
+                    <>
+                      <span className="text-[#dffd6e]">{v.manualPrice}</span>
+                      <span className="text-zinc-600 text-xs line-through ml-1">{v.price}</span>
+                    </>
+                  ) : (
+                    <span className="text-white">{v.price}</span>
+                  )}
+                </p>
+              </div>
+
+              {/* Quick Action Tabs */}
+              <div className="grid grid-cols-3 border-t border-zinc-800/40">
+                <button
+                  onClick={() => handleToggle(v.vin, "featured", !v.featured)}
+                  disabled={updating === v.vin}
+                  className={`flex flex-col items-center gap-0.5 py-2.5 text-[10px] transition-all duration-200 border-r border-zinc-800/40 disabled:opacity-50 ${
+                    v.featured
+                      ? "bg-[#dffd6e]/10 text-[#dffd6e]"
+                      : "text-zinc-500 hover:text-white hover:bg-zinc-800/30"
+                  }`}
                 >
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-2">
-                      <div>
-                        <p className="text-white font-light">
-                          {v.year} {v.make} {v.model}
-                        </p>
-                        {v.trim && (
-                          <p className="text-zinc-500 text-xs">{v.trim}</p>
-                        )}
-                      </div>
-                      {hasOverride(v) && (
-                        <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] bg-[#dffd6e]/10 text-[#dffd6e] border border-[#dffd6e]/20">
-                          Override
-                        </span>
-                      )}
-                    </div>
-                  </td>
-                  <td className="px-4 py-3 text-zinc-400 font-mono text-xs hidden md:table-cell">
-                    {v.vin}
-                  </td>
-                  <td className="px-4 py-3">
-                    {v.manualPrice ? (
-                      <div>
-                        <span className="text-[#dffd6e]">{v.manualPrice}</span>
-                        <span className="text-zinc-600 text-xs line-through ml-1">
-                          {v.price}
-                        </span>
-                      </div>
+                  <svg className="w-3.5 h-3.5" fill={v.featured ? "currentColor" : "none"} viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
+                  </svg>
+                  Featured
+                </button>
+                <button
+                  onClick={() => handleToggle(v.vin, "hidden", !v.hidden)}
+                  disabled={updating === v.vin}
+                  className={`flex flex-col items-center gap-0.5 py-2.5 text-[10px] transition-all duration-200 border-r border-zinc-800/40 disabled:opacity-50 ${
+                    v.hidden
+                      ? "bg-red-500/10 text-red-400"
+                      : "text-zinc-500 hover:text-white hover:bg-zinc-800/30"
+                  }`}
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    {v.hidden ? (
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />
                     ) : (
-                      <span className="text-white">{v.price}</span>
+                      <>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                      </>
                     )}
-                  </td>
-                  <td className="px-4 py-3">
-                    <StatusBadge
-                      status={v.manuallyMarkedSold ? "sold" : v.status}
-                    />
-                  </td>
-                  <td className="text-center px-4 py-3 hidden lg:table-cell">
-                    <ToggleSwitch
-                      checked={!!v.featured}
-                      onChange={(val) => handleToggle(v.vin, "featured", val)}
-                      disabled={updating === v.vin}
-                    />
-                  </td>
-                  <td className="text-center px-4 py-3 hidden lg:table-cell">
-                    <ToggleSwitch
-                      checked={!!v.hidden}
-                      onChange={(val) => handleToggle(v.vin, "hidden", val)}
-                      disabled={updating === v.vin}
-                    />
-                  </td>
-                  <td className="px-4 py-3 text-right">
-                    <button
-                      onClick={() => setEditVin(v.vin)}
-                      className="text-zinc-400 hover:text-[#dffd6e] transition-colors text-xs"
-                    >
-                      Edit
-                    </button>
-                  </td>
-                </tr>
-              ))}
-              {filtered.length === 0 && (
-                <tr>
-                  <td
-                    colSpan={7}
-                    className="px-4 py-12 text-center text-zinc-500"
-                  >
-                    No vehicles found
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+                  </svg>
+                  {v.hidden ? "Hidden" : "Visible"}
+                </button>
+                <button
+                  onClick={() => setEditVin(v.vin)}
+                  className="flex flex-col items-center gap-0.5 py-2.5 text-[10px] text-zinc-500 hover:text-[#dffd6e] hover:bg-zinc-800/30 transition-all duration-200"
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125" />
+                  </svg>
+                  Edit
+                </button>
+              </div>
+            </div>
+          );
+        })}
       </div>
+
+      {filtered.length === 0 && (
+        <div className="bg-zinc-900/30 backdrop-blur-xl border border-zinc-800/40 rounded-2xl p-12 text-center">
+          <p className="text-zinc-500">No vehicles found</p>
+        </div>
+      )}
 
       {/* Edit Panel */}
       {editingVehicle && (
