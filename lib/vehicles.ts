@@ -107,14 +107,6 @@ export async function upsertVehicles(vehicles: Vehicle[]): Promise<void> {
           ? existing.images
           : v.images;
 
-      // Keep existing description if the new CSV has a shorter/truncated version
-      // (DealerCenter sometimes exports only the first line of the description)
-      const description =
-        existing && existing.description && v.description &&
-        existing.description.length > v.description.length
-          ? existing.description
-          : v.description;
-
       // Preserve admin override fields from existing record during sync
       const adminOverrides: Record<string, unknown> = {};
       if (existing) {
@@ -131,7 +123,6 @@ export async function upsertVehicles(vehicles: Vehicle[]): Promise<void> {
           Item: {
             ...v,
             images,
-            description,
             updatedAt: now,
             createdAt: existing?.createdAt || now,
             ...adminOverrides,
