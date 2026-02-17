@@ -7,6 +7,15 @@ import {
 import { docClient, TABLE_NAME } from "./dynamodb";
 import type { Vehicle, VehicleStatus } from "./parseInventory";
 
+const ADMIN_OVERRIDE_FIELDS = [
+  "manualPrice",
+  "manualDescription",
+  "manualImages",
+  "manuallyMarkedSold",
+  "featured",
+  "hidden",
+] as const;
+
 export interface SoldVehicle extends Vehicle {
   soldDate: string;
   createdAt: string;
@@ -51,6 +60,15 @@ export async function getAvailableVehicles(): Promise<Vehicle[]> {
   return [...available, ...call];
 }
 
+export async function getAllVehicles(): Promise<DynamoVehicle[]> {
+  const [available, call, sold] = await Promise.all([
+    queryByStatus("available"),
+    queryByStatus("call"),
+    queryByStatus("sold"),
+  ]);
+  return [...available, ...call, ...sold];
+}
+
 export async function getSoldVehicles(): Promise<SoldVehicle[]> {
   const items = await queryByStatus("sold");
   return (items as SoldVehicle[]).sort(
@@ -89,6 +107,17 @@ export async function upsertVehicles(vehicles: Vehicle[]): Promise<void> {
           ? existing.images
           : v.images;
 
+      // Preserve admin override fields from existing record during sync
+      const adminOverrides: Record<string, unknown> = {};
+      if (existing) {
+        const rec = existing as unknown as Record<string, unknown>;
+        for (const field of ADMIN_OVERRIDE_FIELDS) {
+          if (rec[field] !== undefined) {
+            adminOverrides[field] = rec[field];
+          }
+        }
+      }
+
       return {
         PutRequest: {
           Item: {
@@ -96,6 +125,7 @@ export async function upsertVehicles(vehicles: Vehicle[]): Promise<void> {
             images,
             updatedAt: now,
             createdAt: existing?.createdAt || now,
+            ...adminOverrides,
           },
         },
       };
@@ -109,6 +139,48 @@ export async function upsertVehicles(vehicles: Vehicle[]): Promise<void> {
       })
     );
   }
+}
+
+export async function updateVehicleOverrides(
+  vin: string,
+  overrides: {
+    manualPrice?: string;
+    manualDescription?: string;
+    manualImages?: string[];
+    manuallyMarkedSold?: boolean;
+    featured?: boolean;
+    hidden?: boolean;
+  }
+): Promise<void> {
+  const expressions: string[] = [];
+  const names: Record<string, string> = {};
+  const values: Record<string, unknown> = {};
+
+  Object.entries(overrides).forEach(([key, value]) => {
+    if (value !== undefined) {
+      const attrName = `#${key}`;
+      const attrValue = `:${key}`;
+      expressions.push(`${attrName} = ${attrValue}`);
+      names[attrName] = key;
+      values[attrValue] = value;
+    }
+  });
+
+  if (expressions.length === 0) return;
+
+  values[":now"] = new Date().toISOString();
+  expressions.push("#updatedAt = :now");
+  names["#updatedAt"] = "updatedAt";
+
+  await docClient.send(
+    new UpdateCommand({
+      TableName: TABLE_NAME,
+      Key: { vin },
+      UpdateExpression: `SET ${expressions.join(", ")}`,
+      ExpressionAttributeNames: names,
+      ExpressionAttributeValues: values,
+    })
+  );
 }
 
 export async function markVehiclesAsSold(vins: string[]): Promise<void> {

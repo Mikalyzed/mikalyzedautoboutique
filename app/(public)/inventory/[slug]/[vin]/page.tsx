@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getVehicleByVin } from "@/lib/vehicles";
-import ImageGallery from "@/app/inventory/components/ImageGallery";
+import ImageGallery from "@/app/(public)/inventory/components/ImageGallery";
 
 export const dynamic = "force-dynamic";
 

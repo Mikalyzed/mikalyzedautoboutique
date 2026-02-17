@@ -22,3 +22,5 @@ export const docClient = DynamoDBDocumentClient.from(client, {
 });
 
 export const TABLE_NAME = process.env.DYNAMODB_TABLE_NAME || "mikalyzed-vehicles";
+export const LEADS_TABLE_NAME = process.env.DYNAMODB_LEADS_TABLE_NAME || "mikalyzed-leads";
+export const BLOG_TABLE_NAME = process.env.DYNAMODB_BLOG_TABLE_NAME || "mikalyzed-blog";

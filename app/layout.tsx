@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -21,15 +20,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="overflow-x-hidden">
-      <body
-        className={`${inter.variable} font-sans antialiased overflow-x-hidden`}
-        style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif' }}
-      >
-        <Header />
-        {children}
-        <Footer />
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en" className="overflow-x-hidden">
+        <body
+          className={`${inter.variable} font-sans antialiased overflow-x-hidden`}
+          style={{ fontFamily: "var(--font-inter), system-ui, sans-serif" }}
+        >
+          {children}
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

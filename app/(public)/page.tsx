@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { getAvailableVehicles } from "@/lib/vehicles";
 import Image from "next/image";
-import ContactForm from "./components/ContactForm";
+import ContactForm from "@/app/components/ContactForm";
 
 export const dynamic = "force-dynamic";
 

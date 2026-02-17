@@ -18,6 +18,14 @@ export interface Vehicle {
   transmission?: string;
   description?: string;
   images: string[];
+
+  // Admin override fields (never set by CSV sync, only by admin panel)
+  manualPrice?: string;
+  manualDescription?: string;
+  manualImages?: string[];
+  manuallyMarkedSold?: boolean;
+  featured?: boolean;
+  hidden?: boolean;
 }
 
 /**
