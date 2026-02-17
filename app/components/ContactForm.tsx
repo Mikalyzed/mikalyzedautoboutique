@@ -12,6 +12,7 @@ export default function ContactForm() {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -26,22 +27,44 @@ export default function ContactForm() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // TODO: Implement form submission logic (e.g., send to API endpoint)
-    console.log("Form submitted:", formData);
-
-    // Simulate submission
-    setTimeout(() => {
-      setIsSubmitting(false);
-      alert("Thank you for your message! We'll be in touch soon.");
-      setFormData({
-        name: "",
-        email: "",
-        phone: "",
-        service: "Buy Car",
-        message: "",
+    try {
+      const res = await fetch("/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          formType: "contact",
+          service: formData.service,
+          message: `[${formData.service}] ${formData.message}`,
+          source: "contact-form",
+        }),
       });
-    }, 1000);
+      if (res.ok) {
+        setSubmitted(true);
+      }
+    } catch (error) {
+      console.error("Contact form submit failed:", error);
+    }
+    setIsSubmitting(false);
   };
+
+  if (submitted) {
+    return (
+      <div className="bg-zinc-900/30 backdrop-blur-xl p-8 rounded-3xl border border-zinc-800/40 shadow-2xl flex flex-col items-center justify-center text-center min-h-[300px]">
+        <div className="w-16 h-16 rounded-full bg-[#dffd6e]/10 border border-[#dffd6e]/30 flex items-center justify-center mb-6">
+          <svg className="w-8 h-8 text-[#dffd6e]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+        <h3 className="text-xl font-light text-white mb-2">Message Sent</h3>
+        <p className="text-gray-400 font-extralight text-sm">
+          Thank you for reaching out. We&apos;ll be in touch soon.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <form

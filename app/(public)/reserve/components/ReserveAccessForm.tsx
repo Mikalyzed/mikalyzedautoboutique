@@ -4,7 +4,8 @@ import { useState } from "react";
 
 export default function ReserveAccessForm() {
   const [formData, setFormData] = useState({
-    name: "",
+    firstName: "",
+    lastName: "",
     email: "",
     phone: "",
     vehicles: "",
@@ -13,6 +14,7 @@ export default function ReserveAccessForm() {
 
   const [vehicleDetails, setVehicleDetails] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -23,7 +25,6 @@ export default function ReserveAccessForm() {
       const count = value === "4+" ? 0 : parseInt(value) || 0;
       setVehicleDetails((prev) => {
         const next = [...prev];
-        // Expand or shrink array to match count
         while (next.length < count) next.push("");
         return next.slice(0, count);
       });
@@ -47,24 +48,52 @@ export default function ReserveAccessForm() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // TODO: Implement form submission logic
-    console.log("Reserve access request:", { ...formData, vehicleDetails });
+    try {
+      const vehicleList = vehicleDetails.filter(Boolean).join("; ");
 
-    setTimeout(() => {
-      setIsSubmitting(false);
-      alert("Thank you for your inquiry. A member of our team will be in touch shortly.");
-      setFormData({
-        name: "",
-        email: "",
-        phone: "",
-        vehicles: "",
-        message: "",
+      const res = await fetch("/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: `${formData.firstName} ${formData.lastName}`.trim(),
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
+          phone: formData.phone,
+          formType: "reserve-storage",
+          message: `Vehicles to store: ${formData.vehicles || "Not specified"}${vehicleList ? ` (${vehicleList})` : ""}. Collection info: ${formData.message || "N/A"}`,
+          vehiclesToStore: vehicleList || formData.vehicles,
+          collectionMessage: formData.message,
+          source: "reserve-page",
+        }),
       });
-      setVehicleDetails([]);
-    }, 1000);
+
+      if (res.ok) {
+        setSubmitted(true);
+      }
+    } catch (error) {
+      console.error("Reserve access submit failed:", error);
+    }
+    setIsSubmitting(false);
   };
 
   const vehicleCount = formData.vehicles === "4+" ? 0 : parseInt(formData.vehicles) || 0;
+
+  if (submitted) {
+    return (
+      <div className="bg-zinc-900/30 backdrop-blur-xl p-8 rounded-3xl border border-zinc-800/40 shadow-2xl flex flex-col items-center justify-center text-center min-h-[300px]">
+        <div className="w-16 h-16 rounded-full bg-[#dffd6e]/10 border border-[#dffd6e]/30 flex items-center justify-center mb-6">
+          <svg className="w-8 h-8 text-[#dffd6e]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+        <h3 className="text-xl font-light text-white mb-2">Inquiry Submitted</h3>
+        <p className="text-gray-400 font-extralight text-sm">
+          A member of our team will be in touch shortly. All inquiries are handled with complete discretion.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <form
@@ -75,27 +104,49 @@ export default function ReserveAccessForm() {
       <p className="text-white text-lg font-light tracking-tight mb-1">Request Access</p>
       <p className="text-gray-500 text-sm font-extralight mb-6">All inquiries are handled with complete discretion.</p>
 
-      {/* Name & Email Row */}
+      {/* First Name & Last Name Row */}
       <div className="grid grid-cols-2 gap-4 mb-5">
         <div>
           <label
-            htmlFor="reserve-name"
+            htmlFor="reserve-firstName"
             className="block text-xs font-light tracking-wider text-gray-400 mb-2"
           >
-            Full Name
+            First Name
           </label>
           <input
             type="text"
-            id="reserve-name"
-            name="name"
-            value={formData.name}
+            id="reserve-firstName"
+            name="firstName"
+            value={formData.firstName}
             onChange={handleChange}
             required
             className="w-full bg-black/20 backdrop-blur-sm border border-zinc-800/50 rounded-lg px-4 py-2.5 text-white placeholder-gray-600 focus:outline-none focus:border-[#dffd6e] transition font-light"
-            placeholder="Your name"
+            placeholder="First name"
           />
         </div>
 
+        <div>
+          <label
+            htmlFor="reserve-lastName"
+            className="block text-xs font-light tracking-wider text-gray-400 mb-2"
+          >
+            Last Name
+          </label>
+          <input
+            type="text"
+            id="reserve-lastName"
+            name="lastName"
+            value={formData.lastName}
+            onChange={handleChange}
+            required
+            className="w-full bg-black/20 backdrop-blur-sm border border-zinc-800/50 rounded-lg px-4 py-2.5 text-white placeholder-gray-600 focus:outline-none focus:border-[#dffd6e] transition font-light"
+            placeholder="Last name"
+          />
+        </div>
+      </div>
+
+      {/* Email & Phone Row */}
+      <div className="grid grid-cols-2 gap-4 mb-5">
         <div>
           <label
             htmlFor="reserve-email"
@@ -114,10 +165,7 @@ export default function ReserveAccessForm() {
             placeholder="your@email.com"
           />
         </div>
-      </div>
 
-      {/* Phone & Vehicle Count */}
-      <div className="grid grid-cols-2 gap-4 mb-5">
         <div>
           <label
             htmlFor="reserve-phone"
@@ -136,29 +184,30 @@ export default function ReserveAccessForm() {
             placeholder="(555) 123-4567"
           />
         </div>
+      </div>
 
-        <div>
-          <label
-            htmlFor="reserve-vehicles"
-            className="block text-xs font-light tracking-wider text-gray-400 mb-2"
-          >
-            Vehicles to Store
-          </label>
-          <select
-            id="reserve-vehicles"
-            name="vehicles"
-            value={formData.vehicles}
-            onChange={handleChange}
-            required
-            className="w-full bg-black/20 backdrop-blur-sm border border-zinc-800/50 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-[#dffd6e] transition font-light cursor-pointer"
-          >
-            <option value="" disabled>Select</option>
-            <option value="1">1 Vehicle</option>
-            <option value="2">2 Vehicles</option>
-            <option value="3">3 Vehicles</option>
-            <option value="4+">4+ Vehicles</option>
-          </select>
-        </div>
+      {/* Vehicle Count */}
+      <div className="mb-5">
+        <label
+          htmlFor="reserve-vehicles"
+          className="block text-xs font-light tracking-wider text-gray-400 mb-2"
+        >
+          Vehicles to Store
+        </label>
+        <select
+          id="reserve-vehicles"
+          name="vehicles"
+          value={formData.vehicles}
+          onChange={handleChange}
+          required
+          className="w-full bg-black/20 backdrop-blur-sm border border-zinc-800/50 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-[#dffd6e] transition font-light cursor-pointer"
+        >
+          <option value="" disabled>Select</option>
+          <option value="1">1 Vehicle</option>
+          <option value="2">2 Vehicles</option>
+          <option value="3">3 Vehicles</option>
+          <option value="4+">4+ Vehicles</option>
+        </select>
       </div>
 
       {/* Vehicle Details — appears after selection */}

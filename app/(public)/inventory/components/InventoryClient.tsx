@@ -11,9 +11,27 @@ interface InventoryClientProps {
 
 export default function InventoryClient({ inventory }: InventoryClientProps) {
   const [searchTerm, setSearchTerm] = useState("");
-  const [activeCategory, setActiveCategory] = useState("All Vehicles");
-  const [sortOrder, setSortOrder] = useState("price-high");
+  const [selectedMake, setSelectedMake] = useState("All");
+  const [selectedYear, setSelectedYear] = useState("All");
+  const [selectedTransmission, setSelectedTransmission] = useState("All");
+  const [sortOrder, setSortOrder] = useState("newest");
   const [displayCount, setDisplayCount] = useState(15);
+
+  // Derive unique filter options from actual inventory data
+  const makes = useMemo(() => {
+    const unique = [...new Set(inventory.map((c) => c.make))].sort();
+    return ["All", ...unique];
+  }, [inventory]);
+
+  const years = useMemo(() => {
+    const unique = [...new Set(inventory.map((c) => String(c.year)))].sort((a, b) => Number(b) - Number(a));
+    return ["All", ...unique];
+  }, [inventory]);
+
+  const transmissions = useMemo(() => {
+    const unique = [...new Set(inventory.map((c) => c.transmission).filter(Boolean))].sort() as string[];
+    return ["All", ...unique];
+  }, [inventory]);
 
   // Filter and sort logic
   const filteredInventory = useMemo(() => {
@@ -21,40 +39,77 @@ export default function InventoryClient({ inventory }: InventoryClientProps) {
 
     // Search filter
     if (searchTerm) {
+      const q = searchTerm.toLowerCase();
       filtered = filtered.filter((car) =>
-        `${car.year} ${car.make} ${car.model}`
+        `${car.year} ${car.make} ${car.model} ${car.trim || ""} ${car.exteriorColor || ""}`
           .toLowerCase()
-          .includes(searchTerm.toLowerCase())
+          .includes(q)
       );
     }
 
-    // Category filter (you can enhance this logic)
-    if (activeCategory !== "All Vehicles") {
-      // Add category logic here if you have category data
+    // Make filter
+    if (selectedMake !== "All") {
+      filtered = filtered.filter((car) => car.make === selectedMake);
+    }
+
+    // Year filter
+    if (selectedYear !== "All") {
+      filtered = filtered.filter((car) => String(car.year) === selectedYear);
+    }
+
+    // Transmission filter
+    if (selectedTransmission !== "All") {
+      filtered = filtered.filter((car) => car.transmission === selectedTransmission);
     }
 
     // Sort
-    if (sortOrder === "price-high") {
-      filtered = [...filtered].sort((a, b) => {
-        const priceA = parseFloat(a.price.replace(/[^0-9.-]+/g, "")) || 0;
-        const priceB = parseFloat(b.price.replace(/[^0-9.-]+/g, "")) || 0;
-        return priceB - priceA;
-      });
-    } else if (sortOrder === "price-low") {
-      filtered = [...filtered].sort((a, b) => {
-        const priceA = parseFloat(a.price.replace(/[^0-9.-]+/g, "")) || 0;
-        const priceB = parseFloat(b.price.replace(/[^0-9.-]+/g, "")) || 0;
-        return priceA - priceB;
-      });
+    const sorted = [...filtered];
+    switch (sortOrder) {
+      case "price-high":
+        sorted.sort((a, b) => {
+          const pa = parseFloat(a.price.replace(/[^0-9.-]+/g, "")) || 0;
+          const pb = parseFloat(b.price.replace(/[^0-9.-]+/g, "")) || 0;
+          return pb - pa;
+        });
+        break;
+      case "price-low":
+        sorted.sort((a, b) => {
+          const pa = parseFloat(a.price.replace(/[^0-9.-]+/g, "")) || 0;
+          const pb = parseFloat(b.price.replace(/[^0-9.-]+/g, "")) || 0;
+          return pa - pb;
+        });
+        break;
+      case "newest":
+        sorted.sort((a, b) => b.year - a.year);
+        break;
+      case "oldest":
+        sorted.sort((a, b) => a.year - b.year);
+        break;
+      case "mileage-low":
+        sorted.sort((a, b) => (a.odometer ?? Infinity) - (b.odometer ?? Infinity));
+        break;
+      case "mileage-high":
+        sorted.sort((a, b) => (b.odometer ?? 0) - (a.odometer ?? 0));
+        break;
     }
 
-    return filtered;
-  }, [inventory, searchTerm, activeCategory, sortOrder]);
+    return sorted;
+  }, [inventory, searchTerm, selectedMake, selectedYear, selectedTransmission, sortOrder]);
 
   // Reset display count when filters change
   useEffect(() => {
     setDisplayCount(15);
-  }, [searchTerm, activeCategory, sortOrder]);
+  }, [searchTerm, selectedMake, selectedYear, selectedTransmission, sortOrder]);
+
+  const activeFilterCount = [selectedMake, selectedYear, selectedTransmission].filter((v) => v !== "All").length;
+
+  function clearFilters() {
+    setSearchTerm("");
+    setSelectedMake("All");
+    setSelectedYear("All");
+    setSelectedTransmission("All");
+    setSortOrder("newest");
+  }
 
   // Get vehicles to display (paginated)
   const displayedInventory = filteredInventory.slice(0, displayCount);
@@ -84,7 +139,8 @@ export default function InventoryClient({ inventory }: InventoryClientProps) {
       {/* SEARCH AND FILTERS */}
       <section className="px-6 mb-12">
         <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row gap-4 mb-6">
+          {/* Search + Sort row */}
+          <div className="flex flex-col md:flex-row gap-4 mb-4">
             {/* Search */}
             <div className="relative flex-1">
               <svg className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -92,10 +148,10 @@ export default function InventoryClient({ inventory }: InventoryClientProps) {
               </svg>
               <input
                 type="text"
-                placeholder="Search vehicles..."
+                placeholder="Search by make, model, year, color..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full bg-zinc-900 border border-zinc-800 rounded-lg pl-12 pr-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#dffd6e] transition"
+                className="w-full bg-zinc-900 border border-zinc-800 rounded-lg pl-12 pr-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#dffd6e] transition font-light"
               />
             </div>
 
@@ -105,27 +161,78 @@ export default function InventoryClient({ inventory }: InventoryClientProps) {
               onChange={(e) => setSortOrder(e.target.value)}
               className="bg-[#dffd6e] text-black font-normal rounded-lg px-6 py-3 focus:outline-none cursor-pointer hover:bg-[#dffd6e]/90 transition tracking-wide"
             >
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
               <option value="price-high">Price: High to Low</option>
               <option value="price-low">Price: Low to High</option>
+              <option value="mileage-low">Mileage: Low to High</option>
+              <option value="mileage-high">Mileage: High to Low</option>
             </select>
           </div>
 
-          {/* Category Pills */}
-          <div className="flex gap-3 overflow-x-auto pb-2">
-            {["All Vehicles", "Exotic", "Classic", "Luxury", "Trucks & SUVs"].map(
-              (category) => (
-                <button
-                  key={category}
-                  onClick={() => setActiveCategory(category)}
-                  className={`whitespace-nowrap px-6 py-2 rounded-lg text-sm font-normal tracking-wide transition ${
-                    activeCategory === category
-                      ? "bg-[#dffd6e] text-black"
-                      : "bg-zinc-900 text-gray-300 hover:bg-zinc-800 font-light"
-                  }`}
-                >
-                  {category}
-                </button>
-              )
+          {/* Filter dropdowns */}
+          <div className="flex flex-wrap gap-3 items-center">
+            {/* Make */}
+            <select
+              value={selectedMake}
+              onChange={(e) => setSelectedMake(e.target.value)}
+              className={`rounded-lg px-4 py-2.5 text-sm font-light focus:outline-none cursor-pointer transition border ${
+                selectedMake !== "All"
+                  ? "bg-[#dffd6e]/10 border-[#dffd6e] text-[#dffd6e]"
+                  : "bg-zinc-900 border-zinc-800 text-gray-300 hover:border-zinc-600"
+              }`}
+            >
+              <option value="All">All Makes</option>
+              {makes.filter((m) => m !== "All").map((make) => (
+                <option key={make} value={make}>{make}</option>
+              ))}
+            </select>
+
+            {/* Year */}
+            <select
+              value={selectedYear}
+              onChange={(e) => setSelectedYear(e.target.value)}
+              className={`rounded-lg px-4 py-2.5 text-sm font-light focus:outline-none cursor-pointer transition border ${
+                selectedYear !== "All"
+                  ? "bg-[#dffd6e]/10 border-[#dffd6e] text-[#dffd6e]"
+                  : "bg-zinc-900 border-zinc-800 text-gray-300 hover:border-zinc-600"
+              }`}
+            >
+              <option value="All">All Years</option>
+              {years.filter((y) => y !== "All").map((year) => (
+                <option key={year} value={year}>{year}</option>
+              ))}
+            </select>
+
+            {/* Transmission */}
+            {transmissions.length > 1 && (
+              <select
+                value={selectedTransmission}
+                onChange={(e) => setSelectedTransmission(e.target.value)}
+                className={`rounded-lg px-4 py-2.5 text-sm font-light focus:outline-none cursor-pointer transition border ${
+                  selectedTransmission !== "All"
+                    ? "bg-[#dffd6e]/10 border-[#dffd6e] text-[#dffd6e]"
+                    : "bg-zinc-900 border-zinc-800 text-gray-300 hover:border-zinc-600"
+                }`}
+              >
+                <option value="All">All Transmissions</option>
+                {transmissions.filter((t) => t !== "All").map((t) => (
+                  <option key={t} value={t}>{t}</option>
+                ))}
+              </select>
+            )}
+
+            {/* Clear filters */}
+            {activeFilterCount > 0 && (
+              <button
+                onClick={clearFilters}
+                className="flex items-center gap-1.5 text-sm font-light text-zinc-400 hover:text-white transition px-3 py-2.5"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                Clear filters
+              </button>
             )}
           </div>
         </div>

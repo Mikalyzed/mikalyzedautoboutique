@@ -18,6 +18,7 @@ export interface Vehicle {
   transmission?: string;
   description?: string;
   images: string[];
+  videoUrl?: string;
 
   // Admin override fields (never set by CSV sync, only by admin panel)
   manualPrice?: string;
@@ -109,6 +110,7 @@ export function parseCSV(csvContent: string): Vehicle[] {
         transmission: row["Transmission"]?.trim() || undefined,
         description: row["WebDescription"]?.trim() ? fixEncoding(row["WebDescription"].trim()) : undefined,
         images: row["PhotoUrl"] ? row["PhotoUrl"].split(",").map((url: string) => url.trim()).filter(Boolean) : [],
+        videoUrl: (row["VideoUrl"] || row["VideoURL"])?.trim() || undefined,
       };
     })
     .filter(Boolean) as Vehicle[];

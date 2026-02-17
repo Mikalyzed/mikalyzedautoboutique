@@ -1,4 +1,5 @@
-import { ScanCommand } from "@aws-sdk/lib-dynamodb";
+import { ScanCommand, PutCommand } from "@aws-sdk/lib-dynamodb";
+import { randomUUID } from "crypto";
 import { docClient, LEADS_TABLE_NAME } from "./dynamodb";
 
 export interface Lead {
@@ -12,6 +13,21 @@ export interface Lead {
   source?: string;
   createdAt: string;
   updatedAt?: string;
+}
+
+export async function createLead(data: Omit<Lead, "id" | "createdAt">): Promise<Lead> {
+  const lead: Lead = {
+    id: randomUUID(),
+    ...data,
+    createdAt: new Date().toISOString(),
+  };
+  await docClient.send(
+    new PutCommand({
+      TableName: LEADS_TABLE_NAME,
+      Item: lead,
+    })
+  );
+  return lead;
 }
 
 export async function getAllLeads(): Promise<Lead[]> {

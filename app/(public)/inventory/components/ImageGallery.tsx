@@ -5,9 +5,10 @@ import { useState, useEffect, useRef } from "react";
 
 interface ImageGalleryProps {
   images: string[];
+  videoUrl?: string;
 }
 
-export default function ImageGallery({ images }: ImageGalleryProps) {
+export default function ImageGallery({ images, videoUrl }: ImageGalleryProps) {
   const [active, setActive] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
   const [showAllThumbs, setShowAllThumbs] = useState(false);
@@ -93,6 +94,29 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
         >
           {showAllThumbs ? "Hide photos" : `Show all ${images.length} photos`}
         </button>
+      )}
+
+      {/* VIDEO — desktop only (mobile version is rendered separately on the page) */}
+      {videoUrl && (
+        <div className="hidden lg:block mt-6">
+          {videoUrl.includes("cloudflarestream.com") ? (
+            <iframe
+              src={`${videoUrl.replace("/watch", "/iframe")}?autoplay=true&muted=true&loop=true`}
+              allow="autoplay; fullscreen; picture-in-picture"
+              className="w-full rounded-2xl border-0"
+              style={{ aspectRatio: "16/9" }}
+            />
+          ) : (
+            <video
+              src={videoUrl}
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="w-full rounded-2xl"
+            />
+          )}
+        </div>
       )}
 
       {/* FULLSCREEN MODAL */}
