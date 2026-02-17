@@ -26,9 +26,10 @@ export default function StickyGallery() {
       const viewportHeight = window.innerHeight;
       const scrollableDistance = wrapperHeight - viewportHeight;
 
-      // Is the wrapper in view?
-      const inView = rect.top <= 0 && rect.bottom >= viewportHeight;
-      setVisible(inView);
+      // Show gallery when wrapper top reaches viewport top, hide when bottom scrolls past
+      const entered = rect.top <= viewportHeight * 0.1;
+      const exited = rect.bottom < viewportHeight;
+      setVisible(entered && !exited);
 
       // How far we've scrolled into the wrapper (0 to 1)
       const scrolled = Math.max(0, Math.min(1, -rect.top / scrollableDistance));
@@ -55,10 +56,9 @@ export default function StickyGallery() {
     >
       {/* Fixed overlay that shows while scrolling through the wrapper */}
       <div
-        className="fixed inset-0 w-full h-screen overflow-hidden transition-opacity duration-300"
+        className="fixed inset-0 w-full h-screen overflow-hidden"
         style={{
-          opacity: visible ? 1 : 0,
-          pointerEvents: visible ? "auto" : "none",
+          visibility: visible ? "visible" : "hidden",
           zIndex: 40,
         }}
       >
