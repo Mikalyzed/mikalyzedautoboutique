@@ -1,5 +1,11 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import ContactForm from "@/app/components/ContactForm";
+
+export const metadata: Metadata = {
+  title: "About Us | Mikalyzed Auto Boutique",
+  description: "Miami's premier destination for luxury and performance vehicles. Learn about our story, our team, and our passion for automotive excellence since 2024.",
+};
 
 export default function AboutPage() {
   return (

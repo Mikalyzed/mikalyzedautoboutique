@@ -70,8 +70,47 @@ export default async function VehicleDetailPage({ params }: PageProps) {
     );
   }
 
+  const vehicleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Car",
+    name: `${vehicle.year} ${vehicle.make} ${vehicle.model}`,
+    brand: { "@type": "Brand", name: vehicle.make },
+    model: vehicle.model,
+    vehicleModelDate: String(vehicle.year),
+    ...(vehicle.odometer !== undefined && {
+      mileageFromOdometer: {
+        "@type": "QuantitativeValue",
+        value: vehicle.odometer,
+        unitCode: "SMI",
+      },
+    }),
+    ...(vehicle.exteriorColor && { color: vehicle.exteriorColor }),
+    ...(vehicle.transmission && { vehicleTransmission: vehicle.transmission }),
+    vehicleIdentificationNumber: vehicle.vin,
+    ...(vehicle.images?.[0] && { image: vehicle.images[0] }),
+    offers: {
+      "@type": "Offer",
+      availability: isSold
+        ? "https://schema.org/SoldOut"
+        : "https://schema.org/InStock",
+      ...(vehicle.price && vehicle.price !== "Call" && vehicle.price !== "Sold" && {
+        price: vehicle.price.replace(/[^0-9]/g, ""),
+        priceCurrency: "USD",
+      }),
+      seller: {
+        "@type": "AutoDealer",
+        name: "Mikalyzed Auto Boutique",
+        telephone: "+1-305-720-2533",
+      },
+    },
+  };
+
   return (
     <main className="min-h-screen bg-black text-white px-6 pt-28 pb-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(vehicleJsonLd) }}
+      />
       <div className="max-w-7xl mx-auto">
         {/* BREADCRUMB */}
         <nav className="flex items-center gap-2 text-sm font-light mb-10">

@@ -1,5 +1,11 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import ContactForm from "@/app/components/ContactForm";
+
+export const metadata: Metadata = {
+  title: "Contact Us | Mikalyzed Auto Boutique",
+  description: "Get in touch with Mikalyzed Auto Boutique. Visit us at 3455 NW 30th Ave, Miami FL 33142 or call (305) 720-2533.",
+};
 
 export default function ContactPage() {
   return (

@@ -1,7 +1,13 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import ReserveAccessForm from "./components/ReserveAccessForm";
 import StickyGallery from "./components/StickyGallery";
+
+export const metadata: Metadata = {
+  title: "The Reserve | Mikalyzed Auto Boutique",
+  description: "Exclusive members-only vehicle storage facility in Miami. Climate-controlled warehouse, full bar, racing simulator, and concierge services.",
+};
 
 export default function ReservePage() {
   return (

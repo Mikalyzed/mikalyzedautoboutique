@@ -1,8 +1,14 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { getSoldVehicles } from "@/lib/vehicles";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Sold Vehicles | Mikalyzed Auto Boutique",
+  description: "View recently sold luxury and exotic vehicles at Mikalyzed Auto Boutique. See the caliber of cars that move through our showroom.",
+};
 
 export default async function SoldPage() {
   const soldVehicles = await getSoldVehicles();

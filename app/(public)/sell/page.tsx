@@ -1,5 +1,11 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import FormParallaxSection from "./components/FormParallaxSection";
+
+export const metadata: Metadata = {
+  title: "Sell Your Car | Mikalyzed Auto Boutique",
+  description: "Sell your luxury, exotic, or performance vehicle with Mikalyzed Auto Boutique in Miami. Get a competitive offer — fast, simple, and hassle-free.",
+};
 
 export default function SellPage() {
   return (
