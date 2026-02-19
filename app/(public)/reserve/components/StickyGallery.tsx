@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Image from "next/image";
 
 const images = [
@@ -13,6 +13,8 @@ const images = [
 
 export default function StickyGallery() {
   const [activeIndex, setActiveIndex] = useState(0);
+  const touchStartX = useRef(0);
+  const touchEndX = useRef(0);
 
   function goTo(index: number) {
     setActiveIndex(index);
@@ -26,10 +28,31 @@ export default function StickyGallery() {
     setActiveIndex((i) => (i === images.length - 1 ? 0 : i + 1));
   }
 
+  function handleTouchStart(e: React.TouchEvent) {
+    touchStartX.current = e.touches[0].clientX;
+  }
+
+  function handleTouchMove(e: React.TouchEvent) {
+    touchEndX.current = e.touches[0].clientX;
+  }
+
+  function handleTouchEnd() {
+    const diff = touchStartX.current - touchEndX.current;
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) next();
+      else prev();
+    }
+  }
+
   return (
     <section className="relative w-full bg-black">
       {/* Image container */}
-      <div className="relative w-full h-[70vh] md:h-[85vh] overflow-hidden">
+      <div
+        className="relative w-full h-[70vh] md:h-[85vh] overflow-hidden"
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
         {images.map((img, i) => (
           <div
             key={img.src}

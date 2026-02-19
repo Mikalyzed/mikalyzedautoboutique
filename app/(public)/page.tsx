@@ -594,19 +594,26 @@ export default async function HomePage() {
             Let us guide you to the perfect vehicle. Experience automotive luxury redefined.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col gap-4 max-w-lg mx-auto">
+            <div className="flex gap-4">
+              <Link
+                href="/inventory"
+                className="flex-1 text-center bg-gradient-to-r from-[#dffd6e] to-[#dffd6e] text-black px-6 py-4 rounded-full font-light tracking-wider hover:shadow-2xl hover:shadow-[#dffd6e]/50 transition-all duration-500"
+              >
+                Browse Inventory
+              </Link>
+              <Link
+                href="/sell"
+                className="flex-1 text-center bg-transparent border-2 border-zinc-700 text-white px-6 py-4 rounded-full font-extralight tracking-wider hover:border-[#dffd6e] hover:text-[#dffd6e] transition-all duration-500"
+              >
+                Sell Your Car
+              </Link>
+            </div>
             <Link
-              href="/contact"
-              className="group relative bg-gradient-to-r from-[#dffd6e] to-[#dffd6e] text-black px-10 py-4 rounded-full font-light tracking-wider hover:shadow-2xl hover:shadow-[#dffd6e]/50 transition-all duration-500 overflow-hidden"
+              href="/reserve"
+              className="text-center bg-transparent border-2 border-zinc-700 text-white px-6 py-4 rounded-full font-extralight tracking-wider hover:border-[#dffd6e] hover:text-[#dffd6e] transition-all duration-500"
             >
-              <span className="relative z-10">Schedule Consultation</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-[#dffd6e] to-[#dffd6e] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            </Link>
-            <Link
-              href="/inventory"
-              className="group bg-transparent border-2 border-zinc-700 text-white px-10 py-4 rounded-full font-extralight tracking-wider hover:border-[#dffd6e] hover:text-[#dffd6e] transition-all duration-500"
-            >
-              Browse Collection
+              Vehicle Storage
             </Link>
           </div>
         </div>

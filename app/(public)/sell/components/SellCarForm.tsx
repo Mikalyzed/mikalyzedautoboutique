@@ -317,7 +317,7 @@ export default function SellCarForm() {
           {/* Photo Upload */}
           <div className="mb-6 form-field-reveal">
             <label className="block text-xs font-light tracking-wider text-gray-400 mb-2">
-              Photos <span className="text-gray-600">(Up to 5)</span>
+              Photos <span className="text-gray-600">(Optional — Up to 5)</span>
             </label>
 
             {/* Thumbnails */}

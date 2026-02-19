@@ -352,7 +352,7 @@ export default function AboutPage() {
                   </div>
                   <div>
                     <p className="text-white font-light">(305) 720-2533</p>
-                    <p className="text-gray-500 font-extralight text-sm">Call or text anytime</p>
+                    <p className="text-gray-500 font-extralight text-sm">Call anytime</p>
                   </div>
                 </div>
 

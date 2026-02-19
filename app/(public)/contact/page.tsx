@@ -49,7 +49,7 @@ export default function ContactPage() {
                     </svg>
                   </div>
                   <div>
-                    <h3 className="text-white font-light text-lg mb-1">Call or Text</h3>
+                    <h3 className="text-white font-light text-lg mb-1">Call Us</h3>
                     <a href="tel:3057202533" className="text-gray-400 font-extralight hover:text-[#dffd6e] transition">
                       (305) 720-2533
                     </a>
@@ -138,7 +138,7 @@ export default function ContactPage() {
               <span className="text-[#dffd6e] text-xs font-light tracking-[0.3em] uppercase block mb-6">Hours</span>
               <h3 className="text-xl font-light tracking-tight mb-4 text-white">By Appointment</h3>
               <p className="text-gray-500 font-extralight leading-relaxed">
-                We operate by appointment to give each client our full attention. Call or text to schedule your private visit.
+                We operate by appointment to give each client our full attention. Call or email to schedule your private visit.
               </p>
             </div>
 
@@ -179,7 +179,7 @@ export default function ContactPage() {
                 Do I need an appointment to visit?
               </h3>
               <p className="text-gray-400 font-extralight text-lg leading-relaxed">
-                Yes. We operate by appointment only to ensure every client gets a private, dedicated experience. Call or text us at (305) 720-2533 to schedule your visit.
+                Yes. We operate by appointment only to ensure every client gets a private, dedicated experience. Call us at (305) 720-2533 or email to schedule your visit.
               </p>
             </div>
 
