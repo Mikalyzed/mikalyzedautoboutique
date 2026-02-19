@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
+import { Resend } from "resend";
 import { createLead } from "@/lib/leads";
 import { getVehicleByVin } from "@/lib/vehicles";
+
+const NOTIFICATION_EMAIL = process.env.NOTIFICATION_EMAIL || "info@mikalyzedautoboutique.com";
 
 const RESERVE_VEHICLE_WEBHOOK_URL =
   "https://services.leadconnectorhq.com/hooks/1QB8GTp5uOImt305H61U/webhook-trigger/f0d8cdc5-1603-495e-a895-163a2df8f4bb";
@@ -140,6 +143,105 @@ export async function POST(request: NextRequest) {
         });
       } catch (webhookError) {
         console.error("Sell car webhook failed:", webhookError);
+      }
+    }
+
+    // Send email notification via Resend
+    if (process.env.RESEND_API_KEY) {
+      try {
+        const resend = new Resend(process.env.RESEND_API_KEY);
+        let subject = "";
+        let htmlBody = "";
+
+        const row = (label: string, value: string | undefined) =>
+          value ? `<tr><td style="padding:6px 12px;font-weight:600;color:#888;white-space:nowrap">${label}</td><td style="padding:6px 12px;color:#fff">${value}</td></tr>` : "";
+
+        const wrapper = (content: string) =>
+          `<div style="font-family:system-ui,sans-serif;background:#111;color:#fff;padding:32px;border-radius:12px;max-width:600px">
+            ${content}
+          </div>`;
+
+        if (formType === "reserve" && vehicleVin) {
+          const vehicleName = vehicle
+            ? `${vehicle.year} ${vehicle.make} ${vehicle.model}`
+            : vehicleVin;
+          subject = `New Vehicle Reservation — ${vehicleName}`;
+          htmlBody = wrapper(`
+            <h2 style="color:#dffd6e;margin:0 0 20px">New Vehicle Reservation</h2>
+            <table style="border-collapse:collapse;width:100%">
+              ${row("Name", name)}
+              ${row("Email", email)}
+              ${row("Phone", phone)}
+              ${row("Vehicle", vehicleName)}
+              ${row("VIN", vehicleVin)}
+              ${row("Financing", financing ? "Yes" : "No")}
+            </table>
+          `);
+        } else if (formType === "reserve-storage") {
+          subject = `New Reserve Storage Inquiry — ${name}`;
+          htmlBody = wrapper(`
+            <h2 style="color:#dffd6e;margin:0 0 20px">New Reserve Storage Inquiry</h2>
+            <table style="border-collapse:collapse;width:100%">
+              ${row("Name", name)}
+              ${row("Email", email)}
+              ${row("Phone", phone)}
+              ${row("Vehicles to Store", vehiclesToStore)}
+              ${row("Message", collectionMessage)}
+            </table>
+          `);
+        } else if (formType === "sell") {
+          const sellVehicleName = [sellYear, sellMake, sellModel].filter(Boolean).join(" ");
+          subject = `New Sell Car Submission — ${sellVehicleName || name}`;
+          htmlBody = wrapper(`
+            <h2 style="color:#dffd6e;margin:0 0 20px">New Sell Car Submission</h2>
+            <table style="border-collapse:collapse;width:100%">
+              ${row("Name", name)}
+              ${row("Email", email)}
+              ${row("Phone", phone)}
+              ${row("Vehicle", sellVehicleName)}
+              ${row("VIN", sellVin)}
+              ${row("Mileage", mileage)}
+              ${row("Condition", condition)}
+              ${row("Exterior Color", exteriorColor)}
+              ${row("Interior Color", interiorColor)}
+              ${row("Details", message)}
+            </table>
+            ${imageUrls?.length ? `<p style="color:#888;margin-top:16px">${imageUrls.length} image(s) attached to submission</p>` : ""}
+          `);
+        } else if (formType === "contact") {
+          subject = `New Contact Form — ${name}`;
+          htmlBody = wrapper(`
+            <h2 style="color:#dffd6e;margin:0 0 20px">New Contact Form Submission</h2>
+            <table style="border-collapse:collapse;width:100%">
+              ${row("Name", name)}
+              ${row("Email", email)}
+              ${row("Phone", phone)}
+              ${row("Service", service)}
+              ${row("Message", message)}
+            </table>
+          `);
+        } else {
+          subject = `New Form Submission — ${name}`;
+          htmlBody = wrapper(`
+            <h2 style="color:#dffd6e;margin:0 0 20px">New Form Submission</h2>
+            <table style="border-collapse:collapse;width:100%">
+              ${row("Name", name)}
+              ${row("Email", email)}
+              ${row("Phone", phone)}
+              ${row("Form Type", formType)}
+              ${row("Message", message)}
+            </table>
+          `);
+        }
+
+        await resend.emails.send({
+          from: "Mikalyzed Auto Boutique <notifications@mikalyzedautoboutique.com>",
+          to: [NOTIFICATION_EMAIL],
+          subject,
+          html: htmlBody,
+        });
+      } catch (emailError) {
+        console.error("Resend email notification failed:", emailError);
       }
     }
 
