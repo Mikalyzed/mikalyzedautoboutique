@@ -11,8 +11,22 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://mikalyzedautoboutique.com"),
   title: "Mikalyzed Auto Boutique",
   description: "Premium pre-owned luxury and exotic vehicles",
+  openGraph: {
+    title: "Mikalyzed Auto Boutique",
+    description: "Premium pre-owned luxury and exotic vehicles",
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Mikalyzed Auto Boutique" }],
+    type: "website",
+    siteName: "Mikalyzed Auto Boutique",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Mikalyzed Auto Boutique",
+    description: "Premium pre-owned luxury and exotic vehicles",
+    images: ["/og-image.png"],
+  },
 };
 
 export default function RootLayout({
