@@ -145,8 +145,21 @@ export default async function HomePage() {
                     </h3>
                   </div>
 
-                  <p className="text-2xl font-light text-[#dffd6e] mb-4">
-                    {vehicle.price}
+                  <p className={`text-2xl font-light mb-4 ${(vehicle as unknown as Record<string, unknown>).auction ? "text-amber-400" : "text-[#dffd6e]"}`}>
+                    {(() => {
+                      const v = vehicle as unknown as Record<string, unknown>;
+                      if (!v.auction) return vehicle.price;
+                      if (v.auctionDate) {
+                        const daysLeft = Math.ceil(
+                          (new Date(v.auctionDate + "T00:00:00" as string).getTime() - Date.now()) / (1000 * 60 * 60 * 24)
+                        );
+                        if (daysLeft > 1) return `Auction in ${daysLeft} days`;
+                        if (daysLeft === 1) return "Auction Tomorrow";
+                        if (daysLeft === 0) return "Auction Today";
+                        return "Auction Ended";
+                      }
+                      return "Learn More";
+                    })()}
                   </p>
 
                   <div className="flex gap-4 text-sm text-gray-400 font-light">

@@ -245,3 +245,8 @@ html {
 .form-field-reveal:nth-child(6) { animation-delay: 0.6s; }
 .form-field-reveal:nth-child(7) { animation-delay: 0.7s; }
 .form-field-reveal:nth-child(8) { animation-delay: 0.8s; }
+
+/* Hide scrollbar for horizontal carousels */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}

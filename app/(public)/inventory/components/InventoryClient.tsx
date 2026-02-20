@@ -254,6 +254,13 @@ export default function InventoryClient({ inventory }: InventoryClientProps) {
               className="group relative bg-zinc-900 rounded-xl overflow-hidden border border-zinc-800 hover:border-[#dffd6e] transition-all duration-300 animate-fade-in"
               style={{ animationDelay: `${index * 50}ms` }}
             >
+              {/* Auction Badge */}
+              {car.auction && (
+                <div className="absolute top-4 left-4 z-10 bg-amber-500/90 text-black text-xs font-medium px-3 py-1 rounded-full">
+                  Set for Auction
+                </div>
+              )}
+
               {/* Image Badge */}
               {car.images && car.images.length > 0 && (
                 <div className="absolute top-4 right-4 z-10 bg-black/70 text-white text-xs px-3 py-1 rounded-full flex items-center gap-1">
@@ -291,7 +298,20 @@ export default function InventoryClient({ inventory }: InventoryClientProps) {
                 </div>
 
                 <p className="text-2xl font-light text-[#dffd6e] mb-4">
-                  {car.price}
+                  {car.auction
+                    ? car.auctionDate
+                      ? (() => {
+                          const now = new Date();
+                          const auctionDate = new Date(car.auctionDate + "T00:00:00");
+                          const diffMs = auctionDate.getTime() - now.getTime();
+                          const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+                          if (diffDays > 1) return `Auction in ${diffDays} days`;
+                          if (diffDays === 1) return "Auction Tomorrow";
+                          if (diffDays === 0) return "Auction Today";
+                          return "Auction Ended";
+                        })()
+                      : "Learn More"
+                    : car.price}
                 </p>
 
                 <div className="flex gap-4 text-sm text-gray-400 font-light">

@@ -28,6 +28,10 @@ export default function VehicleEditPanel({
   );
   const [featured, setFeatured] = useState(!!vehicle.featured);
   const [hidden, setHidden] = useState(!!vehicle.hidden);
+  const [auction, setAuction] = useState(!!vehicle.auction);
+  const [auctionHouse, setAuctionHouse] = useState(vehicle.auctionHouse || "");
+  const [auctionUrl, setAuctionUrl] = useState(vehicle.auctionUrl || "");
+  const [auctionDate, setAuctionDate] = useState(vehicle.auctionDate || "");
   const [saving, setSaving] = useState(false);
 
   async function handleSave() {
@@ -45,6 +49,10 @@ export default function VehicleEditPanel({
         manuallyMarkedSold,
         featured,
         hidden,
+        auction,
+        auctionHouse: auction ? auctionHouse || undefined : undefined,
+        auctionUrl: auction ? auctionUrl || undefined : undefined,
+        auctionDate: auction ? auctionDate || undefined : undefined,
       };
 
       const res = await fetch("/api/admin/vehicles/update", {
@@ -175,6 +183,56 @@ export default function VehicleEditPanel({
             </div>
             <ToggleSwitch checked={hidden} onChange={setHidden} />
           </div>
+
+          <div className="flex items-center justify-between py-2">
+            <div>
+              <p className="text-white text-sm">Set for Auction</p>
+              <p className="text-zinc-500 text-xs">
+                Removes reserve &amp; financing buttons
+              </p>
+            </div>
+            <ToggleSwitch checked={auction} onChange={setAuction} />
+          </div>
+
+          {auction && (
+            <div className="space-y-3 pl-2 border-l-2 border-amber-500/30 ml-1">
+              <div>
+                <label className="text-zinc-400 text-xs mb-1 block">
+                  Auction House
+                </label>
+                <input
+                  type="text"
+                  value={auctionHouse}
+                  onChange={(e) => setAuctionHouse(e.target.value)}
+                  placeholder='e.g. "Bring a Trailer"'
+                  className={inputClass}
+                />
+              </div>
+              <div>
+                <label className="text-zinc-400 text-xs mb-1 block">
+                  Auction Date (optional)
+                </label>
+                <input
+                  type="date"
+                  value={auctionDate}
+                  onChange={(e) => setAuctionDate(e.target.value)}
+                  className={inputClass}
+                />
+              </div>
+              <div>
+                <label className="text-zinc-400 text-xs mb-1 block">
+                  Auction Listing URL (optional — add when live)
+                </label>
+                <input
+                  type="url"
+                  value={auctionUrl}
+                  onChange={(e) => setAuctionUrl(e.target.value)}
+                  placeholder="https://bringatrailer.com/listing/..."
+                  className={inputClass}
+                />
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Actions */}

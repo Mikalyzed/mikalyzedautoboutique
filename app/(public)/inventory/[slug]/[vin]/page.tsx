@@ -1,8 +1,9 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { getVehicleByVin } from "@/lib/vehicles";
+import { getVehicleByVin, getAvailableVehicles } from "@/lib/vehicles";
 import ImageGallery from "@/app/(public)/inventory/components/ImageGallery";
 import VehicleActions from "@/app/(public)/inventory/components/VehicleActions";
+import RecommendedSlider from "@/app/(public)/inventory/components/RecommendedSlider";
 
 export const dynamic = "force-dynamic";
 
@@ -60,7 +61,24 @@ export default async function VehicleDetailPage({ params }: PageProps) {
   // Normalize VIN from URL and look up in DynamoDB
   const vinFromUrl = vin.toUpperCase().replace(/[^A-Z0-9]/g, "");
   const vehicle = await getVehicleByVin(vinFromUrl);
-  const isSold = vehicle?.status === "sold";
+  const isAuction = !!vehicle?.auction;
+  const isSold = vehicle?.status === "sold" && !isAuction;
+
+  // Compute auction countdown text (server-side)
+  let auctionLabel = "";
+  if (isAuction) {
+    if (vehicle.auctionDate) {
+      const auctionTime = new Date(vehicle.auctionDate + "T00:00:00").getTime();
+      const now = Date.now();
+      const daysLeft = Math.ceil((auctionTime - now) / (1000 * 60 * 60 * 24));
+      if (daysLeft > 1) auctionLabel = `Auction in ${daysLeft} days`;
+      else if (daysLeft === 1) auctionLabel = "Auction Tomorrow";
+      else if (daysLeft === 0) auctionLabel = "Auction Today";
+      else auctionLabel = "Auction Ended";
+    } else {
+      auctionLabel = "Learn More";
+    }
+  }
 
   if (!vehicle) {
     return (
@@ -69,6 +87,18 @@ export default async function VehicleDetailPage({ params }: PageProps) {
       </main>
     );
   }
+
+  // Fetch similar vehicles by price
+  const allAvailable = await getAvailableVehicles();
+  const currentPrice = parseInt((vehicle.price || "").replace(/[^0-9]/g, ""), 10) || 0;
+  const recommended = allAvailable
+    .filter((v) => v.vin !== vehicle.vin && !v.hidden)
+    .map((v) => {
+      const p = parseInt((v.price || "").replace(/[^0-9]/g, ""), 10) || 0;
+      return { ...v, numPrice: p, diff: Math.abs(p - currentPrice) };
+    })
+    .sort((a, b) => a.diff - b.diff)
+    .slice(0, 15);
 
   const vehicleJsonLd = {
     "@context": "https://schema.org",
@@ -139,6 +169,19 @@ export default async function VehicleDetailPage({ params }: PageProps) {
         </div>
       )}
 
+      {/* AUCTION BANNER */}
+      {isAuction && (
+        <div className="max-w-7xl mx-auto mb-6">
+          <div className="bg-amber-900/20 border border-amber-500/30 rounded-lg p-4 text-center">
+            <p className="text-amber-400 text-sm font-light tracking-wider uppercase">
+              This vehicle is set for auction
+              {vehicle.auctionHouse ? ` on ${vehicle.auctionHouse}` : ""}
+              {vehicle.auctionDate ? ` — ${new Date(vehicle.auctionDate + "T00:00:00").toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}` : ""}
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* VEHICLE TITLE + PRICE - above gallery on mobile, hidden on desktop */}
       <div className="max-w-7xl mx-auto lg:hidden mb-4">
         <p className="text-sm font-light tracking-[0.3em] text-[#dffd6e] mb-2 leading-tight block">
@@ -147,8 +190,8 @@ export default async function VehicleDetailPage({ params }: PageProps) {
         <h1 className="text-5xl font-light tracking-tight leading-tight mb-2">
           {vehicle.model}
         </h1>
-        <p className="text-2xl font-light text-[#dffd6e]">
-          {vehicle.price}
+        <p className={`text-2xl font-light ${isAuction ? "text-amber-400" : "text-[#dffd6e]"}`}>
+          {isAuction ? auctionLabel : vehicle.price}
         </p>
       </div>
 
@@ -171,9 +214,9 @@ export default async function VehicleDetailPage({ params }: PageProps) {
             {vehicle.model}
           </h1>
 
-          {/* PRICE - hidden on mobile (shown above gallery), visible on desktop */}
-          <p className="hidden lg:block text-4xl font-light text-[#dffd6e] mb-8">
-            {vehicle.price}
+          {/* PRICE / AUCTION COUNTDOWN - hidden on mobile (shown above gallery), visible on desktop */}
+          <p className={`hidden lg:block text-4xl font-light mb-8 ${isAuction ? "text-amber-400" : "text-[#dffd6e]"}`}>
+            {isAuction ? auctionLabel : vehicle.price}
           </p>
 
           {/* ACTION BUTTONS — hidden for sold vehicles */}
@@ -181,6 +224,9 @@ export default async function VehicleDetailPage({ params }: PageProps) {
             <VehicleActions
               vehicleName={`${vehicle.year} ${vehicle.make} ${vehicle.model}`}
               vehicleVin={vehicle.vin}
+              isAuction={isAuction}
+              auctionUrl={vehicle.auctionUrl}
+              auctionHouse={vehicle.auctionHouse}
             />
           )}
 
@@ -292,6 +338,32 @@ export default async function VehicleDetailPage({ params }: PageProps) {
           </div>
         </div>
       </div>
+
+      {/* RECOMMENDED VEHICLES */}
+      {recommended.length > 0 && (
+        <div className="max-w-7xl mx-auto mt-20">
+          <div className="mb-6">
+            <p className="text-[#dffd6e] text-xs font-light tracking-[0.3em] uppercase mb-2">
+              You May Also Like
+            </p>
+            <h2 className="text-3xl font-light tracking-tight">More Vehicles</h2>
+          </div>
+
+          <RecommendedSlider
+            vehicles={recommended.map((r) => ({
+              vin: r.vin,
+              slug: r.slug,
+              year: r.year,
+              make: r.make,
+              model: r.model,
+              price: r.price,
+              images: r.images,
+              auction: (r as unknown as Record<string, unknown>).auction as boolean | undefined,
+              auctionDate: (r as unknown as Record<string, unknown>).auctionDate as string | undefined,
+            }))}
+          />
+        </div>
+      )}
     </main>
   );
 }

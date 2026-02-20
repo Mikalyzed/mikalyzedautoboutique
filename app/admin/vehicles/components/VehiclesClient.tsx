@@ -24,8 +24,18 @@ export default function VehiclesClient({ vehicles: initialVehicles }: VehiclesCl
       `${v.year} ${v.make} ${v.model} ${v.vin}`
         .toLowerCase()
         .includes(search.toLowerCase());
-    const matchesStatus =
-      statusFilter === "all" || v.status === statusFilter;
+
+    let matchesStatus = false;
+    if (statusFilter === "all") {
+      matchesStatus = true;
+    } else if (statusFilter === "auction") {
+      matchesStatus = !!v.auction;
+    } else if (statusFilter === "sold") {
+      matchesStatus = v.status === "sold" && !v.auction;
+    } else {
+      matchesStatus = v.status === statusFilter;
+    }
+
     return matchesSearch && matchesStatus;
   });
 
@@ -95,6 +105,7 @@ export default function VehiclesClient({ vehicles: initialVehicles }: VehiclesCl
           <option value="all">All Statuses</option>
           <option value="available">Available</option>
           <option value="sold">Sold</option>
+          <option value="auction">Auction</option>
           <option value="call">Call for Price</option>
         </select>
       </div>
@@ -135,17 +146,23 @@ export default function VehiclesClient({ vehicles: initialVehicles }: VehiclesCl
 
                 {/* Status badge overlay */}
                 <div className="absolute top-2 left-2">
-                  <StatusBadge status={v.manuallyMarkedSold ? "sold" : v.status} />
+                  <StatusBadge status={v.auction ? "auction" : v.manuallyMarkedSold ? "sold" : v.status} />
                 </div>
 
-                {/* Override indicator */}
-                {hasOverride(v) && (
+                {/* Auction / Override indicator */}
+                {v.auction ? (
+                  <div className="absolute top-2 right-2">
+                    <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] bg-black/60 backdrop-blur-sm text-amber-400 border border-amber-400/30">
+                      Auction
+                    </span>
+                  </div>
+                ) : hasOverride(v) ? (
                   <div className="absolute top-2 right-2">
                     <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] bg-black/60 backdrop-blur-sm text-[#dffd6e] border border-[#dffd6e]/30">
                       Override
                     </span>
                   </div>
-                )}
+                ) : null}
 
                 {/* Photo count */}
                 {v.images.length > 0 && (

@@ -53,7 +53,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   }
 
   // 5. Diff: vehicles in old but NOT in new → mark as sold
-  const newlySold = oldVehicles.filter((v) => !newVins.has(v.vin));
+  //    Skip auction vehicles — they were intentionally removed from DealerCenter
+  const newlySold = oldVehicles.filter((v) => !newVins.has(v.vin) && !v.auction);
   const newlySoldVins = newlySold.map((v) => v.vin);
 
   // 6. Mark sold vehicles in DynamoDB

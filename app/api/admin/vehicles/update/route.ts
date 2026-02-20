@@ -32,6 +32,10 @@ export async function PATCH(request: NextRequest) {
       "manuallyMarkedSold",
       "featured",
       "hidden",
+      "auction",
+      "auctionHouse",
+      "auctionUrl",
+      "auctionDate",
     ]);
 
     const sanitized: Record<string, unknown> = {};
@@ -43,6 +47,11 @@ export async function PATCH(request: NextRequest) {
 
     // If marking as sold, automatically remove featured
     if (sanitized.manuallyMarkedSold === true) {
+      sanitized.featured = false;
+    }
+
+    // If marking for auction, automatically remove featured
+    if (sanitized.auction === true) {
       sanitized.featured = false;
     }
 

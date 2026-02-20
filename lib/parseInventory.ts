@@ -27,6 +27,12 @@ export interface Vehicle {
   manuallyMarkedSold?: boolean;
   featured?: boolean;
   hidden?: boolean;
+
+  // Auction fields
+  auction?: boolean;
+  auctionHouse?: string;
+  auctionUrl?: string;
+  auctionDate?: string;
 }
 
 /**

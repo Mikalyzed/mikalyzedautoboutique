@@ -14,6 +14,10 @@ const ADMIN_OVERRIDE_FIELDS = [
   "manuallyMarkedSold",
   "featured",
   "hidden",
+  "auction",
+  "auctionHouse",
+  "auctionUrl",
+  "auctionDate",
 ] as const;
 
 export interface SoldVehicle extends Vehicle {
@@ -53,11 +57,14 @@ async function queryByStatus(status: VehicleStatus): Promise<DynamoVehicle[]> {
 }
 
 export async function getAvailableVehicles(): Promise<Vehicle[]> {
-  const [available, call] = await Promise.all([
+  const [available, call, sold] = await Promise.all([
     queryByStatus("available"),
     queryByStatus("call"),
+    queryByStatus("sold"),
   ]);
-  return [...available, ...call];
+  // Include sold vehicles that are marked for auction (they belong in active inventory)
+  const auctionVehicles = sold.filter((v) => v.auction);
+  return [...available, ...call, ...auctionVehicles];
 }
 
 export async function getAllVehicles(): Promise<DynamoVehicle[]> {
@@ -71,7 +78,9 @@ export async function getAllVehicles(): Promise<DynamoVehicle[]> {
 
 export async function getSoldVehicles(): Promise<SoldVehicle[]> {
   const items = await queryByStatus("sold");
-  return (items as SoldVehicle[]).sort(
+  // Exclude auction vehicles — they show in active inventory, not sold
+  const actualSold = items.filter((v) => !v.auction);
+  return (actualSold as SoldVehicle[]).sort(
     (a, b) => new Date(b.soldDate || b.updatedAt).getTime() - new Date(a.soldDate || a.updatedAt).getTime()
   );
 }
@@ -150,6 +159,10 @@ export async function updateVehicleOverrides(
     manuallyMarkedSold?: boolean;
     featured?: boolean;
     hidden?: boolean;
+    auction?: boolean;
+    auctionHouse?: string;
+    auctionUrl?: string;
+    auctionDate?: string;
   }
 ): Promise<void> {
   const expressions: string[] = [];

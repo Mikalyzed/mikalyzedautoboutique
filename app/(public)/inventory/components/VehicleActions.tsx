@@ -6,9 +6,12 @@ import ReservePanel from "./ReservePanel";
 interface VehicleActionsProps {
   vehicleName: string;
   vehicleVin: string;
+  isAuction?: boolean;
+  auctionUrl?: string;
+  auctionHouse?: string;
 }
 
-export default function VehicleActions({ vehicleName, vehicleVin }: VehicleActionsProps) {
+export default function VehicleActions({ vehicleName, vehicleVin, isAuction, auctionUrl, auctionHouse }: VehicleActionsProps) {
   const [reserveOpen, setReserveOpen] = useState(false);
   const [contactOpen, setContactOpen] = useState(false);
   const contactRef = useRef<HTMLDivElement>(null);
@@ -120,13 +123,15 @@ export default function VehicleActions({ vehicleName, vehicleVin }: VehicleActio
             )}
           </div>
 
-          {/* Financing */}
-          <button className="flex-1 flex items-center justify-center gap-2 bg-black border border-zinc-700 text-white px-4 py-3.5 sm:px-6 sm:py-3 rounded-lg text-base sm:text-base font-light tracking-wide hover:border-[#dffd6e] transition">
-            <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            Financing
-          </button>
+          {/* Financing — hidden for auction vehicles */}
+          {!isAuction && (
+            <button className="flex-1 flex items-center justify-center gap-2 bg-black border border-zinc-700 text-white px-4 py-3.5 sm:px-6 sm:py-3 rounded-lg text-base sm:text-base font-light tracking-wide hover:border-[#dffd6e] transition">
+              <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Financing
+            </button>
+          )}
 
           {/* Share */}
           <button
@@ -146,16 +151,33 @@ export default function VehicleActions({ vehicleName, vehicleVin }: VehicleActio
           </button>
         </div>
 
-        {/* Reserve This Vehicle */}
-        <button
-          onClick={() => setReserveOpen(true)}
-          className="w-full flex items-center justify-center gap-2 bg-black border border-[#dffd6e] text-[#dffd6e] px-6 py-3.5 sm:py-3 rounded-lg text-base font-light tracking-wider hover:bg-[#dffd6e] hover:text-black transition-all duration-300"
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-          </svg>
-          Reserve This Vehicle
-        </button>
+        {/* Reserve This Vehicle — hidden for auction */}
+        {!isAuction && (
+          <button
+            onClick={() => setReserveOpen(true)}
+            className="w-full flex items-center justify-center gap-2 bg-black border border-[#dffd6e] text-[#dffd6e] px-6 py-3.5 sm:py-3 rounded-lg text-base font-light tracking-wider hover:bg-[#dffd6e] hover:text-black transition-all duration-300"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+            Reserve This Vehicle
+          </button>
+        )}
+
+        {/* View Auction Listing — only when auction URL is set */}
+        {isAuction && auctionUrl && (
+          <a
+            href={auctionUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full flex items-center justify-center gap-2 bg-[#dffd6e] text-black px-6 py-3.5 sm:py-3 rounded-lg text-base font-normal tracking-wider hover:bg-[#dffd6e]/90 transition-all duration-300"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+            </svg>
+            View Auction Listing{auctionHouse ? ` on ${auctionHouse}` : ""}
+          </a>
+        )}
       </div>
 
       {/* Reserve slide-in panel */}
