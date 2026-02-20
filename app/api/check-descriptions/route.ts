@@ -5,7 +5,7 @@ import { getAvailableVehicles } from "@/lib/vehicles";
 export const dynamic = "force-dynamic";
 
 const DESCRIPTION_NOTIFY_EMAIL =
-  process.env.DESCRIPTION_NOTIFY_EMAIL || "andrej@mikalyzedautoboutique.com";
+  process.env.DESCRIPTION_NOTIFY_EMAIL || "andrejp@mikalyzedautoboutique.com";
 const DESCRIPTION_NOTIFY_CC =
   process.env.DESCRIPTION_NOTIFY_CC || "fernandob@mikalyzedautoboutique.com";
 
