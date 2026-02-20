@@ -3,7 +3,13 @@ import { Resend } from "resend";
 import { createLead } from "@/lib/leads";
 import { getVehicleByVin } from "@/lib/vehicles";
 
-const NOTIFICATION_EMAIL = process.env.NOTIFICATION_EMAIL || "info@mikalyzedautoboutique.com";
+const DEFAULT_EMAIL = process.env.NOTIFICATION_EMAIL || "sales@mikalyzedautoboutique.com";
+const NOTIFICATION_EMAILS: Record<string, string> = {
+  contact: process.env.NOTIFICATION_EMAIL_CONTACT || DEFAULT_EMAIL,
+  reserve: process.env.NOTIFICATION_EMAIL_RESERVE || DEFAULT_EMAIL,
+  "reserve-storage": process.env.NOTIFICATION_EMAIL_STORAGE || DEFAULT_EMAIL,
+  sell: process.env.NOTIFICATION_EMAIL_SELL || DEFAULT_EMAIL,
+};
 
 const RESERVE_VEHICLE_WEBHOOK_URL =
   "https://services.leadconnectorhq.com/hooks/1QB8GTp5uOImt305H61U/webhook-trigger/f0d8cdc5-1603-495e-a895-163a2df8f4bb";
@@ -234,9 +240,10 @@ export async function POST(request: NextRequest) {
           `);
         }
 
+        const recipient = NOTIFICATION_EMAILS[formType] || DEFAULT_EMAIL;
         await resend.emails.send({
           from: "Mikalyzed Auto Boutique <notifications@mikalyzedautoboutique.com>",
-          to: [NOTIFICATION_EMAIL],
+          to: [recipient],
           subject,
           html: htmlBody,
         });
