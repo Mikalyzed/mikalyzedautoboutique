@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/check-descriptions",
+      "schedule": "0 19 */2 * *"
+    }
+  ]
+}
