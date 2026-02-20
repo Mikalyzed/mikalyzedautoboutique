@@ -111,10 +111,17 @@ export async function upsertVehicles(vehicles: Vehicle[]): Promise<void> {
     const requests = batch.map((v) => {
       const existing = existingMap.get(v.vin);
       // Keep existing images if the new CSV has fewer (DealerCenter sometimes sends only 1 thumbnail)
-      const images =
+      const rawImages =
         existing && existing.images && existing.images.length > v.images.length
           ? existing.images
           : v.images;
+      // Upgrade DealerCenter image URLs to high-res (1920x1440)
+      const images = rawImages.map((url) =>
+        url.replace(
+          /imagesdl\.dealercenter\.net\/\d+\/\d+\//,
+          "imagesdl.dealercenter.net/1920/1440/"
+        )
+      );
 
       // Preserve admin override fields from existing record during sync
       const adminOverrides: Record<string, unknown> = {};

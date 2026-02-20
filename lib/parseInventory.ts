@@ -115,7 +115,14 @@ export function parseCSV(csvContent: string): Vehicle[] {
         interiorColor: row["InteriorColor"]?.trim() || undefined,
         transmission: row["Transmission"]?.trim() || undefined,
         description: row["WebDescription"]?.trim() ? fixEncoding(row["WebDescription"].trim()) : undefined,
-        images: row["PhotoUrl"] ? row["PhotoUrl"].split(",").map((url: string) => url.trim()).filter(Boolean) : [],
+        images: row["PhotoUrl"]
+          ? row["PhotoUrl"].split(",").map((url: string) =>
+              url.trim().replace(
+                /imagesdl\.dealercenter\.net\/\d+\/\d+\//,
+                "imagesdl.dealercenter.net/1920/1440/"
+              )
+            ).filter(Boolean)
+          : [],
         videoUrl: (row["VideoUrl"] || row["VideoURL"])?.trim() || undefined,
       };
     })

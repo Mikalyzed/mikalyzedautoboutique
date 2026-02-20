@@ -50,6 +50,7 @@ export default function ImageGallery({ images, videoUrl }: ImageGalleryProps) {
           alt="Vehicle image"
           fill
           priority
+          quality={90}
           className="object-cover"
         />
 
@@ -150,6 +151,7 @@ export default function ImageGallery({ images, videoUrl }: ImageGalleryProps) {
             src={img}
             alt={`Vehicle image ${index + 1}`}
             fill
+            quality={90}
             className="object-contain"
           />
         </div>
