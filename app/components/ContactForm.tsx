@@ -43,6 +43,9 @@ export default function ContactForm() {
       });
       if (res.ok) {
         setSubmitted(true);
+        if (typeof window !== "undefined" && (window as { fbq?: (...args: unknown[]) => void }).fbq) {
+          (window as { fbq: (...args: unknown[]) => void }).fbq("track", "Contact");
+        }
       }
     } catch (error) {
       console.error("Contact form submit failed:", error);

@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import Script from "next/script";
+import MetaPixelEvents from "@/app/components/MetaPixelEvents";
 import "./globals.css";
 
 const inter = Inter({
@@ -82,6 +83,19 @@ export default function RootLayout({
         >
           {children}
           <SpeedInsights />
+          <MetaPixelEvents />
+          <Script
+            src="https://www.googletagmanager.com/gtag/js?id=G-V3EN46Q726"
+            strategy="afterInteractive"
+          />
+          <Script id="google-analytics" strategy="afterInteractive">
+            {`
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-V3EN46Q726');
+            `}
+          </Script>
           <Script id="meta-pixel" strategy="afterInteractive">
             {`
               !function(f,b,e,v,n,t,s)
