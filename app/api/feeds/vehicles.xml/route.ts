@@ -52,6 +52,7 @@ function buildItem(v: DynamoVehicle): string {
 
   lines.push(`      <g:availability>in_stock</g:availability>`);
   lines.push(`      <g:condition>used</g:condition>`);
+  lines.push(`      <g:google_product_category>916</g:google_product_category>`);
   lines.push(`      <g:make>${escapeXml(v.make)}</g:make>`);
   lines.push(`      <g:model>${escapeXml(v.model)}</g:model>`);
   lines.push(`      <g:year>${v.year}</g:year>`);
