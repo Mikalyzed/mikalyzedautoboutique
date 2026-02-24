@@ -50,6 +50,7 @@ function buildItem(v: DynamoVehicle): string {
     lines.push(`      <g:price>${numericPrice} USD</g:price>`);
   }
 
+  lines.push(`      <g:availability>in_stock</g:availability>`);
   lines.push(`      <g:condition>used</g:condition>`);
   lines.push(`      <g:make>${escapeXml(v.make)}</g:make>`);
   lines.push(`      <g:model>${escapeXml(v.model)}</g:model>`);
