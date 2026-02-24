@@ -14,6 +14,7 @@ interface VehicleActionsProps {
 export default function VehicleActions({ vehicleName, vehicleVin, isAuction, auctionUrl, auctionHouse }: VehicleActionsProps) {
   const [reserveOpen, setReserveOpen] = useState(false);
   const [contactOpen, setContactOpen] = useState(false);
+  const [financingOpen, setFinancingOpen] = useState(false);
   const contactRef = useRef<HTMLDivElement>(null);
 
   // Close contact popover on outside click
@@ -125,7 +126,10 @@ export default function VehicleActions({ vehicleName, vehicleVin, isAuction, auc
 
           {/* Financing — hidden for auction vehicles */}
           {!isAuction && (
-            <button className="flex-1 flex items-center justify-center gap-2 bg-black border border-zinc-700 text-white px-4 py-3.5 sm:px-6 sm:py-3 rounded-lg text-base sm:text-base font-light tracking-wide hover:border-[#dffd6e] transition">
+            <button
+              onClick={() => setFinancingOpen(true)}
+              className="flex-1 flex items-center justify-center gap-2 bg-black border border-zinc-700 text-white px-4 py-3.5 sm:px-6 sm:py-3 rounded-lg text-base sm:text-base font-light tracking-wide hover:border-[#dffd6e] transition"
+            >
               <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
@@ -187,6 +191,41 @@ export default function VehicleActions({ vehicleName, vehicleVin, isAuction, auc
         vehicleName={vehicleName}
         vehicleVin={vehicleVin}
       />
+
+      {/* Financing modal */}
+      {financingOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+            onClick={() => setFinancingOpen(false)}
+          />
+          {/* Modal */}
+          <div className="relative w-full max-w-2xl mx-4 bg-zinc-900 border border-zinc-700 rounded-2xl overflow-hidden shadow-2xl max-h-[90vh] flex flex-col">
+            {/* Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-800">
+              <h3 className="text-white text-lg font-light tracking-wide">Credit Application</h3>
+              <button
+                onClick={() => setFinancingOpen(false)}
+                className="text-zinc-400 hover:text-white transition"
+              >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            {/* Iframe */}
+            <div className="flex-1 overflow-auto">
+              <iframe
+                src="https://dwssecuredforms.dealercenter.net/CreditApplication/index/22887597?themecolor=8C8C8C&formtype=s&frameId=dws_frame_0&standalone=true&ls=Our Website"
+                scrolling="auto"
+                style={{ height: 715, width: "100%" }}
+                frameBorder="0"
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
