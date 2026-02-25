@@ -4,7 +4,7 @@ import type { DynamoVehicle } from "@/lib/vehicles";
 export const dynamic = "force-dynamic";
 
 const BASE_URL = "https://mikalyzedautoboutique.com";
-const STORE_CODE = "mikalyzed-miami";
+const STORE_CODE = "11647946455691092060";
 const DEALERSHIP_NAME = "Mikalyzed Auto Boutique";
 const DEALERSHIP_ADDRESS = "3455 NW 30th Ave, Miami, FL 33142, US";
 
