@@ -62,7 +62,7 @@ function buildItem(v: DynamoVehicle): string {
   if (v.trim) {
     lines.push(`      <g:trim>${escapeXml(v.trim)}</g:trim>`);
   }
-  lines.push(`      <g:mileage>${v.odometer ?? 0} mi</g:mileage>`);
+  lines.push(`      <g:mileage>${v.odometer ?? 0} miles</g:mileage>`);
   lines.push(`      <g:color>${escapeXml(v.exteriorColor || "Black")}</g:color>`);
   lines.push(`      <g:exterior_color>${escapeXml(v.exteriorColor || "Black")}</g:exterior_color>`);
   if (v.interiorColor) {
