@@ -40,6 +40,10 @@ export default function ReservePanel({ open, onClose, vehicleName, vehicleVin }:
       });
       if (res.ok) {
         setSubmitted(true);
+        if (typeof window !== "undefined") {
+          (window as { fbq?: (...args: unknown[]) => void }).fbq?.("track", "Contact");
+          (window as { gtag?: (...args: unknown[]) => void }).gtag?.("event", "conversion_event_contact_1");
+        }
       }
     } catch (error) {
       console.error("Reserve submit failed:", error);
