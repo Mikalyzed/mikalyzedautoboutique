@@ -36,6 +36,7 @@ function buildItem(v: DynamoVehicle): string {
     `      <g:vin>${escapeXml(v.vin)}</g:vin>`,
     `      <title>${escapeXml(title)}</title>`,
     `      <link>${escapeXml(link)}</link>`,
+    `      <g:link_template>${escapeXml(link)}?store_code={store_code}</g:link_template>`,
     `      <description>${escapeXml(description)}</description>`,
   ];
 
@@ -53,6 +54,7 @@ function buildItem(v: DynamoVehicle): string {
   lines.push(`      <g:availability>in_stock</g:availability>`);
   lines.push(`      <g:condition>used</g:condition>`);
   lines.push(`      <g:google_product_category>916</g:google_product_category>`);
+  lines.push(`      <g:brand>${escapeXml(v.make)}</g:brand>`);
   lines.push(`      <g:make>${escapeXml(v.make)}</g:make>`);
   lines.push(`      <g:model>${escapeXml(v.model)}</g:model>`);
   lines.push(`      <g:year>${v.year}</g:year>`);
@@ -60,12 +62,8 @@ function buildItem(v: DynamoVehicle): string {
   if (v.trim) {
     lines.push(`      <g:trim>${escapeXml(v.trim)}</g:trim>`);
   }
-  if (v.odometer !== undefined) {
-    lines.push(`      <g:mileage>${v.odometer} mi</g:mileage>`);
-  }
-  if (v.exteriorColor) {
-    lines.push(`      <g:exterior_color>${escapeXml(v.exteriorColor)}</g:exterior_color>`);
-  }
+  lines.push(`      <g:mileage>${v.odometer ?? 0} mi</g:mileage>`);
+  lines.push(`      <g:exterior_color>${escapeXml(v.exteriorColor || "Not Specified")}</g:exterior_color>`);
   if (v.interiorColor) {
     lines.push(`      <g:interior_color>${escapeXml(v.interiorColor)}</g:interior_color>`);
   }
