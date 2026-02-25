@@ -6,6 +6,7 @@ import { useEffect } from "react";
 declare global {
   interface Window {
     fbq?: (...args: unknown[]) => void;
+    gtag?: (...args: unknown[]) => void;
   }
 }
 
@@ -39,6 +40,7 @@ export default function MetaPixelEvents() {
       const href = anchor.getAttribute("href") || "";
       if (href.startsWith("tel:") || href.startsWith("mailto:")) {
         window.fbq?.("track", "Contact");
+        window.gtag?.("event", "conversion_event_contact_1");
       }
     }
 
