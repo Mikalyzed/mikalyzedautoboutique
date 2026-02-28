@@ -3,6 +3,14 @@ import { parseCSVWithDiagnostics, Vehicle } from "@/lib/parseInventory";
 import { getAvailableVehicles, upsertVehicles, markVehiclesAsSold } from "@/lib/vehicles";
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
+  // 0. Allow pausing sync via env var (set SYNC_PAUSED=true in Vercel to block updates)
+  if (process.env.SYNC_PAUSED === "true") {
+    return NextResponse.json(
+      { error: "Sync is currently paused", message: "Remove SYNC_PAUSED env var to resume" },
+      { status: 503 }
+    );
+  }
+
   // 1. Authenticate (skipped in local dev when SYNC_API_KEY is not set)
   const apiKey = process.env.SYNC_API_KEY;
   if (apiKey) {

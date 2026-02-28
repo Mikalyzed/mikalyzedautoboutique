@@ -104,10 +104,9 @@ export function parseCSVWithDiagnostics(csvContent: string): ParseResult {
       const make = col(row, "Make", "make")?.trim();
       const model = col(row, "Model", "model")?.trim();
 
-      // DealerCenter uses "Price" in manual downloads but may use
-      // "InternetPrice", "Internet Price", "SellingPrice", "RetailPrice", "AskingPrice" in FTP feeds
+      // DealerCenter uses "Price" in manual downloads, "SpecialPrice" in automated FTP feeds
       const rawPrice = col(row,
-        "Price", "InternetPrice", "Internet Price",
+        "SpecialPrice", "Price", "InternetPrice", "Internet Price",
         "SellingPrice", "Selling Price",
         "RetailPrice", "Retail Price",
         "AskingPrice", "Asking Price",
@@ -135,10 +134,9 @@ export function parseCSVWithDiagnostics(csvContent: string): ParseResult {
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/(^-|-$)/g, "");
 
-      // DealerCenter uses "WebDescription" in manual downloads but may use
-      // "Description", "Comments", "VehicleDescription", "DetailDescription" in FTP feeds
+      // DealerCenter uses "WebDescription" in manual downloads, "WebAdDescription" in automated FTP feeds
       const rawDescription = col(row,
-        "WebDescription", "Description", "Comments",
+        "WebAdDescription", "WebDescription", "Description", "Comments",
         "VehicleDescription", "Vehicle Description",
         "DetailDescription", "Detail Description",
         "description"
