@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { parseCSV, Vehicle } from "@/lib/parseInventory";
+import { parseCSVWithDiagnostics, Vehicle } from "@/lib/parseInventory";
 import { getAvailableVehicles, upsertVehicles, markVehiclesAsSold } from "@/lib/vehicles";
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
@@ -29,8 +29,11 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
   // 3. Parse the new CSV
   let newVehicles;
+  let csvColumns: string[] = [];
   try {
-    newVehicles = parseCSV(csvBody);
+    const result = parseCSVWithDiagnostics(csvBody);
+    newVehicles = result.vehicles;
+    csvColumns = result.columns;
   } catch (err) {
     return NextResponse.json(
       { error: "Invalid CSV format", details: String(err) },
@@ -38,7 +41,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     );
   }
 
-  const newVins = new Set(newVehicles.map((v) => v.vin));
+  const newVins = new Set(newVehicles.map((v: Vehicle) => v.vin));
 
   if (newVins.size === 0) {
     return NextResponse.json({ error: "CSV contains no valid vehicles" }, { status: 400 });
@@ -65,7 +68,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   // 7. Upsert all vehicles from the new CSV
   await upsertVehicles(newVehicles);
 
-  // 8. Return summary
+  // 8. Return summary (includes CSV column names for debugging)
+  const sample = newVehicles[0];
   return NextResponse.json({
     success: true,
     summary: {
@@ -76,6 +80,14 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         vin: v.vin,
         name: `${v.year} ${v.make} ${v.model}`,
       })),
+      csvColumns,
+      sampleVehicle: sample ? {
+        vin: sample.vin,
+        price: sample.price,
+        hasDescription: !!sample.description,
+        hasVideo: !!sample.videoUrl,
+        imageCount: sample.images.length,
+      } : null,
       timestamp: new Date().toISOString(),
     },
   });

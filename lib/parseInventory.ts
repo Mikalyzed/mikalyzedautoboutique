@@ -36,10 +36,32 @@ export interface Vehicle {
 }
 
 /**
+ * Resolve a CSV column value by trying multiple possible header names.
+ * DealerCenter manual downloads and automated FTP feeds use different column names.
+ */
+function col(row: Record<string, string>, ...names: string[]): string {
+  for (const name of names) {
+    const val = row[name];
+    if (val !== undefined) return val;
+  }
+  return "";
+}
+
+export interface ParseResult {
+  vehicles: Vehicle[];
+  columns: string[];
+}
+
+/**
  * Parse a DealerCenter CSV string into an array of Vehicle objects.
  * Handles encoding recovery for corrupted special characters.
+ * Supports multiple column name variants (manual download vs automated FTP feed).
  */
 export function parseCSV(csvContent: string): Vehicle[] {
+  return parseCSVWithDiagnostics(csvContent).vehicles;
+}
+
+export function parseCSVWithDiagnostics(csvContent: string): ParseResult {
   // The CSV was exported with corrupted encoding — all special chars became U+FFFD.
   // Replace with a safe placeholder before CSV parsing (to avoid breaking CSV quoting),
   // then do context-aware recovery on parsed field values.
@@ -50,6 +72,8 @@ export function parseCSV(csvContent: string): Vehicle[] {
     columns: true,
     skip_empty_lines: true,
   }) as Record<string, string>[];
+
+  const columns = records.length > 0 ? Object.keys(records[0]) : [];
 
   // Recover original characters from placeholder using surrounding context
   function fixEncoding(text: string): string {
@@ -71,16 +95,25 @@ export function parseCSV(csvContent: string): Vehicle[] {
     .replace(/ +\./g, ".");
   }
 
-  return records
+  const vehicles = records
     .map((row) => {
-      const vin = row["VIN"]?.trim().toUpperCase();
+      const vin = col(row, "VIN", "Vin", "vin")?.trim().toUpperCase();
       if (!vin) return null;
 
-      const year = Number(row["Year"]);
-      const make = row["Make"]?.trim();
-      const model = row["Model"]?.trim();
+      const year = Number(col(row, "Year", "year", "ModelYear", "Model Year"));
+      const make = col(row, "Make", "make")?.trim();
+      const model = col(row, "Model", "model")?.trim();
 
-      const rawPrice = row["Price"]?.trim();
+      // DealerCenter uses "Price" in manual downloads but may use
+      // "InternetPrice", "Internet Price", "SellingPrice", "RetailPrice", "AskingPrice" in FTP feeds
+      const rawPrice = col(row,
+        "Price", "InternetPrice", "Internet Price",
+        "SellingPrice", "Selling Price",
+        "RetailPrice", "Retail Price",
+        "AskingPrice", "Asking Price",
+        "ListPrice", "List Price",
+        "price"
+      )?.trim();
 
       let status: VehicleStatus = "available";
       let price = "Call for Price";
@@ -91,7 +124,8 @@ export function parseCSV(csvContent: string): Vehicle[] {
         status = "call";
       }
 
-      if (row["Status"]?.toLowerCase() === "sold") {
+      const statusVal = col(row, "Status", "status", "VehicleStatus")?.toLowerCase();
+      if (statusVal === "sold") {
         status = "sold";
         price = "Sold";
       }
@@ -101,6 +135,31 @@ export function parseCSV(csvContent: string): Vehicle[] {
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/(^-|-$)/g, "");
 
+      // DealerCenter uses "WebDescription" in manual downloads but may use
+      // "Description", "Comments", "VehicleDescription", "DetailDescription" in FTP feeds
+      const rawDescription = col(row,
+        "WebDescription", "Description", "Comments",
+        "VehicleDescription", "Vehicle Description",
+        "DetailDescription", "Detail Description",
+        "description"
+      )?.trim();
+
+      // DealerCenter photo URLs — may be "PhotoUrl", "PhotoUrls", "ImageUrl", "Photos", etc.
+      const rawPhotos = col(row,
+        "PhotoUrl", "PhotoURL", "PhotoUrls", "PhotoURLs",
+        "ImageUrl", "ImageURL", "ImageUrls", "ImageURLs",
+        "Photos", "Images",
+        "photoUrl", "photourl"
+      );
+
+      // DealerCenter video URLs — may be "VideoUrl", "VideoURL", "TurnTableVideoUrl", etc.
+      const rawVideo = col(row,
+        "VideoUrl", "VideoURL", "Video URL",
+        "TurnTableVideoUrl", "TurnTableVideoURL", "TurntableVideoUrl",
+        "SpinCarUrl", "SpinCarURL",
+        "videoUrl", "videourl"
+      )?.trim();
+
       return {
         vin,
         year,
@@ -109,22 +168,26 @@ export function parseCSV(csvContent: string): Vehicle[] {
         slug,
         price,
         status,
-        trim: row["Trim"]?.trim() || undefined,
-        odometer: row["Odometer"] ? Number(row["Odometer"].replace(/[^0-9]/g, "")) : undefined,
-        exteriorColor: row["ExteriorColor"]?.trim() || undefined,
-        interiorColor: row["InteriorColor"]?.trim() || undefined,
-        transmission: row["Transmission"]?.trim() || undefined,
-        description: row["WebDescription"]?.trim() ? fixEncoding(row["WebDescription"].trim()) : undefined,
-        images: row["PhotoUrl"]
-          ? row["PhotoUrl"].split(",").map((url: string) =>
+        trim: col(row, "Trim", "trim")?.trim() || undefined,
+        odometer: col(row, "Odometer", "Mileage", "Miles", "odometer", "mileage")
+          ? Number(col(row, "Odometer", "Mileage", "Miles", "odometer", "mileage").replace(/[^0-9]/g, ""))
+          : undefined,
+        exteriorColor: col(row, "ExteriorColor", "Exterior Color", "ExtColor", "exteriorColor")?.trim() || undefined,
+        interiorColor: col(row, "InteriorColor", "Interior Color", "IntColor", "interiorColor")?.trim() || undefined,
+        transmission: col(row, "Transmission", "transmission", "Trans")?.trim() || undefined,
+        description: rawDescription ? fixEncoding(rawDescription) : undefined,
+        images: rawPhotos
+          ? rawPhotos.split(",").map((url: string) =>
               url.trim().replace(
                 /imagesdl\.dealercenter\.net\/\d+\/\d+\//,
                 "imagesdl.dealercenter.net/1920/1440/"
               )
             ).filter(Boolean)
           : [],
-        videoUrl: (row["VideoUrl"] || row["VideoURL"])?.trim() || undefined,
+        videoUrl: rawVideo || undefined,
       };
     })
     .filter(Boolean) as Vehicle[];
+
+  return { vehicles, columns };
 }
