@@ -3,6 +3,7 @@ import {
   GetCommand,
   BatchWriteCommand,
   UpdateCommand,
+  DeleteCommand,
 } from "@aws-sdk/lib-dynamodb";
 import { docClient, TABLE_NAME } from "./dynamodb";
 import type { Vehicle, VehicleStatus } from "./parseInventory";
@@ -226,4 +227,13 @@ export async function markVehiclesAsSold(vins: string[]): Promise<void> {
   );
 
   await Promise.all(updates);
+}
+
+export async function deleteVehicle(vin: string): Promise<void> {
+  await docClient.send(
+    new DeleteCommand({
+      TableName: TABLE_NAME,
+      Key: { vin },
+    })
+  );
 }

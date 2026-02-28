@@ -9,12 +9,14 @@ interface VehicleEditPanelProps {
   vehicle: DynamoVehicle;
   onClose: () => void;
   onSaved: (vehicle: DynamoVehicle) => void;
+  onDeleted?: (vin: string) => void;
 }
 
 export default function VehicleEditPanel({
   vehicle,
   onClose,
   onSaved,
+  onDeleted,
 }: VehicleEditPanelProps) {
   const [manualPrice, setManualPrice] = useState(vehicle.manualPrice || "");
   const [manualDescription, setManualDescription] = useState(
@@ -33,6 +35,8 @@ export default function VehicleEditPanel({
   const [auctionUrl, setAuctionUrl] = useState(vehicle.auctionUrl || "");
   const [auctionDate, setAuctionDate] = useState(vehicle.auctionDate || "");
   const [saving, setSaving] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   async function handleSave() {
     setSaving(true);
@@ -251,6 +255,56 @@ export default function VehicleEditPanel({
             {saving ? "Saving..." : "Save Changes"}
           </button>
         </div>
+
+        {/* Delete — only for sold vehicles */}
+        {vehicle.status === "sold" && onDeleted && (
+          <div className="pt-4 border-t border-zinc-800/40">
+            {!confirmDelete ? (
+              <button
+                onClick={() => setConfirmDelete(true)}
+                className="w-full px-4 py-2.5 rounded-lg text-sm text-red-400 border border-red-500/30 hover:bg-red-500/10 transition"
+              >
+                Delete Vehicle
+              </button>
+            ) : (
+              <div className="space-y-3">
+                <p className="text-red-400 text-sm">
+                  Permanently delete this vehicle from the database? This cannot be undone.
+                </p>
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setConfirmDelete(false)}
+                    className="flex-1 px-4 py-2 rounded-lg text-sm text-zinc-400 hover:text-white hover:bg-zinc-800/50 transition"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={async () => {
+                      setDeleting(true);
+                      try {
+                        const res = await fetch("/api/admin/vehicles/update", {
+                          method: "DELETE",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ vin: vehicle.vin }),
+                        });
+                        if (res.ok) {
+                          onDeleted(vehicle.vin);
+                        }
+                      } catch (error) {
+                        console.error("Delete failed:", error);
+                      }
+                      setDeleting(false);
+                    }}
+                    disabled={deleting}
+                    className="flex-1 px-4 py-2 rounded-lg text-sm bg-red-600 text-white font-medium hover:bg-red-700 transition disabled:opacity-50"
+                  >
+                    {deleting ? "Deleting..." : "Confirm Delete"}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </Modal>
   );

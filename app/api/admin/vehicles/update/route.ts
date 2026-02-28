@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/admin";
-import { updateVehicleOverrides, getVehicleByVin } from "@/lib/vehicles";
+import { updateVehicleOverrides, getVehicleByVin, deleteVehicle } from "@/lib/vehicles";
 
 export async function PATCH(request: NextRequest) {
   try {
@@ -63,6 +63,33 @@ export async function PATCH(request: NextRequest) {
     console.error("Failed to update vehicle:", error);
     return NextResponse.json(
       { error: "Failed to update vehicle" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  try {
+    await requireAdmin();
+  } catch {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  try {
+    const body = await request.json();
+    const { vin } = body;
+
+    if (!vin || typeof vin !== "string") {
+      return NextResponse.json({ error: "VIN is required" }, { status: 400 });
+    }
+
+    await deleteVehicle(vin);
+
+    return NextResponse.json({ success: true, vin });
+  } catch (error) {
+    console.error("Failed to delete vehicle:", error);
+    return NextResponse.json(
+      { error: "Failed to delete vehicle" },
       { status: 500 }
     );
   }

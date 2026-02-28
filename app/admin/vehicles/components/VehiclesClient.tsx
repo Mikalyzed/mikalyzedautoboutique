@@ -258,6 +258,10 @@ export default function VehiclesClient({ vehicles: initialVehicles }: VehiclesCl
           vehicle={editingVehicle}
           onClose={() => setEditVin(null)}
           onSaved={handleSaved}
+          onDeleted={(vin) => {
+            setVehicles((prev) => prev.filter((v) => v.vin !== vin));
+            setEditVin(null);
+          }}
         />
       )}
     </div>
