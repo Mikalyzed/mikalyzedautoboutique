@@ -25,14 +25,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const vehicleName = `${vehicle.year} ${vehicle.make} ${vehicle.model}`;
   const shareTitle = `Check out this ${vehicleName} at Mikalyzed Auto Boutique`;
-  const image = vehicle.images?.[0];
+  const displayPrice = vehicle.manualPrice || vehicle.price;
+  const displayImages = vehicle.manualImages?.length ? vehicle.manualImages : vehicle.images;
+  const image = displayImages?.[0];
 
   return {
     title: vehicleName,
     description: shareTitle,
     openGraph: {
       title: shareTitle,
-      description: `${vehicleName} — ${vehicle.price} | Mikalyzed Auto Boutique`,
+      description: `${vehicleName} — ${displayPrice} | Mikalyzed Auto Boutique`,
       ...(image ? { images: [{ url: image, width: 1200, height: 630, alt: vehicleName }] } : {}),
       type: "website",
       siteName: "Mikalyzed Auto Boutique",
@@ -40,7 +42,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     twitter: {
       card: "summary_large_image",
       title: shareTitle,
-      description: `${vehicleName} — ${vehicle.price}`,
+      description: `${vehicleName} — ${displayPrice}`,
       ...(image ? { images: [image] } : {}),
     },
   };
@@ -63,6 +65,9 @@ export default async function VehicleDetailPage({ params }: PageProps) {
   const vehicle = await getVehicleByVin(vinFromUrl);
   const isAuction = !!vehicle?.auction;
   const isSold = vehicle?.status === "sold" && !isAuction;
+  const displayPrice = vehicle?.manualPrice || vehicle?.price;
+  const displayDescription = vehicle?.manualDescription || vehicle?.description;
+  const displayImages = vehicle?.manualImages?.length ? vehicle.manualImages : vehicle?.images;
 
   // Compute auction countdown text (server-side)
   let auctionLabel = "";
@@ -90,11 +95,11 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 
   // Fetch similar vehicles by price
   const allAvailable = await getAvailableVehicles();
-  const currentPrice = parseInt((vehicle.price || "").replace(/[^0-9]/g, ""), 10) || 0;
+  const currentPrice = parseInt((displayPrice || "").replace(/[^0-9]/g, ""), 10) || 0;
   const recommended = allAvailable
     .filter((v) => v.vin !== vehicle.vin && !v.hidden)
     .map((v) => {
-      const p = parseInt((v.price || "").replace(/[^0-9]/g, ""), 10) || 0;
+      const p = parseInt((v.manualPrice || v.price || "").replace(/[^0-9]/g, ""), 10) || 0;
       return { ...v, numPrice: p, diff: Math.abs(p - currentPrice) };
     })
     .sort((a, b) => a.diff - b.diff)
@@ -117,14 +122,14 @@ export default async function VehicleDetailPage({ params }: PageProps) {
     ...(vehicle.exteriorColor && { color: vehicle.exteriorColor }),
     ...(vehicle.transmission && { vehicleTransmission: vehicle.transmission }),
     vehicleIdentificationNumber: vehicle.vin,
-    ...(vehicle.images?.[0] && { image: vehicle.images[0] }),
+    ...(displayImages?.[0] && { image: displayImages[0] }),
     offers: {
       "@type": "Offer",
       availability: isSold
         ? "https://schema.org/SoldOut"
         : "https://schema.org/InStock",
-      ...(vehicle.price && vehicle.price !== "Call" && vehicle.price !== "Sold" && {
-        price: vehicle.price.replace(/[^0-9]/g, ""),
+      ...(displayPrice && displayPrice !== "Call" && displayPrice !== "Sold" && {
+        price: displayPrice.replace(/[^0-9]/g, ""),
         priceCurrency: "USD",
       }),
       seller: {
@@ -191,7 +196,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
           {vehicle.model}
         </h1>
         <p className={`text-2xl font-light ${isAuction ? "text-amber-400" : "text-[#dffd6e]"}`}>
-          {isAuction ? auctionLabel : vehicle.price}
+          {isAuction ? auctionLabel : displayPrice}
         </p>
       </div>
 
@@ -199,7 +204,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 
         {/* IMAGE GALLERY */}
         <div>
-          <ImageGallery images={vehicle.images ?? []} videoUrl={vehicle.videoUrl} />
+          <ImageGallery images={displayImages ?? []} videoUrl={vehicle.videoUrl} />
         </div>
 
         {/* VEHICLE INFO */}
@@ -216,7 +221,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 
           {/* PRICE / AUCTION COUNTDOWN - hidden on mobile (shown above gallery), visible on desktop */}
           <p className={`hidden lg:block text-4xl font-light mb-8 ${isAuction ? "text-amber-400" : "text-[#dffd6e]"}`}>
-            {isAuction ? auctionLabel : vehicle.price}
+            {isAuction ? auctionLabel : displayPrice}
           </p>
 
           {/* ACTION BUTTONS — hidden for sold vehicles */}
@@ -297,11 +302,11 @@ export default async function VehicleDetailPage({ params }: PageProps) {
           )}
 
           {/* DESCRIPTION */}
-          {vehicle.description && (
+          {displayDescription && (
             <div className="mt-10">
               <h3 className="text-xl font-normal mb-3 text-white tracking-tight">Description</h3>
               <p className="text-gray-400 leading-relaxed font-light">
-                {vehicle.description}
+                {displayDescription}
               </p>
             </div>
           )}
@@ -356,8 +361,8 @@ export default async function VehicleDetailPage({ params }: PageProps) {
               year: r.year,
               make: r.make,
               model: r.model,
-              price: r.price,
-              images: r.images,
+              price: r.manualPrice || r.price,
+              images: r.manualImages?.length ? r.manualImages : r.images,
               auction: (r as unknown as Record<string, unknown>).auction as boolean | undefined,
               auctionDate: (r as unknown as Record<string, unknown>).auctionDate as string | undefined,
             }))}

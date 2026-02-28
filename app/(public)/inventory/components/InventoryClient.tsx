@@ -67,15 +67,15 @@ export default function InventoryClient({ inventory }: InventoryClientProps) {
     switch (sortOrder) {
       case "price-high":
         sorted.sort((a, b) => {
-          const pa = parseFloat(a.price.replace(/[^0-9.-]+/g, "")) || 0;
-          const pb = parseFloat(b.price.replace(/[^0-9.-]+/g, "")) || 0;
+          const pa = parseFloat((a.manualPrice || a.price).replace(/[^0-9.-]+/g, "")) || 0;
+          const pb = parseFloat((b.manualPrice || b.price).replace(/[^0-9.-]+/g, "")) || 0;
           return pb - pa;
         });
         break;
       case "price-low":
         sorted.sort((a, b) => {
-          const pa = parseFloat(a.price.replace(/[^0-9.-]+/g, "")) || 0;
-          const pb = parseFloat(b.price.replace(/[^0-9.-]+/g, "")) || 0;
+          const pa = parseFloat((a.manualPrice || a.price).replace(/[^0-9.-]+/g, "")) || 0;
+          const pb = parseFloat((b.manualPrice || b.price).replace(/[^0-9.-]+/g, "")) || 0;
           return pa - pb;
         });
         break;
@@ -273,9 +273,9 @@ export default function InventoryClient({ inventory }: InventoryClientProps) {
 
               {/* Image */}
               <div className="relative h-64 bg-zinc-800 overflow-hidden">
-                {car.images && car.images.length > 0 ? (
+                {((car.manualImages?.length ? car.manualImages : car.images) ?? []).length > 0 ? (
                   <Image
-                    src={car.images[0]}
+                    src={(car.manualImages?.length ? car.manualImages : car.images)[0]}
                     alt={`${car.year} ${car.make} ${car.model}`}
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-500"
@@ -311,7 +311,7 @@ export default function InventoryClient({ inventory }: InventoryClientProps) {
                           return "Auction Ended";
                         })()
                       : "Learn More"
-                    : car.price}
+                    : car.manualPrice || car.price}
                 </p>
 
                 <div className="flex gap-4 text-sm text-gray-400 font-light">

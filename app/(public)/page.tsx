@@ -121,9 +121,9 @@ export default async function HomePage() {
 
                 {/* Image */}
                 <div className="relative h-64 bg-zinc-800 overflow-hidden">
-                  {vehicle.images && vehicle.images.length > 0 ? (
+                  {((vehicle.manualImages?.length ? vehicle.manualImages : vehicle.images) ?? []).length > 0 ? (
                     <Image
-                      src={vehicle.images[0]}
+                      src={(vehicle.manualImages?.length ? vehicle.manualImages : vehicle.images)[0]}
                       alt={`${vehicle.year} ${vehicle.make} ${vehicle.model}`}
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-500"
@@ -148,7 +148,7 @@ export default async function HomePage() {
                   <p className={`text-2xl font-light mb-4 ${(vehicle as unknown as Record<string, unknown>).auction ? "text-amber-400" : "text-[#dffd6e]"}`}>
                     {(() => {
                       const v = vehicle as unknown as Record<string, unknown>;
-                      if (!v.auction) return vehicle.price;
+                      if (!v.auction) return (v.manualPrice as string) || vehicle.price;
                       if (v.auctionDate) {
                         const daysLeft = Math.ceil(
                           (new Date(v.auctionDate + "T00:00:00" as string).getTime() - Date.now()) / (1000 * 60 * 60 * 24)
