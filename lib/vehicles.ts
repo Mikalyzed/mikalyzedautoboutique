@@ -133,6 +133,14 @@ export async function upsertVehicles(vehicles: Vehicle[]): Promise<void> {
             adminOverrides[field] = rec[field];
           }
         }
+
+        // Auto-clear manualPrice if the new CSV price now matches the override
+        if (existing.manualPrice) {
+          const normalize = (p: string) => p.replace(/[^0-9]/g, "");
+          if (normalize(v.price) === normalize(existing.manualPrice)) {
+            delete adminOverrides.manualPrice;
+          }
+        }
       }
 
       return {
