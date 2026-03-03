@@ -49,6 +49,13 @@ export default function ContactForm() {
         if (typeof window !== "undefined" && (window as { gtag?: (...args: unknown[]) => void }).gtag) {
           (window as { gtag: (...args: unknown[]) => void }).gtag("event", "conversion_event_contact_1");
         }
+        if (typeof window !== "undefined" && (window as { gtag?: (...args: unknown[]) => void }).gtag) {
+          (window as { gtag: (...args: unknown[]) => void }).gtag("event", "contact_form_submit", {
+            event_category: "lead",
+            event_label: "general_contact",
+            value: 1,
+          });
+        }
       }
     } catch (error) {
       console.error("Contact form submit failed:", error);

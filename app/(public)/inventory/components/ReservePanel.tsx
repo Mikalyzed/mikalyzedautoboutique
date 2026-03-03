@@ -43,6 +43,17 @@ export default function ReservePanel({ open, onClose, vehicleName, vehicleVin }:
         if (typeof window !== "undefined") {
           (window as { fbq?: (...args: unknown[]) => void }).fbq?.("track", "Contact");
           (window as { gtag?: (...args: unknown[]) => void }).gtag?.("event", "conversion_event_contact_1");
+          (window as { gtag?: (...args: unknown[]) => void }).gtag?.("event", "reserve_form_submit", {
+            event_category: "lead",
+            event_label: "the_reserve",
+            value: 1,
+          });
+          (window as { gtag?: (...args: unknown[]) => void }).gtag?.("event", "vehicle_reservation", {
+            event_category: "lead",
+            event_label: "vehicle_reserve",
+            vehicle_info: vehicleName || "",
+            value: 1,
+          });
         }
       }
     } catch (error) {

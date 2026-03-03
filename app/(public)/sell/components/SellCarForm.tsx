@@ -121,6 +121,17 @@ export default function SellCarForm() {
       });
       if (res.ok) {
         setIsSubmitted(true);
+        if (typeof window !== "undefined" && (window as { fbq?: (...args: unknown[]) => void }).fbq) {
+          (window as { fbq: (...args: unknown[]) => void }).fbq("track", "Contact");
+        }
+        if (typeof window !== "undefined" && (window as { gtag?: (...args: unknown[]) => void }).gtag) {
+          (window as { gtag: (...args: unknown[]) => void }).gtag("event", "conversion_event_contact_1");
+          (window as { gtag: (...args: unknown[]) => void }).gtag("event", "consignment_form_submit", {
+            event_category: "lead",
+            event_label: "consignment",
+            value: 1,
+          });
+        }
       }
     } catch (error) {
       console.error("Sell car form submit failed:", error);

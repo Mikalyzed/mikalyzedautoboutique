@@ -6,16 +6,29 @@ import ReservePanel from "./ReservePanel";
 interface VehicleActionsProps {
   vehicleName: string;
   vehicleVin: string;
+  vehiclePrice?: string;
   isAuction?: boolean;
   auctionUrl?: string;
   auctionHouse?: string;
 }
 
-export default function VehicleActions({ vehicleName, vehicleVin, isAuction, auctionUrl, auctionHouse }: VehicleActionsProps) {
+export default function VehicleActions({ vehicleName, vehicleVin, vehiclePrice, isAuction, auctionUrl, auctionHouse }: VehicleActionsProps) {
   const [reserveOpen, setReserveOpen] = useState(false);
   const [contactOpen, setContactOpen] = useState(false);
   const [financingOpen, setFinancingOpen] = useState(false);
   const contactRef = useRef<HTMLDivElement>(null);
+
+  // Fire view_vehicle event on page load
+  useEffect(() => {
+    if (typeof window !== "undefined" && (window as { gtag?: (...args: unknown[]) => void }).gtag) {
+      (window as { gtag: (...args: unknown[]) => void }).gtag("event", "view_vehicle", {
+        event_category: "engagement",
+        event_label: vehicleName || "",
+        vehicle_price: vehiclePrice || "",
+        value: 0,
+      });
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Close contact popover on outside click
   useEffect(() => {

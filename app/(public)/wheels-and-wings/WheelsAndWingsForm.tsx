@@ -57,6 +57,20 @@ export default function WheelsAndWingsForm() {
             "conversion_event_contact_1"
           );
         }
+        if (
+          typeof window !== "undefined" &&
+          (window as { gtag?: (...args: unknown[]) => void }).gtag
+        ) {
+          (window as { gtag: (...args: unknown[]) => void }).gtag(
+            "event",
+            "wheels_wings_form_submit",
+            {
+              event_category: "lead",
+              event_label: "wheels_and_wings",
+              value: 1,
+            }
+          );
+        }
 
         window.location.href = INSTAGRAM_URL;
       }
