@@ -39,6 +39,7 @@ export default function ReservePanel({ open, onClose, vehicleName, vehicleVin }:
         }),
       });
       if (res.ok) {
+        window.alert("SUCCESS BLOCK HIT");
         console.log("FORM SUCCESS - about to fire events");
         setSubmitted(true);
         if (typeof window !== "undefined") {
