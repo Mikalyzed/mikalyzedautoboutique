@@ -39,8 +39,6 @@ export default function ReservePanel({ open, onClose, vehicleName, vehicleVin }:
         }),
       });
       if (res.ok) {
-        window.alert("SUCCESS BLOCK HIT");
-        console.log("FORM SUCCESS - about to fire events");
         setSubmitted(true);
         if (typeof window !== "undefined") {
           (window as { fbq?: (...args: unknown[]) => void }).fbq?.("track", "Contact");
@@ -57,9 +55,6 @@ export default function ReservePanel({ open, onClose, vehicleName, vehicleVin }:
             value: 1,
           });
         }
-        console.log("EVENTS FIRED");
-      } else {
-        console.log("FORM FAILED - res.status:", res.status);
       }
     } catch (error) {
       console.error("Reserve submit failed:", error);
