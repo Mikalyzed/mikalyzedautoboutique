@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 export default function ReserveAccessForm() {
+  const formLoadedAt = useRef(Date.now());
+  const [honeypot, setHoneypot] = useState("");
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -65,6 +67,8 @@ export default function ReserveAccessForm() {
           vehiclesToStore: vehicleList || formData.vehicles,
           collectionMessage: formData.message,
           source: "reserve-page",
+          _hp: honeypot,
+          _ts: formLoadedAt.current,
         }),
       });
 
@@ -112,6 +116,17 @@ export default function ReserveAccessForm() {
       className="bg-zinc-900/30 backdrop-blur-xl p-8 rounded-3xl border border-zinc-800/40 hover:border-[#dffd6e]/30 transition-all duration-700 scroll-reveal shadow-2xl"
       style={{ animationDelay: "200ms" }}
     >
+      {/* Honeypot — invisible to humans, bots auto-fill it */}
+      <input
+        type="text"
+        name="_hp"
+        value={honeypot}
+        onChange={(e) => setHoneypot(e.target.value)}
+        autoComplete="off"
+        tabIndex={-1}
+        style={{ position: "absolute", left: "-9999px", opacity: 0, height: 0, width: 0 }}
+      />
+
       <p className="text-white text-lg font-light tracking-tight mb-1">Request Access</p>
       <p className="text-gray-500 text-sm font-extralight mb-6">All inquiries are handled with complete discretion.</p>
 

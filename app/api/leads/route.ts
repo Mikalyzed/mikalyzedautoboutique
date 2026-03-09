@@ -48,7 +48,21 @@ export async function POST(request: NextRequest) {
       imageUrls,
       // Contact fields
       service,
+      // Bot protection fields
+      _hp: honeypot,
+      _ts: formLoadedAt,
     } = body;
+
+    // Bot check: honeypot field should be empty (bots auto-fill hidden fields)
+    if (honeypot) {
+      // Silently accept so bots don't know they were caught
+      return NextResponse.json({ lead: { id: "ok" } }, { status: 201 });
+    }
+
+    // Bot check: form must have been open for at least 3 seconds
+    if (formLoadedAt && Date.now() - formLoadedAt < 3000) {
+      return NextResponse.json({ lead: { id: "ok" } }, { status: 201 });
+    }
 
     if (!name || !email) {
       return NextResponse.json(

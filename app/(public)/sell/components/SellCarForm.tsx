@@ -3,10 +3,14 @@
 import Image from "next/image";
 import { useState, useRef } from "react";
 
+const BOT_FIELD_STYLE = { position: "absolute" as const, left: "-9999px", opacity: 0, height: 0, width: 0 };
+
 const inputClass =
   "w-full bg-black/20 backdrop-blur-sm border border-zinc-800/50 rounded-lg px-4 py-2.5 text-white placeholder-gray-600 focus:outline-none focus:border-[#dffd6e] transition font-light";
 
 export default function SellCarForm() {
+  const formLoadedAt = useRef(Date.now());
+  const [honeypot, setHoneypot] = useState("");
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     firstName: "",
@@ -117,6 +121,8 @@ export default function SellCarForm() {
           message: formData.message,
           imageUrls,
           source: "sell-car-page",
+          _hp: honeypot,
+          _ts: formLoadedAt.current,
         }),
       });
       if (res.ok) {
@@ -161,6 +167,17 @@ export default function SellCarForm() {
 
   return (
     <div className="bg-zinc-900/30 backdrop-blur-xl p-8 rounded-3xl border border-zinc-800/40 animate-glow-pulse shadow-2xl">
+      {/* Honeypot — invisible to humans, bots auto-fill it */}
+      <input
+        type="text"
+        name="_hp"
+        value={honeypot}
+        onChange={(e) => setHoneypot(e.target.value)}
+        autoComplete="off"
+        tabIndex={-1}
+        style={BOT_FIELD_STYLE}
+      />
+
       {/* Step indicator */}
       <div className="flex items-center gap-3 mb-8">
         <div className="flex items-center gap-2">

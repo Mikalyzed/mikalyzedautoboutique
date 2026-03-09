@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 interface ReservePanelProps {
   open: boolean;
@@ -10,6 +10,8 @@ interface ReservePanelProps {
 }
 
 export default function ReservePanel({ open, onClose, vehicleName, vehicleVin }: ReservePanelProps) {
+  const formLoadedAt = useRef(Date.now());
+  const [honeypot, setHoneypot] = useState("");
   const [form, setForm] = useState({ firstName: "", lastName: "", email: "", phone: "", financing: false });
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -36,6 +38,8 @@ export default function ReservePanel({ open, onClose, vehicleName, vehicleVin }:
           financing: form.financing,
           message: `Reservation request for ${vehicleName}${form.financing ? " — Interested in financing" : ""}`,
           source: "vehicle-detail",
+          _hp: honeypot,
+          _ts: formLoadedAt.current,
         }),
       });
       if (res.ok) {
@@ -129,6 +133,16 @@ export default function ReservePanel({ open, onClose, vehicleName, vehicleVin }:
               <h3 className="text-[#dffd6e] text-lg font-light mb-4">Contact Information</h3>
 
               <form onSubmit={handleSubmit} className="space-y-3">
+                {/* Honeypot — invisible to humans, bots auto-fill it */}
+                <input
+                  type="text"
+                  name="_hp"
+                  value={honeypot}
+                  onChange={(e) => setHoneypot(e.target.value)}
+                  autoComplete="off"
+                  tabIndex={-1}
+                  style={{ position: "absolute", left: "-9999px", opacity: 0, height: 0, width: 0 }}
+                />
                 <input
                   type="text"
                   name="firstName"
