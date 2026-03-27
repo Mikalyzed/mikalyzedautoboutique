@@ -157,7 +157,7 @@ export async function POST(request: NextRequest) {
             vin: sellVin || "",
             condition: condition || "",
             additionalDetails: message || "",
-            imageUrls: imageUrls || [],
+            imageUrls: imageUrls?.length ? imageUrls.join("\n") : "",
             source: "mikalyzedautoboutique.com",
           }),
         });
@@ -226,7 +226,7 @@ export async function POST(request: NextRequest) {
               ${row("Interior Color", interiorColor)}
               ${row("Details", message)}
             </table>
-            ${imageUrls?.length ? `<p style="color:#888;margin-top:16px">${imageUrls.length} image(s) attached to submission</p>` : ""}
+            ${imageUrls?.length ? `<div style="margin-top:16px"><p style="color:#888;margin-bottom:8px">${imageUrls.length} image(s):</p>${imageUrls.map((url: string, i: number) => `<p style="margin:4px 0"><a href="${url}" style="color:#dffd6e" target="_blank">Image ${i + 1}</a></p>`).join("")}</div>` : ""}
           `);
         } else if (formType === "contact") {
           subject = `New Contact Form — ${name}`;
