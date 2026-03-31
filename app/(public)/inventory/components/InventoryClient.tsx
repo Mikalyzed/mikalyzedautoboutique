@@ -14,7 +14,7 @@ export default function InventoryClient({ inventory }: InventoryClientProps) {
   const [selectedMake, setSelectedMake] = useState("All");
   const [selectedYear, setSelectedYear] = useState("All");
   const [selectedTransmission, setSelectedTransmission] = useState("All");
-  const [sortOrder, setSortOrder] = useState("newest");
+  const [sortOrder, setSortOrder] = useState("price-high");
   const [displayCount, setDisplayCount] = useState(15);
 
   // Derive unique filter options from actual inventory data
