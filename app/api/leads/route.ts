@@ -108,6 +108,7 @@ export async function POST(request: NextRequest) {
             vehicleModel: vehicle?.model || "",
             vehicleVin,
             financing: financing ?? false,
+            message: message || "",
             source: "mikalyzedautoboutique.com",
           }),
         });
