@@ -46,6 +46,8 @@ export async function POST(request: NextRequest) {
       exteriorColor,
       interiorColor,
       imageUrls,
+      // Make offer fields
+      offerAmount,
       // Contact fields
       service,
       // Bot protection fields
@@ -186,15 +188,19 @@ export async function POST(request: NextRequest) {
           const vehicleName = vehicle
             ? `${vehicle.year} ${vehicle.make} ${vehicle.model}`
             : vehicleVin;
-          subject = `New Vehicle Reservation — ${vehicleName}`;
+          const isOffer = source === "make-offer";
+          subject = isOffer
+            ? `New Vehicle Offer — ${vehicleName}`
+            : `New Vehicle Reservation — ${vehicleName}`;
           htmlBody = wrapper(`
-            <h2 style="color:#dffd6e;margin:0 0 20px">New Vehicle Reservation</h2>
+            <h2 style="color:#dffd6e;margin:0 0 20px">${isOffer ? "New Vehicle Offer" : "New Vehicle Reservation"}</h2>
             <table style="border-collapse:collapse;width:100%">
               ${row("Name", name)}
               ${row("Email", email)}
               ${row("Phone", phone)}
               ${row("Vehicle", vehicleName)}
               ${row("VIN", vehicleVin)}
+              ${isOffer && offerAmount ? row("Offer Amount", `$${Number(offerAmount).toLocaleString()}`) : ""}
               ${row("Financing", financing ? "Yes" : "No")}
             </table>
           `);

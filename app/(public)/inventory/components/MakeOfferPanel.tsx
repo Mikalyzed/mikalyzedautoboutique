@@ -13,7 +13,7 @@ interface MakeOfferPanelProps {
 export default function MakeOfferPanel({ open, onClose, vehicleName, vehicleVin, vehiclePrice }: MakeOfferPanelProps) {
   const formLoadedAt = useRef(Date.now());
   const [honeypot, setHoneypot] = useState("");
-  const [form, setForm] = useState({ firstName: "", lastName: "", email: "", phone: "", offer: "" });
+  const [form, setForm] = useState({ firstName: "", lastName: "", email: "", phone: "", offer: "", financing: false });
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [offerError, setOfferError] = useState("");
@@ -64,8 +64,9 @@ export default function MakeOfferPanel({ open, onClose, vehicleName, vehicleVin,
           phone: form.phone,
           vehicleVin,
           formType: "reserve",
-          financing: false,
-          message: `Make an Offer for ${vehicleName} — Offer: ${formatCurrency(form.offer)} (Asking: ${vehiclePrice})`,
+          financing: form.financing,
+          offerAmount: offerNum,
+          message: `Make an Offer for ${vehicleName} — Offer: ${formatCurrency(form.offer)} (Asking: ${vehiclePrice})${form.financing ? " — Interested in financing" : ""}`,
           source: "make-offer",
           _hp: honeypot,
           _ts: formLoadedAt.current,
@@ -237,6 +238,34 @@ export default function MakeOfferPanel({ open, onClose, vehicleName, vehicleVin,
                   onChange={handleChange}
                   className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-3.5 text-white placeholder-zinc-500 focus:outline-none focus:border-[#dffd6e] transition font-light"
                 />
+
+                <div className="py-2">
+                  <p className="text-zinc-400 text-sm font-light mb-2">Looking to finance?</p>
+                  <div className="flex gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setForm((prev) => ({ ...prev, financing: true }))}
+                      className={`flex-1 py-2.5 rounded-lg text-sm font-light border transition ${
+                        form.financing
+                          ? "bg-[#dffd6e]/10 border-[#dffd6e] text-[#dffd6e]"
+                          : "bg-zinc-900 border-zinc-700 text-zinc-400 hover:border-zinc-500"
+                      }`}
+                    >
+                      Yes
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setForm((prev) => ({ ...prev, financing: false }))}
+                      className={`flex-1 py-2.5 rounded-lg text-sm font-light border transition ${
+                        !form.financing
+                          ? "bg-[#dffd6e]/10 border-[#dffd6e] text-[#dffd6e]"
+                          : "bg-zinc-900 border-zinc-700 text-zinc-400 hover:border-zinc-500"
+                      }`}
+                    >
+                      No
+                    </button>
+                  </div>
+                </div>
 
                 <button
                   type="submit"
