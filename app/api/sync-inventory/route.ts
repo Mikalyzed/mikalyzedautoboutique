@@ -63,20 +63,22 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     oldVehicles = [];
   }
 
-  // 5. Safety check: reject sync if incoming CSV would mark too many vehicles as sold
-  //    This prevents partial/corrupt CSV exports from wiping out active inventory
+  // 5. Diff: vehicles in old but NOT in new → candidates for sold marking
+  //    Skip auction vehicles and vehicles not sourced from DealerCenter
   const nonAuctionOld = oldVehicles.filter((v) => !v.auction);
-  const potentiallySold = nonAuctionOld.filter((v) => !newVins.has(v.vin));
-  if (nonAuctionOld.length > 10 && potentiallySold.length > nonAuctionOld.length * 0.3) {
+  const dealerCenterOld = nonAuctionOld.filter((v) => (v as Record<string, unknown>).dataSource === "dealercenter");
+  const potentiallySold = dealerCenterOld.filter((v) => !newVins.has(v.vin));
+
+  // 6. Safety check: reject sync if incoming CSV would mark too many vehicles as sold
+  //    This prevents partial/corrupt CSV exports from wiping out active inventory
+  if (dealerCenterOld.length > 10 && potentiallySold.length > dealerCenterOld.length * 0.3) {
     return NextResponse.json({
       error: "Sync rejected: too many vehicles would be marked as sold",
-      details: `CSV has ${newVins.size} vehicles, but ${potentiallySold.length} of ${nonAuctionOld.length} active vehicles would be marked sold. This looks like a partial export.`,
+      details: `CSV has ${newVins.size} vehicles, but ${potentiallySold.length} of ${dealerCenterOld.length} DealerCenter vehicles would be marked sold. This looks like a partial export.`,
       wouldMarkSold: potentiallySold.map((v) => `${v.year} ${v.make} ${v.model} (${v.vin})`),
     }, { status: 400 });
   }
 
-  // 6. Diff: vehicles in old but NOT in new → mark as sold
-  //    Skip auction vehicles — they were intentionally removed from DealerCenter
   const newlySold = potentiallySold;
   const newlySoldVins = newlySold.map((v) => v.vin);
 

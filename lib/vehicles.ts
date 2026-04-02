@@ -148,6 +148,7 @@ export async function upsertVehicles(vehicles: Vehicle[]): Promise<void> {
           Item: {
             ...v,
             images,
+            dataSource: "dealercenter",
             updatedAt: now,
             createdAt: existing?.createdAt || now,
             ...adminOverrides,
@@ -216,12 +217,16 @@ export async function markVehiclesAsSold(vins: string[]): Promise<void> {
   const now = new Date().toISOString();
   const today = now.split("T")[0];
 
-  const updates = vins.map((vin) =>
-    docClient.send(
+  // Fetch current prices before marking sold so we can preserve them
+  const updates = vins.map(async (vin) => {
+    const vehicle = await getVehicleByVin(vin);
+    const lastPrice = vehicle?.price && vehicle.price !== "Sold" ? vehicle.price : undefined;
+
+    await docClient.send(
       new UpdateCommand({
         TableName: TABLE_NAME,
         Key: { vin },
-        UpdateExpression: "SET #s = :sold, soldDate = :date, updatedAt = :now, price = :price, featured = :f",
+        UpdateExpression: `SET #s = :sold, soldDate = :date, updatedAt = :now, price = :price, featured = :f${lastPrice ? ", lastPrice = :lp" : ""}`,
         ExpressionAttributeNames: { "#s": "status" },
         ExpressionAttributeValues: {
           ":sold": "sold",
@@ -229,10 +234,11 @@ export async function markVehiclesAsSold(vins: string[]): Promise<void> {
           ":now": now,
           ":price": "Sold",
           ":f": false,
+          ...(lastPrice ? { ":lp": lastPrice } : {}),
         },
       })
-    )
-  );
+    );
+  });
 
   await Promise.all(updates);
 }

@@ -62,11 +62,14 @@ export function parseCSV(csvContent: string): Vehicle[] {
 }
 
 export function parseCSVWithDiagnostics(csvContent: string): ParseResult {
+  // Strip UTF-8 BOM if present (common in Windows-generated CSVs, breaks csv-parse)
+  const withoutBom = csvContent.replace(/^\uFEFF/, "");
+
   // The CSV was exported with corrupted encoding — all special chars became U+FFFD.
   // Replace with a safe placeholder before CSV parsing (to avoid breaking CSV quoting),
   // then do context-aware recovery on parsed field values.
   const PLACEHOLDER = "\uE000";
-  const fileContent = csvContent.replace(/\uFFFD/g, PLACEHOLDER);
+  const fileContent = withoutBom.replace(/\uFFFD/g, PLACEHOLDER);
 
   const records = parse(fileContent, {
     columns: true,
