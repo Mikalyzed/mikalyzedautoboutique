@@ -63,20 +63,32 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     oldVehicles = [];
   }
 
-  // 5. Diff: vehicles in old but NOT in new → mark as sold
+  // 5. Safety check: reject sync if incoming CSV would mark too many vehicles as sold
+  //    This prevents partial/corrupt CSV exports from wiping out active inventory
+  const nonAuctionOld = oldVehicles.filter((v) => !v.auction);
+  const potentiallySold = nonAuctionOld.filter((v) => !newVins.has(v.vin));
+  if (nonAuctionOld.length > 10 && potentiallySold.length > nonAuctionOld.length * 0.3) {
+    return NextResponse.json({
+      error: "Sync rejected: too many vehicles would be marked as sold",
+      details: `CSV has ${newVins.size} vehicles, but ${potentiallySold.length} of ${nonAuctionOld.length} active vehicles would be marked sold. This looks like a partial export.`,
+      wouldMarkSold: potentiallySold.map((v) => `${v.year} ${v.make} ${v.model} (${v.vin})`),
+    }, { status: 400 });
+  }
+
+  // 6. Diff: vehicles in old but NOT in new → mark as sold
   //    Skip auction vehicles — they were intentionally removed from DealerCenter
-  const newlySold = oldVehicles.filter((v) => !newVins.has(v.vin) && !v.auction);
+  const newlySold = potentiallySold;
   const newlySoldVins = newlySold.map((v) => v.vin);
 
-  // 6. Mark sold vehicles in DynamoDB
+  // 7. Mark sold vehicles in DynamoDB
   if (newlySoldVins.length > 0) {
     await markVehiclesAsSold(newlySoldVins);
   }
 
-  // 7. Upsert all vehicles from the new CSV
+  // 8. Upsert all vehicles from the new CSV
   await upsertVehicles(newVehicles);
 
-  // 8. Return summary (includes CSV column names for debugging)
+  // 9. Return summary (includes CSV column names for debugging)
   const sample = newVehicles[0];
   return NextResponse.json({
     success: true,
