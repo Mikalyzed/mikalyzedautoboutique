@@ -16,12 +16,8 @@ export default function MakeOfferPanel({ open, onClose, vehicleName, vehicleVin,
   const [form, setForm] = useState({ firstName: "", lastName: "", email: "", phone: "", offer: "", financing: false });
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const [offerError, setOfferError] = useState("");
 
-  // Parse numeric asking price
-  const askingPrice = parseInt((vehiclePrice || "").replace(/[^0-9]/g, ""), 10) || 0;
-  const minimumOffer = Math.ceil(askingPrice * 0.8);
-  const hasValidPrice = askingPrice > 0 && vehiclePrice !== "Call" && vehiclePrice !== "Sold";
+  const hasValidPrice = vehiclePrice && vehiclePrice !== "Call" && vehiclePrice !== "Sold";
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
@@ -29,7 +25,6 @@ export default function MakeOfferPanel({ open, onClose, vehicleName, vehicleVin,
       // Only allow digits
       const digits = value.replace(/[^0-9]/g, "");
       setForm((prev) => ({ ...prev, offer: digits }));
-      setOfferError("");
     } else {
       setForm((prev) => ({ ...prev, [name]: value }));
     }
@@ -44,13 +39,7 @@ export default function MakeOfferPanel({ open, onClose, vehicleName, vehicleVin,
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    // Validate minimum offer
     const offerNum = parseInt(form.offer, 10) || 0;
-    if (hasValidPrice && offerNum < minimumOffer) {
-      setOfferError(`Minimum offer is ${formatCurrency(minimumOffer)} (80% of asking price)`);
-      return;
-    }
-
     setSubmitting(true);
     try {
       const res = await fetch("/api/leads", {
@@ -157,7 +146,6 @@ export default function MakeOfferPanel({ open, onClose, vehicleName, vehicleVin,
               )}
               <p className="text-zinc-400 font-light text-sm mb-6">
                 Submit your best offer and our team will get back to you.
-                {hasValidPrice && ` Minimum offer: ${formatCurrency(minimumOffer)}.`}
               </p>
 
               <div className="h-px bg-zinc-800/50 mb-6" />
@@ -188,14 +176,9 @@ export default function MakeOfferPanel({ open, onClose, vehicleName, vehicleVin,
                       required
                       value={form.offer ? parseInt(form.offer, 10).toLocaleString() : ""}
                       onChange={handleChange}
-                      className={`w-full bg-zinc-900 border rounded-lg pl-8 pr-4 py-3.5 text-white placeholder-zinc-500 focus:outline-none transition font-light text-lg ${
-                        offerError ? "border-red-500 focus:border-red-500" : "border-zinc-700 focus:border-[#dffd6e]"
-                      }`}
+                      className="w-full bg-zinc-900 border border-zinc-700 rounded-lg pl-8 pr-4 py-3.5 text-white placeholder-zinc-500 focus:outline-none focus:border-[#dffd6e] transition font-light text-lg"
                     />
                   </div>
-                  {offerError && (
-                    <p className="text-red-400 text-xs mt-1.5 font-light">{offerError}</p>
-                  )}
                 </div>
 
                 <div className="h-px bg-zinc-800/50 my-2" />
