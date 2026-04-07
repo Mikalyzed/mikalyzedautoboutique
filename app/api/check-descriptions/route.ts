@@ -25,7 +25,9 @@ export async function GET(request: NextRequest) {
 
   const vehicles = await getAvailableVehicles();
   const missing = vehicles.filter(
-    (v) => !v.description || v.description.trim() === ""
+    (v) =>
+      (!v.description || v.description.trim() === "") &&
+      (!v.manualDescription || v.manualDescription.trim() === "")
   );
 
   if (missing.length === 0) {
