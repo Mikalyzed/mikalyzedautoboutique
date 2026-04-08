@@ -66,7 +66,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   // 5. Diff: vehicles in old but NOT in new → candidates for sold marking
   //    Skip auction vehicles and vehicles not sourced from DealerCenter
   const nonAuctionOld = oldVehicles.filter((v) => !v.auction);
-  const dealerCenterOld = nonAuctionOld.filter((v) => (v as Record<string, unknown>).dataSource === "dealercenter");
+  const dealerCenterOld = nonAuctionOld.filter((v) => (v as unknown as Record<string, unknown>).dataSource === "dealercenter");
   const potentiallySold = dealerCenterOld.filter((v) => !newVins.has(v.vin));
 
   // 6. Safety check: reject sync if incoming CSV would mark too many vehicles as sold
