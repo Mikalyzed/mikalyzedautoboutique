@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 const DESCRIPTION_NOTIFY_EMAIL =
   process.env.DESCRIPTION_NOTIFY_EMAIL || "andrejp@mikalyzedautoboutique.com";
 const DESCRIPTION_NOTIFY_CC =
-  process.env.DESCRIPTION_NOTIFY_CC || "fernandob@mikalyzedautoboutique.com";
+  process.env.DESCRIPTION_NOTIFY_CC || "fernandob@mikalyzedautoboutique.com,karlag@mikalyzed.com,michaelq@mikalyzed.com,mikez@mikalyzed.com";
 
 export async function GET(request: NextRequest) {
   // Protect with API key or Vercel Cron secret
