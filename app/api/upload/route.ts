@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
 
     for (const file of files) {
       const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
-      const key = `uploads/${randomUUID()}.${ext}`;
+      const key = `sell-car/${randomUUID()}.${ext}`;
       const buffer = Buffer.from(await file.arrayBuffer());
 
       await s3.send(
