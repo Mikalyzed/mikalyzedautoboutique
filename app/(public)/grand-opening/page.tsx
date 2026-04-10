@@ -20,15 +20,15 @@ export default function GrandOpeningPage() {
               Grand Opening
             </p>
             <h1 className="text-4xl md:text-5xl font-extralight tracking-tighter mb-4">
-              Bring Your Car to the{" "}
+              Showcase Your{" "}
               <span className="bg-gradient-to-r from-[#dffd6e] to-[#dffd6e] bg-clip-text text-transparent font-light">
-                Show
+                Machine
               </span>
             </h1>
             <p className="text-gray-400 font-extralight text-lg leading-relaxed max-w-lg mx-auto">
-              Fill out the form below to submit your vehicle for our Grand
-              Opening event. We&apos;ll review your submission and get back to
-              you.
+              Spots are limited. Submit your vehicle below for a chance to be
+              featured at our exclusive Grand Opening event. Selected entries
+              will be contacted directly.
             </p>
           </div>
 
