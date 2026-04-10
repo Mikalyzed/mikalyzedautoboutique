@@ -72,8 +72,6 @@ export default function Footer() {
               <ul className="space-y-2">
                 <li><Link href="/about" className="text-gray-400 text-xs font-light hover:text-[#dffd6e] transition">About Us</Link></li>
                 <li><Link href="/about#team" className="text-gray-400 text-xs font-light hover:text-[#dffd6e] transition">Our Team</Link></li>
-                <li><Link href="/careers" className="text-gray-400 text-xs font-light hover:text-[#dffd6e] transition">Careers</Link></li>
-                <li><Link href="/press" className="text-gray-400 text-xs font-light hover:text-[#dffd6e] transition">Press</Link></li>
               </ul>
             </div>
             <div>
@@ -82,15 +80,12 @@ export default function Footer() {
                 <li><Link href="/inventory" className="text-gray-400 text-xs font-light hover:text-[#dffd6e] transition">Buy</Link></li>
                 <li><Link href="/sell" className="text-gray-400 text-xs font-light hover:text-[#dffd6e] transition">Sell</Link></li>
                 <li><Link href="/reserve" className="text-gray-400 text-xs font-light hover:text-[#dffd6e] transition">Storage</Link></li>
-                <li><Link href="/service" className="text-gray-400 text-xs font-light hover:text-[#dffd6e] transition">Service Center</Link></li>
               </ul>
             </div>
             <div>
               <h3 className="text-white text-xs font-normal tracking-wider mb-3 uppercase">Support</h3>
               <ul className="space-y-2">
                 <li><Link href="/contact" className="text-gray-400 text-xs font-light hover:text-[#dffd6e] transition">Contact Us</Link></li>
-                <li><Link href="/faqs" className="text-gray-400 text-xs font-light hover:text-[#dffd6e] transition">FAQs</Link></li>
-                <li><Link href="/privacy" className="text-gray-400 text-xs font-light hover:text-[#dffd6e] transition">Privacy Policy</Link></li>
               </ul>
             </div>
           </div>
@@ -120,8 +115,6 @@ export default function Footer() {
             <ul className="space-y-3">
               <li><Link href="/about" className="text-gray-400 text-sm font-light hover:text-[#dffd6e] transition">About Us</Link></li>
               <li><Link href="/about#team" className="text-gray-400 text-sm font-light hover:text-[#dffd6e] transition">Our Team</Link></li>
-              <li><Link href="/careers" className="text-gray-400 text-sm font-light hover:text-[#dffd6e] transition">Careers</Link></li>
-              <li><Link href="/press" className="text-gray-400 text-sm font-light hover:text-[#dffd6e] transition">Press</Link></li>
             </ul>
           </div>
 
@@ -132,7 +125,6 @@ export default function Footer() {
               <li><Link href="/inventory" className="text-gray-400 text-sm font-light hover:text-[#dffd6e] transition">Buy</Link></li>
               <li><Link href="/sell" className="text-gray-400 text-sm font-light hover:text-[#dffd6e] transition">Sell</Link></li>
               <li><Link href="/reserve" className="text-gray-400 text-sm font-light hover:text-[#dffd6e] transition">Storage</Link></li>
-              <li><Link href="/service" className="text-gray-400 text-sm font-light hover:text-[#dffd6e] transition">Service Center</Link></li>
             </ul>
           </div>
 
@@ -141,8 +133,6 @@ export default function Footer() {
             <h3 className="text-white text-sm font-normal tracking-wider mb-6 uppercase">Support</h3>
             <ul className="space-y-3">
               <li><Link href="/contact" className="text-gray-400 text-sm font-light hover:text-[#dffd6e] transition">Contact Us</Link></li>
-              <li><Link href="/faqs" className="text-gray-400 text-sm font-light hover:text-[#dffd6e] transition">FAQs</Link></li>
-              <li><Link href="/privacy" className="text-gray-400 text-sm font-light hover:text-[#dffd6e] transition">Privacy Policy</Link></li>
             </ul>
           </div>
         </div>
@@ -154,10 +144,10 @@ export default function Footer() {
               © {new Date().getFullYear()} Mikalyzed Auto Boutique. All rights reserved.
             </p>
             <div className="flex gap-6">
-              <Link href="/terms" className="text-gray-500 text-xs md:text-sm font-light hover:text-[#dffd6e] transition">
+              <Link href="/terms-and-conditions" className="text-gray-500 text-xs md:text-sm font-light hover:text-[#dffd6e] transition">
                 Terms of Service
               </Link>
-              <Link href="/privacy" className="text-gray-500 text-xs md:text-sm font-light hover:text-[#dffd6e] transition">
+              <Link href="/privacy-policy" className="text-gray-500 text-xs md:text-sm font-light hover:text-[#dffd6e] transition">
                 Privacy Policy
               </Link>
             </div>
