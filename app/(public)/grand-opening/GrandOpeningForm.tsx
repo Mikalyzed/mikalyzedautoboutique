@@ -62,6 +62,49 @@ export default function GrandOpeningForm() {
     setImagePreviews((prev) => prev.filter((_, i) => i !== index));
   };
 
+  // Compress image to stay under Vercel's 4.5MB body limit
+  const compressImage = (file: File, maxSizeMB = 3): Promise<File> => {
+    return new Promise((resolve) => {
+      // If already small enough, skip compression
+      if (file.size <= maxSizeMB * 1024 * 1024) {
+        resolve(file);
+        return;
+      }
+
+      const img = new window.Image();
+      const url = URL.createObjectURL(file);
+      img.onload = () => {
+        URL.revokeObjectURL(url);
+        const canvas = document.createElement("canvas");
+        // Scale down large images
+        let { width, height } = img;
+        const maxDim = 2000;
+        if (width > maxDim || height > maxDim) {
+          const ratio = Math.min(maxDim / width, maxDim / height);
+          width = Math.round(width * ratio);
+          height = Math.round(height * ratio);
+        }
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d")!;
+        ctx.drawImage(img, 0, 0, width, height);
+        canvas.toBlob(
+          (blob) => {
+            if (blob) {
+              resolve(new File([blob], file.name, { type: "image/jpeg" }));
+            } else {
+              resolve(file);
+            }
+          },
+          "image/jpeg",
+          0.8
+        );
+      };
+      img.onerror = () => resolve(file);
+      img.src = url;
+    });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -73,8 +116,9 @@ export default function GrandOpeningForm() {
       if (images.length > 0) {
         for (let i = 0; i < images.length; i++) {
           setUploadProgress(`Uploading photo ${i + 1} of ${images.length}...`);
+          const compressed = await compressImage(images[i]);
           const uploadData = new FormData();
-          uploadData.append("files", images[i]);
+          uploadData.append("files", compressed);
 
           const uploadRes = await fetch("/api/upload", {
             method: "POST",
