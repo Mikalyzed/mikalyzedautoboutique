@@ -68,8 +68,8 @@ export default function GrandOpeningForm() {
   const handleVideoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.size > 100 * 1024 * 1024) {
-      setError("Video must be under 100MB");
+    if (file.size > 300 * 1024 * 1024) {
+      setError("Video must be under 300MB");
       return;
     }
     setVideo(file);
@@ -376,7 +376,7 @@ export default function GrandOpeningForm() {
       {/* Video */}
       <div>
         <label className="block text-sm text-gray-400 font-light mb-1.5">
-          Vehicle Video (optional, max 100MB)
+          Vehicle Video (optional, max 300MB)
         </label>
         {!video ? (
           <div
