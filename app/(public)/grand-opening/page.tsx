@@ -17,12 +17,12 @@ export default function GrandOpeningPage() {
         <div className="relative z-10 max-w-2xl mx-auto">
           <div className="text-center mb-12">
             <p className="text-[#dffd6e] text-xs font-light tracking-[0.5em] mb-6 uppercase">
-              Grand Opening
+              Mikalyzed Grand Opening
             </p>
             <h1 className="text-4xl md:text-5xl font-extralight tracking-tighter mb-4">
-              Showcase Your{" "}
+              Enter the{" "}
               <span className="bg-gradient-to-r from-[#dffd6e] to-[#dffd6e] bg-clip-text text-transparent font-light">
-                Machine
+                Lineup
               </span>
             </h1>
             <p className="text-gray-400 font-extralight text-lg leading-relaxed max-w-lg mx-auto">
