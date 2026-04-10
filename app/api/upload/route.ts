@@ -14,6 +14,8 @@ const s3 = new S3Client({
     : undefined,
 });
 
+export const maxDuration = 60;
+
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();

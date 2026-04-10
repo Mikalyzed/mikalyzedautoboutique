@@ -29,10 +29,7 @@ export default function GrandOpeningForm() {
 
   const [images, setImages] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
-  const [video, setVideo] = useState<File | null>(null);
-  const [videoPreview, setVideoPreview] = useState<string>("");
   const imageInputRef = useRef<HTMLInputElement>(null);
-  const videoInputRef = useRef<HTMLInputElement>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [uploadProgress, setUploadProgress] = useState("");
@@ -65,62 +62,34 @@ export default function GrandOpeningForm() {
     setImagePreviews((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const handleVideoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    if (file.size > 300 * 1024 * 1024) {
-      setError("Video must be under 300MB");
-      return;
-    }
-    setVideo(file);
-    setVideoPreview(file.name);
-    if (videoInputRef.current) videoInputRef.current.value = "";
-  };
-
-  const removeVideo = () => {
-    setVideo(null);
-    setVideoPreview("");
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setError("");
 
     try {
-      // Upload images to S3
-      let imageUrls: string[] = [];
+      // Upload images to S3 one at a time to avoid body size limits
+      const imageUrls: string[] = [];
       if (images.length > 0) {
-        setUploadProgress("Uploading photos...");
-        const uploadData = new FormData();
-        images.forEach((file) => uploadData.append("files", file));
+        for (let i = 0; i < images.length; i++) {
+          setUploadProgress(`Uploading photo ${i + 1} of ${images.length}...`);
+          const uploadData = new FormData();
+          uploadData.append("files", images[i]);
 
-        const uploadRes = await fetch("/api/upload", {
-          method: "POST",
-          body: uploadData,
-        });
+          const uploadRes = await fetch("/api/upload", {
+            method: "POST",
+            body: uploadData,
+          });
 
-        if (uploadRes.ok) {
-          const uploadResult = await uploadRes.json();
-          imageUrls = uploadResult.urls;
-        }
-      }
-
-      // Upload video to S3
-      let videoUrl = "";
-      if (video) {
-        setUploadProgress("Uploading video...");
-        const videoData = new FormData();
-        videoData.append("files", video);
-
-        const videoRes = await fetch("/api/upload", {
-          method: "POST",
-          body: videoData,
-        });
-
-        if (videoRes.ok) {
-          const videoResult = await videoRes.json();
-          videoUrl = videoResult.urls?.[0] || "";
+          if (uploadRes.ok) {
+            const uploadResult = await uploadRes.json();
+            imageUrls.push(...uploadResult.urls);
+          } else {
+            setError(`Failed to upload photo ${i + 1}. Please try again.`);
+            setIsSubmitting(false);
+            setUploadProgress("");
+            return;
+          }
         }
       }
 
@@ -138,7 +107,6 @@ export default function GrandOpeningForm() {
           make: formData.make,
           model: formData.model,
           imageUrls,
-          videoUrl,
           _hp: honeypot,
           _ts: formLoadedAt.current,
         }),
@@ -371,69 +339,6 @@ export default function GrandOpeningForm() {
             ))}
           </div>
         )}
-      </div>
-
-      {/* Video */}
-      <div>
-        <label className="block text-sm text-gray-400 font-light mb-1.5">
-          Vehicle Video (optional, max 300MB)
-        </label>
-        {!video ? (
-          <div
-            onClick={() => videoInputRef.current?.click()}
-            className="border-2 border-dashed border-zinc-700 rounded-xl p-6 text-center cursor-pointer hover:border-[#dffd6e]/50 transition"
-          >
-            <svg
-              className="w-8 h-8 text-gray-500 mx-auto mb-2"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.5}
-                d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
-              />
-            </svg>
-            <p className="text-gray-500 font-extralight text-sm">
-              Click to upload a video
-            </p>
-          </div>
-        ) : (
-          <div className="flex items-center gap-3 bg-zinc-800/50 rounded-lg px-4 py-3 border border-zinc-700">
-            <svg
-              className="w-5 h-5 text-[#dffd6e] shrink-0"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.5}
-                d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
-              />
-            </svg>
-            <span className="text-white font-light text-sm truncate flex-1">
-              {videoPreview}
-            </span>
-            <button
-              type="button"
-              onClick={removeVideo}
-              className="text-red-400 hover:text-red-300 text-sm font-light"
-            >
-              Remove
-            </button>
-          </div>
-        )}
-        <input
-          ref={videoInputRef}
-          type="file"
-          accept="video/*"
-          onChange={handleVideoSelect}
-          className="hidden"
-        />
       </div>
 
       {error && (

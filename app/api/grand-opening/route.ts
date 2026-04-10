@@ -13,7 +13,6 @@ export async function POST(request: NextRequest) {
       make,
       model,
       imageUrls,
-      videoUrl,
       _hp: honeypot,
       _ts: formLoadedAt,
     } = body;
@@ -58,13 +57,6 @@ export async function POST(request: NextRequest) {
             </div>`
           : "";
 
-      const videoSection = videoUrl
-        ? `<div style="margin-top:16px">
-            <p style="color:#dffd6e;font-weight:600;margin-bottom:8px">Vehicle Video</p>
-            <a href="${videoUrl}" target="_blank" style="color:#dffd6e;text-decoration:underline">View Video</a>
-          </div>`
-        : "";
-
       await resend.emails.send({
         from: "Mikalyzed Auto Boutique <notifications@mikalyzedautoboutique.com>",
         to: ["info@mikalyzedautoboutique.com"],
@@ -78,7 +70,6 @@ export async function POST(request: NextRequest) {
             ${row("Vehicle", vehicleName)}
           </table>
           ${imageSection}
-          ${videoSection}
         </div>`,
       });
     }
