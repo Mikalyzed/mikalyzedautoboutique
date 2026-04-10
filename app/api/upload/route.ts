@@ -23,15 +23,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "No files provided" }, { status: 400 });
     }
 
-    if (files.length > 5) {
-      return NextResponse.json({ error: "Maximum 5 images allowed" }, { status: 400 });
+    if (files.length > 10) {
+      return NextResponse.json({ error: "Maximum 10 files allowed" }, { status: 400 });
     }
 
     const urls: string[] = [];
 
     for (const file of files) {
       const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
-      const key = `sell-car/${randomUUID()}.${ext}`;
+      const key = `uploads/${randomUUID()}.${ext}`;
       const buffer = Buffer.from(await file.arrayBuffer());
 
       await s3.send(
