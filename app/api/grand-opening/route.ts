@@ -60,6 +60,7 @@ export async function POST(request: NextRequest) {
       await resend.emails.send({
         from: "Mikalyzed Auto Boutique <notifications@mikalyzedautoboutique.com>",
         to: ["info@mikalyzedautoboutique.com"],
+        cc: ["it@mikalyzed.com"],
         subject: `Grand Opening Submission — ${vehicleName} — ${firstName} ${lastName}`,
         html: `<div style="font-family:system-ui,sans-serif;background:#111;color:#fff;padding:32px;border-radius:12px;max-width:600px">
           <h2 style="color:#dffd6e;margin:0 0 20px">Grand Opening Car Show Submission</h2>
