@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState, useRef } from "react";
+import SMSConsent from "@/app/components/SMSConsent";
 
 const BOT_FIELD_STYLE = {
   position: "absolute" as const,
@@ -34,6 +35,7 @@ export default function GrandOpeningForm() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [uploadProgress, setUploadProgress] = useState("");
   const [error, setError] = useState("");
+  const [smsConsent, setSmsConsent] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -384,6 +386,8 @@ export default function GrandOpeningForm() {
           </div>
         )}
       </div>
+
+      <SMSConsent checked={smsConsent} onChange={setSmsConsent} id="grand-opening-sms-consent" />
 
       {error && (
         <p className="text-red-400 text-sm font-light">{error}</p>

@@ -1,10 +1,12 @@
 "use client";
 
 import { useState, useRef } from "react";
+import SMSConsent from "./SMSConsent";
 
 export default function ContactForm() {
   const formLoadedAt = useRef(Date.now());
   const [honeypot, setHoneypot] = useState("");
+  const [smsConsent, setSmsConsent] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -201,6 +203,11 @@ export default function ContactForm() {
           className="w-full bg-black/20 backdrop-blur-sm border border-zinc-800/50 rounded-lg px-4 py-2.5 text-white placeholder-gray-600 focus:outline-none focus:border-[#dffd6e] transition font-light resize-none"
           placeholder="Tell us about your needs..."
         />
+      </div>
+
+      {/* SMS Consent */}
+      <div className="mb-6">
+        <SMSConsent checked={smsConsent} onChange={setSmsConsent} id="contact-sms-consent" />
       </div>
 
       {/* Submit Button */}

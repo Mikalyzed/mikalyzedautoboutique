@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState, useRef } from "react";
+import SMSConsent from "@/app/components/SMSConsent";
 
 const BOT_FIELD_STYLE = { position: "absolute" as const, left: "-9999px", opacity: 0, height: 0, width: 0 };
 
@@ -33,6 +34,7 @@ export default function SellCarForm() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [smsConsent, setSmsConsent] = useState(false);
   const [uploadProgress, setUploadProgress] = useState("");
 
   const handleChange = (
@@ -495,6 +497,11 @@ export default function SellCarForm() {
               className="w-full bg-black/20 backdrop-blur-sm border border-zinc-800/50 rounded-lg px-4 py-2.5 text-white placeholder-gray-600 focus:outline-none focus:border-[#dffd6e] transition font-light resize-none"
               placeholder="Modifications, history, asking price, etc."
             />
+          </div>
+
+          {/* SMS Consent */}
+          <div className="mb-4 form-field-reveal">
+            <SMSConsent checked={smsConsent} onChange={setSmsConsent} id="sell-sms-consent" />
           </div>
 
           {/* Back & Submit Buttons */}

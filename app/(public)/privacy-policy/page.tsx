@@ -126,6 +126,32 @@ export default function PrivacyPolicyPage() {
               </p>
             </div>
 
+            {/* SMS/Text Messaging */}
+            <div>
+              <h2 className="text-[#dffd6e] text-sm font-light tracking-[0.3em] uppercase mb-4">
+                SMS/Text Messaging
+              </h2>
+              <p className="mb-4">
+                When you provide your phone number and opt in by checking the
+                consent box on one of our forms, you agree to receive SMS/text
+                messages from Mikalyzed Auto Boutique related to your inquiry.
+                Messages may include follow-ups, appointment confirmations,
+                offer updates, and other transactional communications related
+                to your request.
+              </p>
+              <p className="mb-4">
+                Message frequency varies based on your inquiry. Message and
+                data rates may apply. You can opt out at any time by replying{" "}
+                <strong className="text-white font-medium">STOP</strong> to any
+                message, or contact us directly for help by replying{" "}
+                <strong className="text-white font-medium">HELP</strong>.
+              </p>
+              <p className="text-white">
+                No mobile information will be shared with third parties or
+                affiliates for marketing or promotional purposes.
+              </p>
+            </div>
+
             {/* Data Protection */}
             <div>
               <h2 className="text-[#dffd6e] text-sm font-light tracking-[0.3em] uppercase mb-4">

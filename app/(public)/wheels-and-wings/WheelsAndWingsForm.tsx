@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, useRef } from "react";
+import SMSConsent from "@/app/components/SMSConsent";
 
 const INSTAGRAM_URL = "https://www.instagram.com/mikalyzed_autoboutique/";
 
 export default function WheelsAndWingsForm() {
   const formLoadedAt = useRef(Date.now());
   const [honeypot, setHoneypot] = useState("");
+  const [smsConsent, setSmsConsent] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -156,6 +158,10 @@ export default function WheelsAndWingsForm() {
           className="w-full bg-black/20 backdrop-blur-sm border border-zinc-800/50 rounded-lg px-4 py-2.5 text-white placeholder-gray-600 focus:outline-none focus:border-[#dffd6e] transition font-light"
           placeholder="(555) 123-4567"
         />
+      </div>
+
+      <div className="mb-6">
+        <SMSConsent checked={smsConsent} onChange={setSmsConsent} id="wheels-sms-consent" />
       </div>
 
       <button

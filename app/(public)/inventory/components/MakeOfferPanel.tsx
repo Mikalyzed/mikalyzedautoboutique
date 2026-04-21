@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import SMSConsent from "@/app/components/SMSConsent";
 
 interface MakeOfferPanelProps {
   open: boolean;
@@ -13,6 +14,7 @@ interface MakeOfferPanelProps {
 export default function MakeOfferPanel({ open, onClose, vehicleName, vehicleVin, vehiclePrice }: MakeOfferPanelProps) {
   const formLoadedAt = useRef(Date.now());
   const [honeypot, setHoneypot] = useState("");
+  const [smsConsent, setSmsConsent] = useState(false);
   const [form, setForm] = useState({ firstName: "", lastName: "", email: "", phone: "", offer: "", financing: false });
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -248,6 +250,10 @@ export default function MakeOfferPanel({ open, onClose, vehicleName, vehicleVin,
                       No
                     </button>
                   </div>
+                </div>
+
+                <div className="py-2">
+                  <SMSConsent checked={smsConsent} onChange={setSmsConsent} id="offer-sms-consent" />
                 </div>
 
                 <button

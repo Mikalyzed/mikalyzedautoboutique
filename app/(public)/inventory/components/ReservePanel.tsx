@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import SMSConsent from "@/app/components/SMSConsent";
 
 interface ReservePanelProps {
   open: boolean;
@@ -12,6 +13,7 @@ interface ReservePanelProps {
 export default function ReservePanel({ open, onClose, vehicleName, vehicleVin }: ReservePanelProps) {
   const formLoadedAt = useRef(Date.now());
   const [honeypot, setHoneypot] = useState("");
+  const [smsConsent, setSmsConsent] = useState(false);
   const [form, setForm] = useState({ firstName: "", lastName: "", email: "", phone: "", financing: false });
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -206,6 +208,10 @@ export default function ReservePanel({ open, onClose, vehicleName, vehicleVin }:
                       No
                     </button>
                   </div>
+                </div>
+
+                <div className="py-2">
+                  <SMSConsent checked={smsConsent} onChange={setSmsConsent} id="reserve-sms-consent" />
                 </div>
 
                 <button
