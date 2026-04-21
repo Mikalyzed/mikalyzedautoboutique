@@ -20,11 +20,9 @@ export default function SMSConsent({ checked, onChange, id = "sms-consent" }: SM
         className="mt-1 w-4 h-4 accent-[#dffd6e] shrink-0 cursor-pointer"
       />
       <span className="text-xs text-gray-400 font-light leading-relaxed">
-        By checking this box, I agree to receive SMS/text messages from
-        Mikalyzed Auto Boutique related to my inquiry. Message frequency varies.
-        Message and data rates may apply. Reply STOP to opt out or HELP for
-        help. No mobile information will be shared with third parties or
-        affiliates for marketing or promotional purposes. See our{" "}
+        I agree to receive SMS/text messages from Mikalyzed Auto Boutique.
+        Msg &amp; data rates may apply. Reply STOP to opt out. We don&apos;t
+        share your info with third parties. See our{" "}
         <Link
           href="/privacy-policy"
           target="_blank"
@@ -32,13 +30,13 @@ export default function SMSConsent({ checked, onChange, id = "sms-consent" }: SM
         >
           Privacy Policy
         </Link>{" "}
-        and{" "}
+        &amp;{" "}
         <Link
           href="/terms-and-conditions"
           target="_blank"
           className="text-[#dffd6e] hover:underline"
         >
-          Terms &amp; Conditions
+          Terms
         </Link>
         .
       </span>
