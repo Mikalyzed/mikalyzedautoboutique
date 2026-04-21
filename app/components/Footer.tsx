@@ -86,6 +86,8 @@ export default function Footer() {
               <h3 className="text-white text-xs font-normal tracking-wider mb-3 uppercase">Support</h3>
               <ul className="space-y-2">
                 <li><Link href="/contact" className="text-gray-400 text-xs font-light hover:text-[#dffd6e] transition">Contact Us</Link></li>
+                <li><Link href="/privacy-policy" className="text-gray-400 text-xs font-light hover:text-[#dffd6e] transition">Privacy Policy</Link></li>
+                <li><Link href="/terms-and-conditions" className="text-gray-400 text-xs font-light hover:text-[#dffd6e] transition">Terms &amp; Conditions</Link></li>
               </ul>
             </div>
           </div>
@@ -133,6 +135,8 @@ export default function Footer() {
             <h3 className="text-white text-sm font-normal tracking-wider mb-6 uppercase">Support</h3>
             <ul className="space-y-3">
               <li><Link href="/contact" className="text-gray-400 text-sm font-light hover:text-[#dffd6e] transition">Contact Us</Link></li>
+              <li><Link href="/privacy-policy" className="text-gray-400 text-sm font-light hover:text-[#dffd6e] transition">Privacy Policy</Link></li>
+              <li><Link href="/terms-and-conditions" className="text-gray-400 text-sm font-light hover:text-[#dffd6e] transition">Terms &amp; Conditions</Link></li>
             </ul>
           </div>
         </div>
