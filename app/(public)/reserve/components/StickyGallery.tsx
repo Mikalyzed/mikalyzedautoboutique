@@ -6,7 +6,6 @@ import Image from "next/image";
 const images = [
   { src: "/gallery/P1900928.jpg", label: "Facility Interior" },
   { src: "/gallery/P1901037.jpg", label: "Full Bar" },
-  { src: "/gallery/P1900980.jpg", label: "Racing Simulator" },
   { src: "/gallery/P1901144.jpg", label: "Full Warehouse Access" },
   { src: "/gallery/P1900950.jpg", label: "Upstairs Lounge" },
 ];
