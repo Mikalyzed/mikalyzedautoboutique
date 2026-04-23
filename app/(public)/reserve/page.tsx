@@ -191,19 +191,6 @@ export default function ReservePage() {
               </p>
             </div>
 
-            {/* Enclosed Transport & Logistics */}
-            <div className="group bg-zinc-900/40 backdrop-blur-sm p-10 rounded-2xl border border-zinc-800/40 hover:border-[#dffd6e]/20 hover:scale-[1.02] transition-all duration-700">
-              <div className="w-12 h-12 rounded-xl bg-[#dffd6e]/5 border border-[#dffd6e]/10 flex items-center justify-center mb-7" style={{ boxShadow: '0 0 20px rgba(223,253,110,0.04)' }}>
-                <svg className="w-5 h-5 text-[#dffd6e]/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-light tracking-tight text-white mb-3">Transport &amp; Logistics</h3>
-              <p className="text-gray-500 font-extralight text-sm leading-relaxed">
-                Enclosed transport, event delivery, and seasonal rotation — coordinated entirely by our team.
-              </p>
-            </div>
-
             {/* Discreet Private Showings */}
             <div className="group bg-zinc-900/40 backdrop-blur-sm p-10 rounded-2xl border border-zinc-800/40 hover:border-[#dffd6e]/20 hover:scale-[1.02] transition-all duration-700">
               <div className="w-12 h-12 rounded-xl bg-[#dffd6e]/5 border border-[#dffd6e]/10 flex items-center justify-center mb-7" style={{ boxShadow: '0 0 20px rgba(223,253,110,0.04)' }}>
