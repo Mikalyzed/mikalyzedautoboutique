@@ -7,7 +7,6 @@ const images = [
   "/gallery/P1900900.jpg",
   "/gallery/P1900928.jpg",
   "/gallery/P1900950.jpg",
-  "/gallery/P1900980.jpg",
   "/gallery/P1900984.jpg",
   "/gallery/P1901037.jpg",
   "/gallery/P1901051.jpg",
