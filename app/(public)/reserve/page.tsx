@@ -249,7 +249,7 @@ export default function ReservePage() {
 
                 {/* Amenity list */}
                 <div className="flex flex-col gap-2 mb-5">
-                  {["Cigar Lounge", "Full Bar", "Racing Simulators", "Pool Tables", "Private Spa Bathrooms"].map((item) => (
+                  {["Pool Tables"].map((item) => (
                     <div key={item} className="flex items-center gap-2.5">
                       <div className="w-1 h-1 rounded-full bg-[#dffd6e]/50 shrink-0" />
                       <span className="text-gray-400 font-extralight text-xs tracking-wide">{item}</span>
