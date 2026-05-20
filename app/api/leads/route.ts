@@ -9,6 +9,7 @@ const NOTIFICATION_EMAILS: Record<string, string> = {
   reserve: process.env.NOTIFICATION_EMAIL_RESERVE || DEFAULT_EMAIL,
   "reserve-storage": process.env.NOTIFICATION_EMAIL_STORAGE || DEFAULT_EMAIL,
   sell: process.env.NOTIFICATION_EMAIL_SELL || DEFAULT_EMAIL,
+  venue: process.env.NOTIFICATION_EMAIL_VENUE || DEFAULT_EMAIL,
 };
 
 const RESERVE_VEHICLE_WEBHOOK_URL =
@@ -50,6 +51,12 @@ export async function POST(request: NextRequest) {
       offerAmount,
       // Contact fields
       service,
+      // Venue inquiry fields
+      company,
+      eventType,
+      eventDate,
+      guestCount,
+      venueMessage,
       // Bot protection fields
       _hp: honeypot,
       _ts: formLoadedAt,
@@ -234,6 +241,21 @@ export async function POST(request: NextRequest) {
               ${row("Details", message)}
             </table>
             ${imageUrls?.length ? `<div style="margin-top:16px"><p style="color:#888;margin-bottom:8px">${imageUrls.length} image(s):</p>${imageUrls.map((url: string, i: number) => `<p style="margin:4px 0"><a href="${url}" style="color:#dffd6e" target="_blank">Image ${i + 1}</a></p>`).join("")}</div>` : ""}
+          `);
+        } else if (formType === "venue") {
+          subject = `New Venue Inquiry — ${company || name}`;
+          htmlBody = wrapper(`
+            <h2 style="color:#dffd6e;margin:0 0 20px">New Venue Inquiry</h2>
+            <table style="border-collapse:collapse;width:100%">
+              ${row("Name", name)}
+              ${row("Company", company)}
+              ${row("Email", email)}
+              ${row("Phone", phone)}
+              ${row("Event Type", eventType)}
+              ${row("Preferred Date", eventDate)}
+              ${row("Estimated Guests", guestCount)}
+              ${row("Notes", venueMessage)}
+            </table>
           `);
         } else if (formType === "contact") {
           subject = `New Contact Form — ${name}`;

@@ -6,7 +6,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: ["/", "/api/feeds/"],
-        disallow: ["/admin/", "/api/", "/sign-in", "/sign-up"],
+        disallow: ["/admin/", "/api/", "/sign-in", "/sign-up", "/venue"],
       },
     ],
     sitemap: "https://mikalyzedautoboutique.com/sitemap.xml",
