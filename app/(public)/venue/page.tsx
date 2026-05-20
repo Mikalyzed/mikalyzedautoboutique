@@ -203,29 +203,28 @@ export default function VenuePage() {
             </h2>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+          {/* 2 columns × 4 rows = 8 wide-angle shots, full image, no crop */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
             {[
-              { src: "/gallery/P1900928.jpg", alt: "Warehouse interior", span: "md:col-span-2 md:row-span-2" },
-              { src: "/gallery/P1901144.jpg", alt: "Full warehouse view", span: "" },
-              { src: "/gallery/P1900950.jpg", alt: "Upstairs lounge area", span: "" },
-              { src: "/gallery/P1901157.jpg", alt: "Showroom floor", span: "" },
-              { src: "/gallery/P1901200.jpg", alt: "Vehicle staging", span: "" },
-              { src: "/gallery/P1901037.jpg", alt: "Warehouse perspective", span: "md:col-span-2" },
-              { src: "/gallery/P1900984.jpg", alt: "Showroom lighting", span: "" },
-              { src: "/gallery/P1900900.jpg", alt: "Facility entrance", span: "" },
-              { src: "/gallery/P1900980.jpg", alt: "Open floor plan", span: "" },
-              { src: "/gallery/P1901051.jpg", alt: "Warehouse depth", span: "" },
+              { src: "/gallery/P1901185.jpg", alt: "Warehouse interior" },
+              { src: "/gallery/P1900928.jpg", alt: "Warehouse interior" },
+              { src: "/gallery/P1900950.jpg", alt: "Upstairs lounge area" },
+              { src: "/gallery/P1901157.jpg", alt: "Showroom floor" },
+              { src: "/gallery/P1901200.jpg", alt: "Vehicle staging" },
+              { src: "/gallery/P1901037.jpg", alt: "Warehouse perspective" },
+              { src: "/gallery/P1900984.jpg", alt: "Showroom lighting" },
+              { src: "/gallery/P1900900.jpg", alt: "Facility entrance" },
             ].map((img) => (
               <div
                 key={img.src}
-                className={`relative overflow-hidden rounded-xl border border-zinc-800/40 hover:border-[#dffd6e]/30 transition-all duration-700 group ${img.span} aspect-square`}
+                className="relative overflow-hidden rounded-xl border border-zinc-800/40 hover:border-[#dffd6e]/30 transition-all duration-700 group aspect-video"
               >
                 <Image
                   src={img.src}
                   alt={img.alt}
                   fill
                   className="object-cover group-hover:scale-105 transition-transform duration-700"
-                  sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                  sizes="(max-width: 640px) 100vw, 50vw"
                 />
               </div>
             ))}
