@@ -18,7 +18,7 @@ export default function VenuePage() {
   return (
     <main className="min-h-screen bg-black text-white">
       {/* HERO */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden">
+      <section className="relative h-screen flex items-end justify-center overflow-hidden pb-24 md:pb-32">
         <Image
           src="/showroom.jpg"
           alt="Mikalyzed showroom interior"
@@ -26,39 +26,32 @@ export default function VenuePage() {
           className="object-cover"
           priority
         />
-        <div className="absolute inset-0 bg-black/70" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_transparent_40%,_rgba(0,0,0,0.5)_100%)]" />
+        {/* Subtle overlay — photo reads through clearly, just enough darken for text legibility */}
+        <div className="absolute inset-0 bg-black/30" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/10 to-black/80" />
 
-        <div className="relative z-10 text-center px-6 flex flex-col items-center w-full max-w-[90%] md:max-w-[70%]">
-          <p className="text-[#dffd6e] text-xs font-light tracking-[0.5em] uppercase">
-            15,000 SQ FT &middot; Miami
+        <div className="relative z-10 text-center px-6 flex flex-col items-center w-full max-w-[90%] md:max-w-[75%]">
+          <p className="text-[#dffd6e] text-xs md:text-sm tracking-[0.5em] uppercase font-light mb-2">
+            Mikalyzed &middot; Miami
           </p>
-
-          <div className="h-20 md:h-24" />
-
-          <h1
-            className="text-4xl md:text-6xl lg:text-7xl tracking-tight mb-3 uppercase text-white"
-            style={{ fontFamily: "'TT Octosquares Trl', sans-serif", fontWeight: 700 }}
-          >
-            A Luxury Industrial
-            <br />
-            Event Space
-          </h1>
-
-          <div className="w-full max-w-[320px] md:max-w-[460px] lg:max-w-[560px] h-[1.5px] bg-white/70 mx-auto mb-3" />
 
           <p
-            className="text-base md:text-lg lg:text-xl tracking-[0.45em] uppercase text-white/70"
+            className="text-white/80 text-[10px] md:text-xs tracking-[0.6em] uppercase mb-12 md:mb-16"
             style={{ fontFamily: "'Sansation', sans-serif", fontWeight: 700 }}
           >
-            By Mikalyzed
+            The Venue
           </p>
 
-          <div className="h-16 md:h-20" />
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-extralight text-white tracking-tight leading-[1.05]">
+            An event space,
+            <br />
+            <span className="italic font-extralight text-[#dffd6e]">reimagined.</span>
+          </h1>
 
-          <p className="text-gray-300 text-lg font-extralight max-w-[720px] mx-auto leading-relaxed">
-            Our venue can be fully transformed into an open 15,000 sq ft event space for private events, corporate activations, weddings, brand launches, art shows, dinners, networking events, and more.
+          <div className="w-12 h-px bg-white/40 my-12 md:my-14" />
+
+          <p className="text-white/85 text-base md:text-lg font-extralight max-w-xl leading-relaxed">
+            15,000 sq ft of customizable warehouse in Miami — built to host whatever you can imagine.
           </p>
         </div>
       </section>
