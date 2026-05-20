@@ -18,7 +18,7 @@ export default function VenuePage() {
   return (
     <main className="min-h-screen bg-black text-white">
       {/* HERO */}
-      <section className="relative h-screen flex items-end justify-center overflow-hidden pb-24 md:pb-32">
+      <section className="relative h-[75vh] min-h-[560px] md:h-screen md:min-h-0 flex items-end justify-center overflow-hidden pb-12 md:pb-32">
         <Image
           src="/showroom.jpg"
           alt="Mikalyzed showroom interior"
@@ -31,26 +31,26 @@ export default function VenuePage() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/10 to-black/80" />
 
         <div className="relative z-10 text-center px-6 flex flex-col items-center w-full max-w-[90%] md:max-w-[75%]">
-          <p className="text-[#dffd6e] text-xs md:text-sm tracking-[0.5em] uppercase font-light mb-2">
+          <p className="text-[#dffd6e] text-[10px] md:text-sm tracking-[0.5em] uppercase font-light mb-1.5 md:mb-2">
             Mikalyzed &middot; Miami
           </p>
 
           <p
-            className="text-white/80 text-[10px] md:text-xs tracking-[0.6em] uppercase mb-12 md:mb-16"
+            className="text-white/80 text-[9px] md:text-xs tracking-[0.6em] uppercase mb-6 md:mb-16"
             style={{ fontFamily: "'Sansation', sans-serif", fontWeight: 700 }}
           >
             The Venue
           </p>
 
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-extralight text-white tracking-tight leading-[1.05]">
+          <h1 className="text-[2.5rem] md:text-7xl lg:text-8xl font-extralight text-white tracking-tight leading-[1.05]">
             An event space,
             <br />
             <span className="italic font-extralight text-[#dffd6e]">reimagined.</span>
           </h1>
 
-          <div className="w-12 h-px bg-white/40 my-12 md:my-14" />
+          <div className="w-10 md:w-12 h-px bg-white/40 my-6 md:my-14" />
 
-          <p className="text-white/85 text-base md:text-lg font-extralight max-w-xl leading-relaxed">
+          <p className="text-white/85 text-sm md:text-lg font-extralight max-w-xl leading-relaxed">
             15,000 sq ft of customizable warehouse in Miami — built to host whatever you can imagine.
           </p>
         </div>
