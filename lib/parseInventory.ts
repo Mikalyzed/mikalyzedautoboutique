@@ -11,6 +11,7 @@ export interface Vehicle {
   price: string;
   status: VehicleStatus;
 
+  stockNumber?: string;
   trim?: string;
   odometer?: number;
   exteriorColor?: string;
@@ -161,6 +162,12 @@ export function parseCSVWithDiagnostics(csvContent: string): ParseResult {
         "videoUrl", "videourl"
       )?.trim();
 
+      const stockNumber = col(row,
+        "StockNumber", "Stock Number", "StockNo", "StockNo.", "Stock#", "Stock",
+        "InventoryNumber", "Inventory Number",
+        "stockNumber", "stock_number"
+      )?.trim();
+
       return {
         vin,
         year,
@@ -169,6 +176,7 @@ export function parseCSVWithDiagnostics(csvContent: string): ParseResult {
         slug,
         price,
         status,
+        stockNumber: stockNumber || undefined,
         trim: col(row, "Trim", "trim")?.trim() || undefined,
         odometer: col(row, "Odometer", "Mileage", "Miles", "odometer", "mileage")
           ? Number(col(row, "Odometer", "Mileage", "Miles", "odometer", "mileage").replace(/[^0-9]/g, ""))

@@ -116,8 +116,13 @@ function buildRow(v: DynamoVehicle): string {
   // as a safe minimum so the row stays eligible.
   const mileage = v.odometer && v.odometer > 0 ? v.odometer : 1;
 
+  // Prefer DealerCenter stock # as the Meta catalog ID — easier to
+  // cross-reference between Meta ad reports and inventory. Fall back to
+  // VIN when a CSV row didn't carry a stock number.
+  const vehicleId = v.stockNumber || v.vin;
+
   const row = [
-    v.vin,
+    vehicleId,
     title,
     description,
     url,
