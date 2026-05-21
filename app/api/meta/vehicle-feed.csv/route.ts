@@ -4,7 +4,7 @@ import type { DynamoVehicle } from "@/lib/vehicles";
 export const dynamic = "force-dynamic";
 
 const BASE_URL = "https://mikalyzedautoboutique.com";
-const DEALER_ID = "mikalyzed-miami";
+const DEALER_ID = "mikalyzedmiami";
 const DEALER_NAME = "Mikalyzed Auto Boutique";
 const ADDRESS = "3455 NW 30th Ave";
 const CITY = "Miami";
@@ -62,6 +62,18 @@ function normalizeTransmission(t: string | undefined): string {
   return "other";
 }
 
+// DealerCenter sometimes exports junk trim values like "5" or "X". Skip the
+// trim when it's a single character, all digits, or otherwise doesn't look
+// like a real trim level. Real trims contain at least one letter and are 2+
+// characters (e.g. "RS/SS", "LT", "Z06", "Sport").
+function cleanTrim(trim: string | undefined): string | undefined {
+  if (!trim) return undefined;
+  const t = trim.trim();
+  if (t.length < 2) return undefined;
+  if (!/[A-Za-z]/.test(t)) return undefined;
+  return t;
+}
+
 // Best-effort body style from model name. Defaults to "Coupe" — most of our
 // inventory is classic/exotic coupes, and Meta requires this field.
 function inferBodyStyle(model: string | undefined): string {
@@ -78,7 +90,8 @@ function inferBodyStyle(model: string | undefined): string {
 }
 
 function buildRow(v: DynamoVehicle): string {
-  const title = `${v.year} ${v.make} ${v.model}${v.trim ? ` ${v.trim}` : ""}`;
+  const trim = cleanTrim(v.trim);
+  const title = `${v.year} ${v.make} ${v.model}${trim ? ` ${trim}` : ""}`;
   const url = `${BASE_URL}/inventory/${v.slug}/${v.vin}`;
 
   const images = (v.manualImages?.length ? v.manualImages : v.images || []).slice(0, MAX_IMAGES);
@@ -94,6 +107,15 @@ function buildRow(v: DynamoVehicle): string {
 
   const availability = v.status === "sold" ? "sold" : "available";
 
+  // Meta validates `vin` as 17-char alphanumeric. Pre-1981 classics have
+  // shorter chassis numbers — leave the column blank for those and rely on
+  // `vehicle_id` (always our VIN/stock #) as the unique key.
+  const metaVin = /^[A-HJ-NPR-Z0-9]{17}$/.test(v.vin) ? v.vin : "";
+
+  // Show cars often log 0 miles; Meta rejects 0 for some catalogs. Use 1
+  // as a safe minimum so the row stays eligible.
+  const mileage = v.odometer && v.odometer > 0 ? v.odometer : 1;
+
   const row = [
     v.vin,
     title,
@@ -102,19 +124,19 @@ function buildRow(v: DynamoVehicle): string {
     v.make,
     v.model,
     v.year,
-    v.trim || "",
-    v.odometer ?? 0,
+    trim || "",
+    mileage,
     "MI",
     ...imageCells,
     inferBodyStyle(v.model),
     "gasoline",
     normalizeTransmission(v.transmission),
-    v.exteriorColor || "",
+    v.exteriorColor || "Other",
     v.interiorColor || "",
     priceCell,
     "used",
     "good",
-    v.vin,
+    metaVin,
     DEALER_ID,
     DEALER_NAME,
     ADDRESS,
