@@ -80,8 +80,10 @@ export default function ReservePanel({ open, onClose, vehicleName, vehicleVin }:
 
       {/* Panel */}
       <div
+        inert={!open}
+        aria-hidden={!open}
         className={`fixed top-0 right-0 h-full w-full sm:w-[420px] bg-zinc-950 border-l border-zinc-800/50 z-50 transition-transform duration-300 ease-out ${
-          open ? "translate-x-0" : "translate-x-full"
+          open ? "translate-x-0" : "translate-x-full pointer-events-none"
         }`}
       >
         <div className="flex flex-col h-full overflow-y-auto">
