@@ -188,15 +188,15 @@ export default async function VehicleDetailPage({ params }: PageProps) {
         </div>
       )}
 
-      {/* VEHICLE TITLE + PRICE - above gallery on mobile, hidden on desktop */}
-      <div className="max-w-7xl mx-auto lg:hidden mb-4">
+      {/* VEHICLE TITLE + PRICE — always visible above the gallery */}
+      <div className="max-w-7xl mx-auto mb-6">
         <p className="text-sm font-light tracking-[0.3em] text-[#dffd6e] mb-2 leading-tight block">
           {vehicle.year} {vehicle.make.toUpperCase()}
         </p>
         <h1 className="text-5xl font-light tracking-tight leading-tight mb-2">
           {vehicle.model}
         </h1>
-        <p className={`text-2xl font-light ${isAuction ? "text-amber-400" : "text-[#dffd6e]"}`}>
+        <p className={`text-2xl lg:text-4xl font-light ${isAuction ? "text-amber-400" : "text-[#dffd6e]"}`}>
           {isAuction ? auctionLabel : displayPrice}
         </p>
       </div>
@@ -210,21 +210,6 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 
         {/* VEHICLE INFO */}
         <div className="m-0 p-0">
-          {/* YEAR & MAKE BADGE - hidden on mobile, shown on desktop */}
-          <p className="hidden lg:block text-sm font-light tracking-[0.3em] text-[#dffd6e] mb-2 leading-tight">
-            {vehicle.year} {vehicle.make.toUpperCase()}
-          </p>
-
-          {/* MODEL NAME - hidden on mobile, shown on desktop */}
-          <h1 className="hidden lg:block text-5xl font-light tracking-tight leading-tight mb-4">
-            {vehicle.model}
-          </h1>
-
-          {/* PRICE / AUCTION COUNTDOWN - hidden on mobile (shown above gallery), visible on desktop */}
-          <p className={`hidden lg:block text-4xl font-light mb-8 ${isAuction ? "text-amber-400" : "text-[#dffd6e]"}`}>
-            {isAuction ? auctionLabel : displayPrice}
-          </p>
-
           {/* ACTION BUTTONS — hidden for sold vehicles */}
           {!isSold && (
             <VehicleActions
