@@ -194,22 +194,27 @@ export default function VehicleActions({ vehicleName, vehicleVin, vehiclePrice, 
         )}
       </div>
 
-      {/* Reserve slide-in panel */}
-      <ReservePanel
-        open={reserveOpen}
-        onClose={() => setReserveOpen(false)}
-        vehicleName={vehicleName}
-        vehicleVin={vehicleVin}
-      />
+      {/* Reserve slide-in panel — only mounted while open so nothing on the
+          VDP can be inadvertently surfaced by tooling that walks the DOM. */}
+      {reserveOpen && (
+        <ReservePanel
+          open={reserveOpen}
+          onClose={() => setReserveOpen(false)}
+          vehicleName={vehicleName}
+          vehicleVin={vehicleVin}
+        />
+      )}
 
-      {/* Make Offer slide-in panel */}
-      <MakeOfferPanel
-        open={offerOpen}
-        onClose={() => setOfferOpen(false)}
-        vehicleName={vehicleName}
-        vehicleVin={vehicleVin}
-        vehiclePrice={vehiclePrice}
-      />
+      {/* Make Offer slide-in panel — same pattern as Reserve. */}
+      {offerOpen && (
+        <MakeOfferPanel
+          open={offerOpen}
+          onClose={() => setOfferOpen(false)}
+          vehicleName={vehicleName}
+          vehicleVin={vehicleVin}
+          vehiclePrice={vehiclePrice}
+        />
+      )}
 
       {/* Financing modal */}
       {financingOpen && (
