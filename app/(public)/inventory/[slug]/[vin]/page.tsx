@@ -5,6 +5,7 @@ import ImageGallery from "@/app/(public)/inventory/components/ImageGallery";
 import VehicleActions from "@/app/(public)/inventory/components/VehicleActions";
 import RecommendedSlider from "@/app/(public)/inventory/components/RecommendedSlider";
 import ShareButton from "@/app/(public)/inventory/components/ShareButton";
+import VehicleViewContent from "@/app/components/VehicleViewContent";
 
 export const dynamic = "force-dynamic";
 
@@ -141,11 +142,22 @@ export default async function VehicleDetailPage({ params }: PageProps) {
     },
   };
 
+  // Catalog vehicle_id is stockNumber when present, else VIN — must match
+  // what /api/meta/vehicle-feed.csv emits or AIA retargeting won't fire.
+  const catalogContentId = vehicle.stockNumber || vehicle.vin;
+  const numericPrice = parseInt((displayPrice || "").replace(/[^0-9]/g, ""), 10) || undefined;
+  const vehicleNameForPixel = `${vehicle.year} ${vehicle.make} ${vehicle.model}`;
+
   return (
     <main className="min-h-screen bg-black text-white px-6 pt-28 pb-16">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(vehicleJsonLd) }}
+      />
+      <VehicleViewContent
+        contentId={catalogContentId}
+        vehicleName={vehicleNameForPixel}
+        price={numericPrice}
       />
       <div className="max-w-7xl mx-auto">
         {/* BREADCRUMB */}

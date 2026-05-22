@@ -16,17 +16,8 @@ export default function MetaPixelEvents() {
   useEffect(() => {
     if (!window.fbq) return;
 
-    // ViewContent — vehicle detail pages: /inventory/[slug]/[vin]
-    const vehicleMatch = pathname.match(/^\/inventory\/[^/]+\/[^/]+$/);
-    if (vehicleMatch) {
-      window.fbq("track", "ViewContent", {
-        content_type: "vehicle",
-        content_name: document.title,
-      });
-      return;
-    }
-
-    // Search — inventory listing page: /inventory
+    // VDPs fire ViewContent from VehicleViewContent so the content_ids
+    // match the Meta catalog vehicle_id (stockNumber || vin).
     if (pathname === "/inventory") {
       window.fbq("track", "Search");
     }
