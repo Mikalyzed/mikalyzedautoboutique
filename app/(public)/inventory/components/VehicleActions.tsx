@@ -48,6 +48,21 @@ export default function VehicleActions({ vehicleName, vehicleVin, vehiclePrice, 
     }
   }, [contactOpen]);
 
+  // Financing opens a 3rd-party DealerCenter iframe whose submission we
+  // can't observe, so we fire InitiateCheckout on click as a softer
+  // intent signal — Lead stays reserved for confirmed submissions.
+  function handleFinancing() {
+    setFinancingOpen(true);
+    if (typeof window === "undefined") return;
+    const numericPrice = parseInt((vehiclePrice || "").replace(/[^0-9]/g, ""), 10) || undefined;
+    (window as { fbq?: (...args: unknown[]) => void }).fbq?.("track", "InitiateCheckout", {
+      content_type: "vehicle",
+      content_ids: [contentId],
+      content_name: vehicleName,
+      ...(numericPrice ? { value: numericPrice, currency: "USD" } : {}),
+    });
+  }
+
   function handleContact() {
     // Mobile: auto-call
     if (window.innerWidth < 768) {
@@ -78,7 +93,7 @@ export default function VehicleActions({ vehicleName, vehicleVin, vehiclePrice, 
         {!isAuction && (
           <div className="flex gap-2 sm:gap-3">
             <button
-              onClick={() => setFinancingOpen(true)}
+              onClick={handleFinancing}
               className="flex-1 flex items-center justify-center gap-2 bg-black border border-zinc-700 text-white px-4 py-3.5 sm:px-6 sm:py-3 rounded-lg text-base sm:text-base font-light tracking-wide hover:border-[#dffd6e] transition"
             >
               <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
