@@ -8,12 +8,15 @@ interface VehicleActionsProps {
   vehicleName: string;
   vehicleVin: string;
   vehiclePrice?: string;
+  // Catalog vehicle_id (stockNumber || vin) — required so Lead events on
+  // Make Offer / Reserve carry the same identifier as the Meta catalog.
+  contentId: string;
   isAuction?: boolean;
   auctionUrl?: string;
   auctionHouse?: string;
 }
 
-export default function VehicleActions({ vehicleName, vehicleVin, vehiclePrice, isAuction, auctionUrl, auctionHouse }: VehicleActionsProps) {
+export default function VehicleActions({ vehicleName, vehicleVin, vehiclePrice, contentId, isAuction, auctionUrl, auctionHouse }: VehicleActionsProps) {
   const [reserveOpen, setReserveOpen] = useState(false);
   const [offerOpen, setOfferOpen] = useState(false);
   const [contactOpen, setContactOpen] = useState(false);
@@ -202,6 +205,8 @@ export default function VehicleActions({ vehicleName, vehicleVin, vehiclePrice, 
           onClose={() => setReserveOpen(false)}
           vehicleName={vehicleName}
           vehicleVin={vehicleVin}
+          vehiclePrice={vehiclePrice}
+          contentId={contentId}
         />
       )}
 
@@ -213,6 +218,7 @@ export default function VehicleActions({ vehicleName, vehicleVin, vehiclePrice, 
           vehicleName={vehicleName}
           vehicleVin={vehicleVin}
           vehiclePrice={vehiclePrice}
+          contentId={contentId}
         />
       )}
 

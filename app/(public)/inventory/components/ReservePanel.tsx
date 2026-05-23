@@ -8,9 +8,13 @@ interface ReservePanelProps {
   onClose: () => void;
   vehicleName: string;
   vehicleVin: string;
+  vehiclePrice?: string;
+  // Catalog vehicle_id (stockNumber || vin) — attached to the Lead event so
+  // Meta can attribute the lead to the specific vehicle in the catalog.
+  contentId: string;
 }
 
-export default function ReservePanel({ open, onClose, vehicleName, vehicleVin }: ReservePanelProps) {
+export default function ReservePanel({ open, onClose, vehicleName, vehicleVin, vehiclePrice, contentId }: ReservePanelProps) {
   const formLoadedAt = useRef(Date.now());
   const [honeypot, setHoneypot] = useState("");
   const [smsConsent, setSmsConsent] = useState(false);
@@ -47,7 +51,13 @@ export default function ReservePanel({ open, onClose, vehicleName, vehicleVin }:
       if (res.ok) {
         setSubmitted(true);
         if (typeof window !== "undefined") {
-          (window as { fbq?: (...args: unknown[]) => void }).fbq?.("track", "Contact");
+          const numericPrice = parseInt((vehiclePrice || "").replace(/[^0-9]/g, ""), 10) || undefined;
+          (window as { fbq?: (...args: unknown[]) => void }).fbq?.("track", "Lead", {
+            content_type: "vehicle",
+            content_ids: [contentId],
+            content_name: vehicleName,
+            ...(numericPrice ? { value: numericPrice, currency: "USD" } : {}),
+          });
           (window as { gtag?: (...args: unknown[]) => void }).gtag?.("event", "conversion_event_contact_1");
           (window as { gtag?: (...args: unknown[]) => void }).gtag?.("event", "reserve_form_submit", {
             event_category: "lead",

@@ -228,6 +228,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
               vehicleName={`${vehicle.year} ${vehicle.make} ${vehicle.model}`}
               vehicleVin={vehicle.vin}
               vehiclePrice={displayPrice}
+              contentId={catalogContentId}
               isAuction={isAuction}
               auctionUrl={vehicle.auctionUrl}
               auctionHouse={vehicle.auctionHouse}

@@ -50,7 +50,7 @@ export default function ContactForm() {
       if (res.ok) {
         setSubmitted(true);
         if (typeof window !== "undefined" && (window as { fbq?: (...args: unknown[]) => void }).fbq) {
-          (window as { fbq: (...args: unknown[]) => void }).fbq("track", "Contact");
+          (window as { fbq: (...args: unknown[]) => void }).fbq("track", "Lead");
         }
         if (typeof window !== "undefined" && (window as { gtag?: (...args: unknown[]) => void }).gtag) {
           (window as { gtag: (...args: unknown[]) => void }).gtag("event", "conversion_event_contact_1");
