@@ -25,21 +25,26 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     return { title: "Vehicle Not Found" };
   }
 
-  const vehicleName = `${vehicle.year} ${vehicle.make} ${vehicle.model}`;
+  const vehicleName = `${vehicle.year} ${vehicle.make} ${vehicle.model}${vehicle.trim ? ` ${vehicle.trim}` : ""}`;
   const shareTitle = `Check out this ${vehicleName} at Mikalyzed Auto Boutique`;
   const displayPrice = vehicle.manualPrice || vehicle.price;
   const displayImages = vehicle.manualImages?.length ? vehicle.manualImages : vehicle.images;
   const image = displayImages?.[0];
+  const pagePath = `/inventory/${vehicle.slug}/${vehicle.vin}`;
 
   return {
     title: vehicleName,
     description: shareTitle,
+    alternates: {
+      canonical: pagePath,
+    },
     openGraph: {
       title: shareTitle,
       description: `${vehicleName} — ${displayPrice} | Mikalyzed Auto Boutique`,
       ...(image ? { images: [{ url: image, width: 1200, height: 630, alt: vehicleName }] } : {}),
       type: "website",
       siteName: "Mikalyzed Auto Boutique",
+      url: pagePath,
     },
     twitter: {
       card: "summary_large_image",
@@ -202,11 +207,13 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 
       {/* VEHICLE TITLE + PRICE — always visible above the gallery */}
       <div className="max-w-7xl mx-auto mb-6">
-        <p className="text-sm font-light tracking-[0.3em] text-[#dffd6e] mb-2 leading-tight block">
-          {vehicle.year} {vehicle.make.toUpperCase()}
-        </p>
-        <h1 className="text-5xl font-light tracking-tight leading-tight mb-2">
-          {vehicle.model}
+        <h1 className="mb-2">
+          <span className="text-sm font-light tracking-[0.3em] text-[#dffd6e] mb-2 leading-tight block">
+            {vehicle.year} {vehicle.make.toUpperCase()}
+          </span>
+          <span className="block text-5xl font-light tracking-tight leading-tight">
+            {vehicle.model}{vehicle.trim ? ` ${vehicle.trim}` : ""}
+          </span>
         </h1>
         <p className={`text-2xl lg:text-4xl font-light ${isAuction ? "text-amber-400" : "text-[#dffd6e]"}`}>
           {isAuction ? auctionLabel : displayPrice}
@@ -217,7 +224,11 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 
         {/* IMAGE GALLERY */}
         <div>
-          <ImageGallery images={displayImages ?? []} videoUrl={vehicle.videoUrl} />
+          <ImageGallery
+            images={displayImages ?? []}
+            videoUrl={vehicle.videoUrl}
+            vehicleName={`${vehicle.year} ${vehicle.make} ${vehicle.model}${vehicle.trim ? ` ${vehicle.trim}` : ""}`}
+          />
         </div>
 
         {/* VEHICLE INFO */}
@@ -236,6 +247,12 @@ export default async function VehicleDetailPage({ params }: PageProps) {
           )}
 
           {/* VEHICLE SPECS GRID */}
+          <div className="mt-8 mb-4">
+            <p className="text-[#dffd6e] text-xs font-light tracking-[0.3em] uppercase mb-2">
+              Vehicle Details
+            </p>
+            <h2 className="text-2xl font-light tracking-tight">Specifications</h2>
+          </div>
           {(() => {
             // Build array of available specs
             const specs = [];
@@ -307,8 +324,11 @@ export default async function VehicleDetailPage({ params }: PageProps) {
           {/* DESCRIPTION */}
           {displayDescription && (
             <div className="mt-10">
-              <h3 className="text-xl font-normal mb-3 text-white tracking-tight">Description</h3>
-              <p className="text-gray-400 leading-relaxed font-light">
+              <p className="text-[#dffd6e] text-xs font-light tracking-[0.3em] uppercase mb-2">
+                About This Vehicle
+              </p>
+              <h2 className="text-2xl font-light mb-3 text-white tracking-tight">Vehicle Overview</h2>
+              <p className="text-gray-400 leading-relaxed font-light whitespace-pre-line">
                 {displayDescription}
               </p>
             </div>

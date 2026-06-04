@@ -6,9 +6,11 @@ import { useState, useEffect, useRef } from "react";
 interface ImageGalleryProps {
   images: string[];
   videoUrl?: string;
+  vehicleName?: string;
 }
 
-export default function ImageGallery({ images, videoUrl }: ImageGalleryProps) {
+export default function ImageGallery({ images, videoUrl, vehicleName }: ImageGalleryProps) {
+  const altBase = vehicleName || "Vehicle";
   const [active, setActive] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
   const [showAllThumbs, setShowAllThumbs] = useState(false);
@@ -47,7 +49,7 @@ export default function ImageGallery({ images, videoUrl }: ImageGalleryProps) {
       >
         <Image
           src={images[active]}
-          alt="Vehicle image"
+          alt={`${altBase} - photo ${active + 1} of ${images.length}`}
           fill
           priority
           quality={90}
@@ -80,7 +82,7 @@ export default function ImageGallery({ images, videoUrl }: ImageGalleryProps) {
             >
               <Image
                 src={img}
-                alt={`Thumbnail ${index + 1}`}
+                alt={`${altBase} - thumbnail ${index + 1}`}
                 fill
                 className="object-cover"
               />
@@ -149,7 +151,7 @@ export default function ImageGallery({ images, videoUrl }: ImageGalleryProps) {
         >
           <Image
             src={img}
-            alt={`Vehicle image ${index + 1}`}
+            alt={`${altBase} - photo ${index + 1} of ${images.length}`}
             fill
             quality={90}
             className="object-contain"
