@@ -21,6 +21,20 @@ const ADMIN_OVERRIDE_FIELDS = [
   "auctionDate",
 ] as const;
 
+// A real DealerCenter gallery is dozens of shots. Anything smaller than this
+// that ALSO tells us nothing new is treated as a truncated export, not as the
+// car's actual photo set. See the guard in upsertVehicles().
+const MIN_TRUSTED_IMAGE_COUNT = 15;
+
+// DealerCenter hands out whatever size the export felt like; we always want the
+// high-res original.
+function toHiRes(url: string): string {
+  return url.replace(
+    /imagesdl\.dealercenter\.net\/\d+\/\d+\//,
+    "imagesdl.dealercenter.net/1920/1440/"
+  );
+}
+
 export interface SoldVehicle extends Vehicle {
   soldDate: string;
   createdAt: string;
@@ -111,18 +125,35 @@ export async function upsertVehicles(vehicles: Vehicle[]): Promise<void> {
     const batch = vehicles.slice(i, i + BATCH_SIZE);
     const requests = batch.map((v) => {
       const existing = existingMap.get(v.vin);
-      // Keep existing images if the new CSV has fewer (DealerCenter sometimes sends only 1 thumbnail)
-      const rawImages =
-        existing && existing.images && existing.images.length > v.images.length
-          ? existing.images
-          : v.images;
-      // Upgrade DealerCenter image URLs to high-res (1920x1440)
-      const images = rawImages.map((url) =>
-        url.replace(
-          /imagesdl\.dealercenter\.net\/\d+\/\d+\//,
-          "imagesdl.dealercenter.net/1920/1440/"
-        )
-      );
+
+      // DealerCenter sometimes exports a stub row carrying a single thumbnail
+      // rather than the real gallery, and we don't want that to wipe a car's
+      // photos. Guarding on raw count alone was too blunt though: a re-shoot
+      // that legitimately trims the set lost to whatever was already stored
+      // (40 fresh photos rejected in favour of 59 stale ones), so re-shoots
+      // never reached the site while the price kept updating around them.
+      //
+      // Judge the payload by what it contains instead. If it carries a photo we
+      // haven't seen, it's a real gallery — take it, however many there are.
+      // Only when it adds nothing new AND is too small to be a real gallery do
+      // we assume the export was truncated and keep what we already hold.
+      const incoming = (v.images ?? []).map(toHiRes);
+      const stored = (existing?.images ?? []).map(toHiRes);
+      const storedSet = new Set(stored);
+      const bringsNewPhotos = incoming.some((url) => !storedSet.has(url));
+      const looksTruncated =
+        stored.length > 0 &&
+        !bringsNewPhotos &&
+        incoming.length < stored.length &&
+        incoming.length < MIN_TRUSTED_IMAGE_COUNT;
+
+      if (looksTruncated) {
+        console.warn(
+          `[sync] ${v.vin}: keeping ${stored.length} stored photos — CSV sent ${incoming.length} already-known photo(s), too few to be a real gallery.`
+        );
+      }
+
+      const images = looksTruncated ? stored : incoming;
 
       // Preserve admin override fields from existing record during sync
       const adminOverrides: Record<string, unknown> = {};
