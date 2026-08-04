@@ -198,46 +198,68 @@ export async function upsertVehicles(vehicles: Vehicle[]): Promise<void> {
   }
 }
 
+/**
+ * Apply admin overrides to a vehicle.
+ *
+ * Three-way semantics, because "leave alone" and "clear" are different
+ * intentions and conflating them made overrides impossible to remove:
+ *   undefined → field not supplied, leave whatever is stored
+ *   null      → clear it, the attribute is removed from the record
+ *   a value   → set it
+ */
 export async function updateVehicleOverrides(
   vin: string,
   overrides: {
-    manualPrice?: string;
-    manualDescription?: string;
-    manualImages?: string[];
-    manuallyMarkedSold?: boolean;
-    featured?: boolean;
-    hidden?: boolean;
-    auction?: boolean;
-    auctionHouse?: string;
-    auctionUrl?: string;
-    auctionDate?: string;
+    manualPrice?: string | null;
+    manualDescription?: string | null;
+    manualImages?: string[] | null;
+    manuallyMarkedSold?: boolean | null;
+    featured?: boolean | null;
+    hidden?: boolean | null;
+    auction?: boolean | null;
+    auctionHouse?: string | null;
+    auctionUrl?: string | null;
+    auctionDate?: string | null;
   }
 ): Promise<void> {
-  const expressions: string[] = [];
+  const sets: string[] = [];
+  const removes: string[] = [];
   const names: Record<string, string> = {};
   const values: Record<string, unknown> = {};
 
   Object.entries(overrides).forEach(([key, value]) => {
-    if (value !== undefined) {
-      const attrName = `#${key}`;
-      const attrValue = `:${key}`;
-      expressions.push(`${attrName} = ${attrValue}`);
-      names[attrName] = key;
-      values[attrValue] = value;
+    if (value === undefined) return;
+
+    const attrName = `#${key}`;
+    names[attrName] = key;
+
+    if (value === null) {
+      removes.push(attrName);
+      return;
     }
+
+    sets.push(`${attrName} = :${key}`);
+    values[`:${key}`] = value;
   });
 
-  if (expressions.length === 0) return;
+  if (sets.length === 0 && removes.length === 0) return;
 
   values[":now"] = new Date().toISOString();
-  expressions.push("#updatedAt = :now");
+  sets.push("#updatedAt = :now");
   names["#updatedAt"] = "updatedAt";
+
+  const expression = [
+    `SET ${sets.join(", ")}`,
+    removes.length ? `REMOVE ${removes.join(", ")}` : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   await docClient.send(
     new UpdateCommand({
       TableName: TABLE_NAME,
       Key: { vin },
-      UpdateExpression: `SET ${expressions.join(", ")}`,
+      UpdateExpression: expression,
       ExpressionAttributeNames: names,
       ExpressionAttributeValues: values,
     })

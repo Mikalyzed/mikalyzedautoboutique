@@ -35,28 +35,32 @@ export default function VehicleEditPanel({
   const [auctionUrl, setAuctionUrl] = useState(vehicle.auctionUrl || "");
   const [auctionDate, setAuctionDate] = useState(vehicle.auctionDate || "");
   const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
   async function handleSave() {
     setSaving(true);
+    setSaveError(null);
     try {
       const manualImages = manualImagesText
         .split("\n")
         .map((u) => u.trim())
         .filter(Boolean);
 
+      // null means "clear this", undefined meant "leave it alone" — so emptying
+      // a field used to be silently discarded and the old value stayed put.
       const overrides: Record<string, unknown> = {
-        manualPrice: manualPrice || undefined,
-        manualDescription: manualDescription || undefined,
-        manualImages: manualImages.length > 0 ? manualImages : undefined,
+        manualPrice: manualPrice.trim() || null,
+        manualDescription: manualDescription.trim() || null,
+        manualImages: manualImages.length > 0 ? manualImages : null,
         manuallyMarkedSold,
         featured,
         hidden,
         auction,
-        auctionHouse: auction ? auctionHouse || undefined : undefined,
-        auctionUrl: auction ? auctionUrl || undefined : undefined,
-        auctionDate: auction ? auctionDate || undefined : undefined,
+        auctionHouse: auction ? auctionHouse.trim() || null : null,
+        auctionUrl: auction ? auctionUrl.trim() || null : null,
+        auctionDate: auction ? auctionDate.trim() || null : null,
       };
 
       const res = await fetch("/api/admin/vehicles/update", {
@@ -68,9 +72,20 @@ export default function VehicleEditPanel({
       if (res.ok) {
         const { vehicle: updated } = await res.json();
         onSaved(updated);
+      } else {
+        // Previously this branch didn't exist: a rejected save looked exactly
+        // like a successful one until you reopened the panel and found your
+        // edit gone.
+        const body = await res.json().catch(() => null);
+        setSaveError(
+          body?.error || `Save failed (HTTP ${res.status}). Nothing was written.`
+        );
       }
     } catch (error) {
       console.error("Save failed:", error);
+      setSaveError(
+        "Couldn't reach the server, so nothing was saved. Check your connection and try again."
+      );
     }
     setSaving(false);
   }
@@ -240,6 +255,15 @@ export default function VehicleEditPanel({
         </div>
 
         {/* Actions */}
+        {saveError && (
+          <div
+            role="alert"
+            className="mt-4 rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-300"
+          >
+            {saveError}
+          </div>
+        )}
+
         <div className="flex justify-end gap-3 pt-4 border-t border-zinc-800/40">
           <button
             onClick={onClose}
