@@ -282,6 +282,11 @@
 .brow.flip .bImg {
   order: -1;
 }
+/* Cars whose photo set contains no shot of a topic — the row keeps its copy
+   and simply spans the full width. */
+.brow.noimg {
+  grid-template-columns: 1fr;
+}
 .bTxt {
   background: var(--surface);
   border: 1px solid var(--line);

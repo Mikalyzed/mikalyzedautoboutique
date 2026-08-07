@@ -164,7 +164,7 @@ export default async function TestVdp({ params }: { params: Promise<{ vin: strin
                   // Row 02 flips so the photo alternates sides; the grid is
                   // align-items:stretch, so each photo fills its half at
                   // whatever height the paragraph settles on.
-                  <article className={`brow rvl${i % 2 === 1 ? " flip" : ""}`} key={r.n}>
+                  <article className={`brow rvl${i % 2 === 1 ? " flip" : ""}${r.img ? "" : " noimg"}`} key={r.n}>
                     <div className="bTxt">
                       <div className="label">
                         {r.n} · {r.topic}
@@ -196,8 +196,11 @@ export default async function TestVdp({ params }: { params: Promise<{ vin: strin
                         </div>
                       )}
                     </div>
-                    <div className="bImg">
-                      {r.img && (
+                    {/* No photo half at all when the car has no shot of this
+                        topic — the row goes full width rather than framing
+                        something that isn't what the heading claims. */}
+                    {r.img && (
+                      <div className="bImg">
                         <Image
                           src={r.img}
                           alt={`${v.year} ${name} — ${r.topic.toLowerCase()}`}
@@ -205,8 +208,8 @@ export default async function TestVdp({ params }: { params: Promise<{ vin: strin
                           sizes="(max-width:1180px) 100vw, 45vw"
                           style={{ objectFit: "cover", objectPosition: r.objectPosition }}
                         />
-                      )}
-                    </div>
+                      </div>
+                    )}
                   </article>
                 ))}
               </div>

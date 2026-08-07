@@ -1,6 +1,7 @@
 import type { Vehicle } from "@/lib/parseInventory";
 import { breakdownSections, displayDescription, displayImages, paragraphsOf } from "../lib";
 import { CURATED } from "./curated";
+import { VERIFIED_PHOTOS } from "./verified-photos";
 
 /**
  * The Breakdown — three balanced editorial rows, per spec §7.4.
@@ -165,6 +166,21 @@ function extractHeritage(paras: string[]): { heritage?: string; rest: string[] }
   return { heritage: hit.text, rest };
 }
 
+function resolvePhoto(
+  vin: string,
+  key: "engine" | "exterior" | "interior",
+  photos: string[]
+): string | undefined {
+  const seen = VERIFIED_PHOTOS[vin];
+  if (seen && key !== "exterior") {
+    const url = seen[key];
+    // null = reviewed and confirmed absent. undefined = not reviewed yet.
+    if (url === null) return undefined;
+    if (url) return url;
+  }
+  return topicPhoto(photos, key);
+}
+
 export function buildBreakdown(v: Vehicle): Breakdown {
   const photos = displayImages(v);
   const description = displayDescription(v);
@@ -208,7 +224,11 @@ export function buildBreakdown(v: Vehicle): Breakdown {
       topic,
       title: c?.title ?? firstSentence(resolved) ?? topic,
       body: resolved,
-      img: c?.img ?? topicPhoto(photos, key),
+      // Order of trust: hand-curated → reviewed by eye → positional guess.
+      // A reviewed `null` is meaningful — that car has no photograph of this
+      // topic — so it suppresses the image instead of falling through to a
+      // guess that would show the wrong thing.
+      img: c?.img ?? resolvePhoto(v.vin, key, photos),
       objectPosition: c?.objectPosition,
       stats: key === "engine" ? c?.stats ?? statsFromCopy(topicText) : undefined,
       chips: c?.chips ?? chipsFromCopy(resolved),
