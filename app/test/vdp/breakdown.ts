@@ -68,7 +68,14 @@ function topicPhoto(photos: string[], key: "engine" | "exterior" | "interior"): 
   // already dominating the carousel above.
   if (key === "exterior") return photos[1];
   if (key === "interior") return at(0.6);
-  return at(0.85);
+
+  // Engine sits late but before the interior tail. On the 1983 911 SC the bay
+  // is frame 22 of 28 (~0.81) while 23 is the CLOSED deck lid — which is how
+  // an "Engine" row ended up showing a shut engine cover. Nudged to 0.8, but
+  // a fraction cannot actually recognise an engine: adjacent frames differ by
+  // open vs closed, and only curation or a classification pass fixes that
+  // properly.
+  return at(0.8);
 }
 
 /** Vocabulary we'll surface as a chip, but only when the listing says it. */

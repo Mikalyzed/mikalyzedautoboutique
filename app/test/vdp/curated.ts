@@ -31,6 +31,17 @@ export type CuratedVehicle = {
 };
 
 export const CURATED: Record<string, CuratedVehicle> = {
+  // 1983 Porsche 911 SC Cabriolet — photos verified by eye. The positional
+  // heuristic had picked the CLOSED rear deck lid for the Engine row; the
+  // actual engine bay is frame 22 of 28. Copy is left to derivation.
+  WP0EA091XDS170942: {
+    rows: {
+      engine: { title: "3.0L air-cooled flat-six", img: `${DC}/202508-e1a5e075a0604c3d935b8e31a0811f90.jpg` },
+      exterior: { title: "Slant nose aluminium conversion", img: `${DC}/202508-c35e5f8750c74c50a4b3b8604482a18d.jpg` },
+      interior: { title: "Checkered sport seats", img: `${DC}/202508-39b7292d403347f58dcfc7b3715c393d.jpg` },
+    },
+  },
+
   // 2012 Mercedes-Benz SLS AMG — the mockup's reference car.
   WDDRJ7HAXCA007214: {
     pull: "One of the most desirable AMG models ever produced — the first car AMG built fully in-house, finished silver over red and wearing a widebody.",
