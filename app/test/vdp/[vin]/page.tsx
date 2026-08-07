@@ -235,7 +235,10 @@ export default async function TestVdp({ params }: { params: Promise<{ vin: strin
             </section>
           )}
 
-          <section style={{ marginBottom: 0 }}>
+          {/* Keeps its normal 4.5rem gap — this stopped being the last section
+              when "More from the showroom" was added after it, and the zeroed
+              margin left that heading sitting on the Q&A panel. */}
+          <section>
             <div className="eyebrow">Do the homework</div>
             <h2>Documented, not promised</h2>
             <p className="pull">
