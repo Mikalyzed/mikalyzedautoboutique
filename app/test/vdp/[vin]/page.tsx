@@ -6,6 +6,7 @@ import "../vdp.css";
 import { getVehicleByVin } from "@/lib/vehicles";
 import {
   breakdownSections,
+  paragraphsOf,
   displayDescription,
   displayImages,
   miles,
@@ -43,16 +44,40 @@ export default async function TestVdp({ params }: { params: Promise<{ vin: strin
   const asking = priceNumber(v);
   const description = displayDescription(v);
   const sections = breakdownSections(description);
-  const paragraphs = description.split(/\n{2,}|\r\n\r\n/).map((p) => p.trim()).filter(Boolean);
+  const paragraphs = paragraphsOf(description);
+
+  /**
+   * Not every car carries listing copy — plenty have none at all, and those
+   * lost the entire Breakdown section. Fall back to the specs the DMS did
+   * give us so the section always has something true to say. Nothing is
+   * invented: a field we don't have simply isn't mentioned.
+   */
+  const specSentence = (parts: (string | null | undefined)[]) =>
+    parts.filter(Boolean).join(" ");
+
+  const engineFallback = specSentence([
+    `${v.year} ${v.make} ${v.model}${v.trim ? ` ${v.trim}` : ""}.`,
+    v.transmission ? `${v.transmission} transmission.` : null,
+    v.odometer != null ? `${v.odometer.toLocaleString("en-US")} miles on the clock.` : null,
+  ]);
+  const exteriorFallback = specSentence([
+    v.exteriorColor ? `Finished in ${v.exteriorColor}.` : null,
+    photos.length ? `${photos.length} photographs on file.` : null,
+  ]);
+  const interiorFallback = specSentence([
+    v.interiorColor ? `${v.interiorColor} interior.` : null,
+  ]);
 
   // Model name split for the weight-contrast headline: first word heavy, rest thin.
   const [head, ...tail] = (v.model || name).split(" ");
 
   const rows = [
-    { n: "01", topic: "Engine", title: "Powertrain", body: sections.engine, img: photos[3] ?? photos[0] },
-    { n: "02", topic: "Exterior", title: "On the outside", body: sections.exterior, img: photos[1] ?? photos[0] },
-    { n: "03", topic: "Interior", title: "Inside", body: sections.interior, img: photos[2] ?? photos[0] },
-  ].filter((r) => r.body);
+    { n: "01", topic: "Engine", title: "Powertrain", body: sections.engine || engineFallback, img: photos[3] ?? photos[0] },
+    { n: "02", topic: "Exterior", title: "On the outside", body: sections.exterior || exteriorFallback, img: photos[1] ?? photos[0] },
+    { n: "03", topic: "Interior", title: "Inside", body: sections.interior || interiorFallback, img: photos[2] ?? photos[0] },
+  ]
+    .filter((r) => r.body)
+    .map((r, i) => ({ ...r, n: String(i + 1).padStart(2, "0") }));
 
   return (
     <>

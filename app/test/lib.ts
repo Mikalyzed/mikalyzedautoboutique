@@ -50,33 +50,68 @@ export function vdpHref(v: Vehicle): string {
  * paragraph that talks about each area rather than assuming a fixed order.
  * Falls back to splitting evenly so the section never renders empty.
  */
+export function paragraphsOf(description: string): string[] {
+  // DMS copy separates paragraphs with a SINGLE newline — the live VDP renders
+  // it in one <p> with `whitespace-pre-line`. Splitting on blank lines (\n{2,})
+  // found nothing and collapsed the whole listing into a single block.
+  return description
+    .split(/\r?\n+/)
+    .map((p) => p.trim())
+    .filter(Boolean);
+}
+
 export function breakdownSections(description: string): {
   engine: string;
   exterior: string;
   interior: string;
 } {
-  const paras = description
-    .split(/\n{2,}|\r\n\r\n/)
-    .map((p) => p.trim())
-    .filter(Boolean);
+  const paras = paragraphsOf(description);
 
+  if (paras.length === 0) return { engine: "", exterior: "", interior: "" };
   if (paras.length < 2) {
-    return { engine: description, exterior: "", interior: "" };
+    return { engine: paras[0], exterior: "", interior: "" };
   }
 
-  const pick = (words: RegExp) => paras.find((p) => words.test(p)) || "";
-
-  const engine = pick(/engine|v8|v6|horsepower|hp\b|torque|transmission|drivetrain|motor/i);
-  const exterior = pick(/exterior|paint|wheel|tire|body|widebody|finish|stance/i);
-  const interior = pick(/interior|leather|cabin|seat|dash|upholster/i);
-
-  // Anything unmatched falls back to the next unused paragraph in order.
-  const used = new Set([engine, exterior, interior].filter(Boolean));
-  const spare = paras.filter((p) => !used.has(p));
-
-  return {
-    engine: engine || spare.shift() || "",
-    exterior: exterior || spare.shift() || "",
-    interior: interior || spare.shift() || "",
+  // Listing copy mixes topics freely — an opening paragraph often names the
+  // paint AND the leather. Matching each topic independently handed the same
+  // paragraph to two sections, so the page showed it twice. Score every
+  // paragraph per topic instead and claim exclusively: strongest match wins,
+  // and a claimed paragraph is out of the running for the others.
+  const TOPIC_WORDS: Record<Topic, RegExp> = {
+    engine: /engine|\bv8\b|\bv6\b|\bv10\b|\bv12\b|horsepower|\bhp\b|torque|transmission|drivetrain|motor|turbo|supercharg|clutch|gearbox|exhaust/gi,
+    exterior: /exterior|paint|wheel|tire|widebody|body kit|stance|chrome|\bfinish(?:ed)?\b|stripe|bumper/gi,
+    interior: /interior|leather|cabin|seat|dashboard|upholster|console|steering wheel/gi,
   };
+
+  const score = (p: string, re: RegExp) => (p.match(re) ?? []).length;
+
+  const claimed = new Set<number>();
+  const out: Record<Topic, string> = { engine: "", exterior: "", interior: "" };
+
+  for (const topic of ["engine", "exterior", "interior"] as Topic[]) {
+    let bestIdx = -1;
+    let bestScore = 0;
+    paras.forEach((p, i) => {
+      if (claimed.has(i)) return;
+      const s = score(p, TOPIC_WORDS[topic]);
+      if (s > bestScore) {
+        bestScore = s;
+        bestIdx = i;
+      }
+    });
+    if (bestIdx >= 0) {
+      claimed.add(bestIdx);
+      out[topic] = paras[bestIdx];
+    }
+  }
+
+  // Topics that matched nothing take the next unclaimed paragraph in order.
+  const spare = paras.filter((_, i) => !claimed.has(i));
+  for (const topic of ["engine", "exterior", "interior"] as Topic[]) {
+    if (!out[topic]) out[topic] = spare.shift() ?? "";
+  }
+
+  return out;
 }
+
+type Topic = "engine" | "exterior" | "interior";

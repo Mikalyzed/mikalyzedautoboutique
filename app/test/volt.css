@@ -45,11 +45,19 @@
   display: block;
   max-width: 100%;
 }
-.volt a {
+/* :where() keeps this at zero added specificity. Written as `.volt a` it
+   scored (0,1,1) and beat every (0,1,0) component class, so any button
+   rendered as a link — .cta, .ctaGlass.acc, .railCta — silently lost its
+   colour and inherited the page's warm white. Lime button, white label,
+   unreadable. */
+.volt :where(a) {
   color: inherit;
   text-decoration: none;
 }
-.volt button {
+/* Same reasoning as the anchor reset above — and here it mattered twice over,
+   since `background: none` at (0,1,1) also stripped the lime fill off any
+   button-rendered CTA such as the VDP rail's Reserve action. */
+.volt :where(button) {
   font-family: inherit;
   cursor: pointer;
   border: none;
