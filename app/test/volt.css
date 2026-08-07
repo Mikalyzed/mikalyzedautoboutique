@@ -1,0 +1,366 @@
+/* ============================================================
+   Volt V3.0 — design tokens for the /test redesign preview.
+   Scoped to .volt so it can never leak into the live pages.
+   Values are lifted verbatim from mikalyzed-brand-sheet.html.
+   ============================================================ */
+
+.volt {
+  --bg: #121112;
+  --surface: #191819;
+  --surface-2: #201f20;
+  --line: rgba(240, 240, 235, 0.08);
+  --line-strong: rgba(240, 240, 235, 0.16);
+  --text: #efeee9;
+  --muted: #9c9a94;
+  --faint: #6c6a65;
+  --accent: #c6f135;
+  --accent-soft: rgba(198, 241, 53, 0.1);
+  --accent-line: rgba(198, 241, 53, 0.4);
+  --accent-ink: #141400;
+  --chrome-bg: rgba(20, 19, 20, 0.7);
+  --chrome-line: rgba(240, 240, 235, 0.2);
+  --shadow: rgba(0, 0, 0, 0.55);
+  --radius: 16px;
+  --radius-sm: 10px;
+  --pad: 1.6rem;
+
+  background: var(--bg);
+  color: var(--text);
+  font-weight: 300;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+/* The live site is Tailwind-based; these pages are hand-rolled from the
+   mockups, so reset only inside .volt rather than touching globals. */
+.volt *,
+.volt *::before,
+.volt *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.volt img {
+  display: block;
+  max-width: 100%;
+}
+.volt a {
+  color: inherit;
+  text-decoration: none;
+}
+.volt button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: inherit;
+}
+.volt ::selection {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+.volt :focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ── type ─────────────────────────────────────────────── */
+.volt h1,
+.volt h2 {
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+}
+.volt h1 .thin,
+.volt h2 .thin {
+  font-weight: 200;
+}
+.mono {
+  font-family: var(--font-mono);
+}
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.eyebrow::before {
+  content: "";
+  width: 22px;
+  height: 1px;
+  background: var(--accent);
+}
+.heroEyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.26em;
+  color: var(--muted);
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+.heroEyebrow .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: voltPulse 2.4s infinite;
+}
+
+/* ── buttons ──────────────────────────────────────────── */
+.cta {
+  display: inline-block;
+  text-align: center;
+  padding: 0.95rem 1.6rem;
+  border-radius: 3px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  transition: 0.25s;
+}
+.cta:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+.ctaGhost {
+  display: inline-block;
+  text-align: center;
+  padding: 0.95rem 1.6rem;
+  border-radius: 3px;
+  border: 1px solid var(--line-strong);
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  transition: 0.25s;
+}
+.ctaGhost:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.ctaGlass {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.8rem 1.45rem;
+  background: var(--chrome-bg);
+  border: 1px solid var(--chrome-line);
+  border-radius: 3px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--text);
+  transition: 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07), 0 10px 26px rgba(0, 0, 0, 0.3);
+}
+.ctaGlass .ar {
+  color: var(--accent);
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.ctaGlass:hover {
+  border-color: var(--accent-line);
+  transform: translateY(-2px);
+  background: rgba(28, 27, 28, 0.78);
+}
+.ctaGlass:hover .ar {
+  transform: translateX(4px);
+}
+.ctaGlass.acc {
+  border-color: var(--accent-line);
+  color: var(--accent);
+}
+.ctaGlass.acc:hover {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-color: var(--accent);
+  box-shadow: 0 12px 30px rgba(198, 241, 53, 0.18);
+}
+.ctaGlass.acc:hover .ar {
+  color: var(--accent-ink);
+}
+
+.phChip {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  padding: 0.4rem 0.8rem;
+  border-radius: 99px;
+  color: var(--text);
+  background: var(--chrome-bg);
+  border: 1px solid var(--chrome-line);
+  backdrop-filter: blur(6px);
+}
+
+/* ── chrome ───────────────────────────────────────────── */
+.wrap {
+  padding: 0 var(--pad);
+}
+.navBar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem var(--pad);
+  background: var(--chrome-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--line);
+}
+.navLinks {
+  display: flex;
+  gap: 2rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+.navLinks a:hover {
+  color: var(--text);
+}
+.navLinks a.on {
+  color: var(--text);
+  position: relative;
+}
+.navLinks a.on::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -6px;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 2px;
+}
+.navCall {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  padding: 0.55rem 1.1rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 99px;
+  transition: 0.25s;
+}
+.navCall:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.voltFooter {
+  border-top: 1px solid var(--line);
+  margin-top: 4rem;
+  padding: 2.5rem var(--pad);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+.voltFooter .fMeta {
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  letter-spacing: 0.1em;
+  color: var(--faint);
+}
+
+/* Ribbon making it obvious this is not the live site. */
+.testFlag {
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 0.4rem 1rem;
+}
+
+/* ── motion ───────────────────────────────────────────── */
+@keyframes voltPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(198, 241, 53, 0.45);
+  }
+  70% {
+    box-shadow: 0 0 0 9px transparent;
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+@keyframes voltRise {
+  from {
+    transform: translateY(24px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+@keyframes voltFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes voltTick {
+  to {
+    transform: translateX(-50%);
+  }
+}
+@keyframes voltKb {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.07);
+  }
+}
+
+.rvl {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease, transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.3s, background 0.3s;
+}
+.rvl.in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (max-width: 960px) {
+  .navLinks {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .volt *,
+  .volt *::before,
+  .volt *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .rvl {
+    opacity: 1;
+    transform: none;
+  }
+}

@@ -1,0 +1,331 @@
+/* Inventory — Grid. Ported from mikalyzed-inventory-final.html. */
+
+.pageHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 2.5rem;
+  padding: 2.4rem 0 1.6rem;
+  animation: voltRise 0.8s 0.05s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.pageHead h1 {
+  font-size: clamp(2.6rem, 4.6vw, 4.4rem);
+  line-height: 0.95;
+}
+.pageSub {
+  font-size: 0.95rem;
+  color: var(--muted);
+  margin-top: 0.7rem;
+  max-width: 56ch;
+}
+.pageSub b {
+  font-weight: 500;
+  color: var(--text);
+}
+.countChip {
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  letter-spacing: 0.14em;
+  padding: 0.45rem 0.9rem;
+  border-radius: 99px;
+  color: var(--text);
+  background: var(--chrome-bg);
+  border: 1px solid var(--chrome-line);
+  flex-shrink: 0;
+}
+
+.toolbar {
+  position: sticky;
+  top: 57px;
+  z-index: 40;
+  background: var(--chrome-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.tbInner {
+  padding: 0.85rem var(--pad);
+  display: flex;
+  gap: 0.7rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.search {
+  position: relative;
+  flex: 1 1 220px;
+  min-width: 180px;
+  max-width: 420px;
+}
+.search input {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  padding: 0.62rem 1rem 0.62rem 2.3rem;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.84rem;
+  font-weight: 300;
+  transition: 0.25s;
+}
+.search input::placeholder {
+  color: var(--faint);
+}
+.search input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+.search svg {
+  position: absolute;
+  left: 0.85rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 14px;
+  height: 14px;
+  stroke: var(--faint);
+}
+.selwrap {
+  position: relative;
+}
+.selwrap::after {
+  content: "⌄";
+  position: absolute;
+  right: 0.85rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--faint);
+  pointer-events: none;
+  font-size: 0.7rem;
+}
+.sel {
+  appearance: none;
+  -webkit-appearance: none;
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  padding: 0.62rem 2.2rem 0.62rem 1rem;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: 0.25s;
+}
+.sel:hover,
+.sel:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+.tbCount {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.tbCount b {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.gridZone {
+  padding: 1.6rem 0 0;
+}
+.vgrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+.vcard {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: 0.3s;
+}
+.vcard:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent);
+  background: var(--surface-2);
+}
+.vImg {
+  aspect-ratio: 4/3;
+  position: relative;
+  overflow: hidden;
+  background: var(--surface-2);
+}
+.vImg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.vcard:hover .vImg img {
+  transform: scale(1.045);
+}
+.vChip {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.85rem;
+  z-index: 2;
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  padding: 0.35rem 0.7rem;
+  border-radius: 99px;
+  color: var(--text);
+  background: var(--chrome-bg);
+  border: 1px solid var(--chrome-line);
+  backdrop-filter: blur(6px);
+}
+.vBody {
+  padding: 1rem 1.15rem 1.15rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.12rem;
+  flex: 1;
+}
+.vYear {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  color: var(--faint);
+}
+.vName {
+  font-size: 0.95rem;
+  font-weight: 500;
+  line-height: 1.35;
+}
+.vPrice {
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-top: 0.4rem;
+}
+.vMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-top: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+}
+.vMeta .tr {
+  padding: 0.18rem 0.5rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 99px;
+  font-size: 0.54rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.vMeta .go {
+  margin-left: auto;
+  color: var(--accent);
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: 0.3s;
+  font-size: 0.85rem;
+}
+.vcard:hover .go {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.emptyState {
+  grid-column: 1/-1;
+  text-align: center;
+  padding: 4rem 1rem;
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius);
+}
+.emptyState .t {
+  font-weight: 600;
+  font-size: 1.05rem;
+}
+.emptyState .s {
+  color: var(--muted);
+  font-size: 0.85rem;
+  margin: 0.4rem 0 1.2rem;
+}
+.emptyState button {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  border: 1px solid var(--accent-line);
+  padding: 0.6rem 1.2rem;
+  border-radius: 99px;
+  transition: 0.25s;
+}
+.emptyState button:hover {
+  background: var(--accent-soft);
+}
+
+.band {
+  margin: 3rem 0 0;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 2rem 2.2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+.band h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+.band p {
+  color: var(--muted);
+  font-size: 0.88rem;
+  margin-top: 0.3rem;
+  max-width: 52ch;
+}
+.bandCta {
+  display: flex;
+  gap: 0.6rem;
+  flex-shrink: 0;
+}
+
+@media (max-width: 1500px) {
+  .vgrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (max-width: 1100px) {
+  .vgrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 960px) {
+  .toolbar {
+    top: 53px;
+  }
+  .pageHead {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.8rem 0 1.3rem;
+  }
+  .tbCount {
+    flex-basis: 100%;
+    margin-left: 0;
+  }
+}
+@media (max-width: 640px) {
+  .vgrid {
+    grid-template-columns: 1fr;
+  }
+  .band {
+    padding: 1.6rem 1.4rem;
+  }
+}

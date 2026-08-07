@@ -1,0 +1,358 @@
+/* ============================================================
+   Build sheet — the museum-grade one-pager, rendered for print.
+
+   mikalyzed_build_sheet.py needs Python + ReportLab + PIL + numpy, none of
+   which run on Vercel's Node runtime. This reproduces the same layout in the
+   browser and prints to PDF: identical structure (breadcrumb, masthead + price,
+   theater wings, telemetry cards, numbered spec cards, provenance, footer),
+   identical fonts, identical Volt tokens.
+   ============================================================ */
+
+.sheetPage {
+  --paper: #121112;
+  --hi: #191819;
+  --lo: #0b0a0b;
+  --tint: #191819;
+  --tophl: #2a2829;
+  --ink: #efeee9;
+  --grayed: #9c9a94;
+  --faint: #6c6a65;
+  --hair: #262425;
+  --rowline: #232122;
+  --lime: #c6f135;
+  --frame: #2b292a;
+
+  background: linear-gradient(180deg, var(--hi) 0%, var(--paper) 42%, var(--lo) 100%);
+  color: var(--ink);
+  width: 8.5in;
+  min-height: 11in;
+  margin: 0 auto;
+  padding: 0.46in 0.46in 0.34in;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-poppins), system-ui, sans-serif;
+}
+
+.sheetBreadcrumb {
+  font-family: var(--font-mono);
+  font-size: 6.4pt;
+  letter-spacing: 0.19em;
+  color: var(--grayed);
+  text-transform: uppercase;
+}
+.sheetStatus {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  font-family: var(--font-mono);
+  font-size: 6.6pt;
+  letter-spacing: 0.22em;
+  color: var(--grayed);
+  text-transform: uppercase;
+}
+.sheetStatus i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--lime);
+  display: block;
+}
+
+.sheetMast {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 2rem;
+  margin-top: 0.7rem;
+}
+.sheetMast h1 {
+  font-size: 34pt;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.sheetMast h1 .thin {
+  font-weight: 200;
+}
+.sheetPriceLabel {
+  font-family: var(--font-mono);
+  font-size: 5.6pt;
+  letter-spacing: 0.18em;
+  color: var(--grayed);
+  text-transform: uppercase;
+  text-align: right;
+}
+.sheetPrice {
+  font-size: 19pt;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-align: right;
+  white-space: nowrap;
+}
+.sheetSub {
+  margin-top: 0.55rem;
+  font-size: 9.6pt;
+}
+.sheetSub b {
+  font-weight: 500;
+}
+.sheetSub span {
+  color: var(--grayed);
+  font-weight: 300;
+}
+
+/* theater: centre card with dimmed wings */
+.sheetTheater {
+  display: grid;
+  grid-template-columns: 1fr 2.1fr 1fr;
+  align-items: center;
+  gap: 0;
+  margin-top: 0.85rem;
+  height: 2.05in;
+}
+.sheetWing {
+  position: relative;
+  height: 1.72in;
+  overflow: hidden;
+}
+.sheetWing img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.45;
+}
+.sheetWing::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+.sheetWing.left::after {
+  background: linear-gradient(90deg, var(--paper) 0%, transparent 100%);
+}
+.sheetWing.right::after {
+  background: linear-gradient(270deg, var(--paper) 0%, transparent 100%);
+}
+.sheetHero {
+  position: relative;
+  height: 2.05in;
+  border-radius: 9px;
+  overflow: hidden;
+  border: 1px solid var(--tophl);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55);
+  z-index: 2;
+}
+.sheetHero img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.sheetDots {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+.sheetDots i {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--frame);
+  display: block;
+}
+.sheetDots i.on {
+  background: var(--lime);
+  width: 5px;
+  height: 5px;
+}
+
+/* telemetry */
+.sheetStats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-top: 0.75rem;
+}
+.sheetCard {
+  background: var(--tint);
+  border: 1px solid var(--frame);
+  border-radius: 6px;
+  padding: 0.5rem 0.7rem 0.6rem;
+  position: relative;
+}
+.sheetCard::before {
+  content: "";
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  top: 0;
+  height: 1px;
+  background: var(--tophl);
+}
+.sheetStat {
+  text-align: center;
+}
+.sheetStat .k {
+  font-family: var(--font-mono);
+  font-size: 5.6pt;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.sheetStat .v {
+  font-weight: 200;
+  font-size: 16pt;
+  margin-top: 0.35rem;
+  white-space: nowrap;
+}
+.sheetStat .v span {
+  font-family: var(--font-mono);
+  font-size: 6.2pt;
+  color: var(--grayed);
+  letter-spacing: 0.12em;
+  margin-left: 3px;
+}
+
+/* numbered spec cards */
+.sheetGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 10px;
+}
+.sheetSecHead {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--font-mono);
+  font-size: 6.8pt;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.sheetSecHead .num {
+  color: var(--lime);
+  letter-spacing: 0.18em;
+}
+.sheetSecHead .sl {
+  color: var(--faint);
+}
+.sheetRule {
+  height: 1px;
+  background: var(--hair);
+  margin: 0.42rem 0 0;
+}
+.sheetTick {
+  width: 22px;
+  height: 1.6px;
+  background: var(--lime);
+}
+.sheetRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 0.36rem 0;
+  border-bottom: 1px solid var(--rowline);
+}
+.sheetRow:last-child {
+  border-bottom: none;
+}
+.sheetRow .k {
+  font-family: var(--font-mono);
+  font-size: 5.8pt;
+  letter-spacing: 0.11em;
+  color: var(--grayed);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.sheetRow .v {
+  font-size: 8.6pt;
+  font-weight: 500;
+  text-align: right;
+}
+
+.sheetBand {
+  margin-top: 10px;
+}
+.sheetBand p {
+  font-size: 8.6pt;
+  font-weight: 300;
+  color: var(--grayed);
+  line-height: 1.5;
+  margin-top: 0.55rem;
+}
+
+.sheetFooter {
+  margin-top: auto;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--hair);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1rem;
+}
+.sheetFooter .l {
+  font-family: var(--font-mono);
+  font-size: 5.5pt;
+  letter-spacing: 0.12em;
+  color: var(--grayed);
+  text-transform: uppercase;
+}
+.sheetFooter .disc {
+  font-family: var(--font-mono);
+  font-size: 4.6pt;
+  letter-spacing: 0.12em;
+  color: var(--faint);
+  text-transform: uppercase;
+  margin-top: 3px;
+}
+.sheetFooter .r {
+  font-family: var(--font-mono);
+  font-size: 6pt;
+  letter-spacing: 0.12em;
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* on-screen only chrome */
+.sheetBar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1.2rem;
+  flex-wrap: wrap;
+}
+.sheetBar .note {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+@media print {
+  /* Only the sheet survives — no nav, no toolbar, no test ribbon. */
+  .sheetBar,
+  .testFlag,
+  .navBar,
+  .voltFooter {
+    display: none !important;
+  }
+  .volt {
+    background: #121112 !important;
+  }
+  .sheetPage {
+    width: 100%;
+    min-height: auto;
+    margin: 0;
+    padding: 0.34in;
+    box-shadow: none;
+    break-inside: avoid;
+  }
+  @page {
+    size: letter;
+    margin: 0;
+  }
+}
