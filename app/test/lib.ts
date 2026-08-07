@@ -50,6 +50,15 @@ export function vdpHref(v: Vehicle): string {
  * paragraph that talks about each area rather than assuming a fixed order.
  * Falls back to splitting evenly so the section never renders empty.
  */
+/**
+ * Listings arrive with a headline run straight into the body and no space —
+ * "…Slant Nose Aluminum ConversionThis 1983 Porsche…". Break at the
+ * lowercase-to-uppercase seam so the first sentence isn't a mangled join.
+ */
+function normalizeCopy(description: string): string {
+  return description.replace(/([a-z,)])([A-Z])/g, "$1. $2");
+}
+
 export function paragraphsOf(description: string): string[] {
   // DMS copy separates paragraphs with a SINGLE newline — the live VDP renders
   // it in one <p> with `whitespace-pre-line`. Splitting on blank lines (\n{2,})
@@ -60,17 +69,27 @@ export function paragraphsOf(description: string): string[] {
     .filter(Boolean);
 }
 
+function sentencesOf(text: string): string[] {
+  return normalizeCopy(text)
+    .split(/(?<=[.!?])\s+/)
+    .map((s) => s.trim())
+    .filter((s) => s.length > 15);
+}
+
 export function breakdownSections(description: string): {
   engine: string;
   exterior: string;
   interior: string;
 } {
   const paras = paragraphsOf(description);
-
   if (paras.length === 0) return { engine: "", exterior: "", interior: "" };
-  if (paras.length < 2) {
-    return { engine: paras[0], exterior: "", interior: "" };
-  }
+
+  // Plenty of listings are one unbroken block — the 1983 911 SC is 1,443
+  // characters with no newline anywhere. Paragraph splitting has nothing to
+  // work with there, so drop to sentences and group those instead. Without
+  // this the whole listing landed in Engine and the other two rows vanished.
+  const units = paras.length >= 3 ? paras : sentencesOf(description);
+  if (units.length < 2) return { engine: units[0] ?? paras[0], exterior: "", interior: "" };
 
   // Listing copy mixes topics freely — an opening paragraph often names the
   // paint AND the leather. Matching each topic independently handed the same
@@ -85,33 +104,41 @@ export function breakdownSections(description: string): {
 
   const score = (p: string, re: RegExp) => (p.match(re) ?? []).length;
 
-  const claimed = new Set<number>();
-  const out: Record<Topic, string> = { engine: "", exterior: "", interior: "" };
+  // Every unit goes to its best-scoring topic, rather than each topic taking
+  // exactly one unit. Copy doesn't divide neatly into three — a listing may
+  // spend three sentences on the engine and one on the cabin — and one-each
+  // left most of the text on the floor.
+  const buckets: Record<Topic, string[]> = { engine: [], exterior: [], interior: [] };
+  const orphans: string[] = [];
 
-  for (const topic of ["engine", "exterior", "interior"] as Topic[]) {
-    let bestIdx = -1;
+  for (const unit of units) {
+    let bestTopic: Topic | null = null;
     let bestScore = 0;
-    paras.forEach((p, i) => {
-      if (claimed.has(i)) return;
-      const s = score(p, TOPIC_WORDS[topic]);
+    for (const topic of ["engine", "exterior", "interior"] as Topic[]) {
+      const s = score(unit, TOPIC_WORDS[topic]);
       if (s > bestScore) {
         bestScore = s;
-        bestIdx = i;
+        bestTopic = topic;
       }
-    });
-    if (bestIdx >= 0) {
-      claimed.add(bestIdx);
-      out[topic] = paras[bestIdx];
     }
+    if (bestTopic) buckets[bestTopic].push(unit);
+    else orphans.push(unit);
   }
 
-  // Topics that matched nothing take the next unclaimed paragraph in order.
-  const spare = paras.filter((_, i) => !claimed.has(i));
-  for (const topic of ["engine", "exterior", "interior"] as Topic[]) {
-    if (!out[topic]) out[topic] = spare.shift() ?? "";
+  // Unsignalled text goes wherever there's least, which keeps the three rows
+  // roughly even in height — the point of splitting them in the first place.
+  for (const unit of orphans) {
+    const thinnest = (["engine", "exterior", "interior"] as Topic[]).sort(
+      (a, b) => buckets[a].join(" ").length - buckets[b].join(" ").length
+    )[0];
+    buckets[thinnest].push(unit);
   }
 
-  return out;
+  return {
+    engine: buckets.engine.join(" "),
+    exterior: buckets.exterior.join(" "),
+    interior: buckets.interior.join(" "),
+  };
 }
 
 type Topic = "engine" | "exterior" | "interior";

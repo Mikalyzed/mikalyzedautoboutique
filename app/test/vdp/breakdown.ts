@@ -46,6 +46,31 @@ const TOPICS = [
   { key: "interior", topic: "Interior" },
 ] as const;
 
+/**
+ * Pick a topic photo without any classification to go on.
+ *
+ * Nothing in the feed labels an engine bay, so this leans on how DealerCenter
+ * sets are ordered in practice: exteriors first, then cabin, then engine and
+ * detail shots at the end. Taking adjacent indexes (photos[i+1]) ignored that
+ * entirely and pulled arbitrary crops — a detail shot landing in the Exterior
+ * row is exactly the fill-rule violation the spec warns about.
+ *
+ * It's a heuristic, not knowledge. Curated cars override it outright.
+ */
+function topicPhoto(photos: string[], key: "engine" | "exterior" | "interior"): string | undefined {
+  if (photos.length === 0) return undefined;
+  if (photos.length < 4) return photos[0];
+
+  const at = (fraction: number) =>
+    photos[Math.min(photos.length - 1, Math.max(0, Math.round((photos.length - 1) * fraction)))];
+
+  // Exterior takes the second frame — the first is usually the same hero shot
+  // already dominating the carousel above.
+  if (key === "exterior") return photos[1];
+  if (key === "interior") return at(0.6);
+  return at(0.85);
+}
+
 /** Vocabulary we'll surface as a chip, but only when the listing says it. */
 const CHIP_VOCAB: Record<string, RegExp> = {
   Widebody: /widebody/i,
@@ -143,25 +168,43 @@ export function buildBreakdown(v: Vehicle): Breakdown {
 
   const rows: BreakdownRow[] = [];
 
-  TOPICS.forEach(({ key, topic }, i) => {
-    const c = curated?.rows?.[key];
-    const body = c?.body ?? sections[key];
-    if (!body) return;
+  // Spec-derived copy for topics the listing never mentions, so a thin
+  // description doesn't collapse the section to a single row. Only fields the
+  // DMS actually supplied.
+  const fallback: Record<"engine" | "exterior" | "interior", string> = {
+    engine: [
+      `${v.year} ${v.make} ${v.model}${v.trim ? ` ${v.trim}` : ""}.`,
+      v.transmission ? `${v.transmission} transmission.` : "",
+      v.odometer != null ? `${v.odometer.toLocaleString("en-US")} miles.` : "",
+    ]
+      .filter(Boolean)
+      .join(" "),
+    exterior: [
+      v.exteriorColor ? `Finished in ${v.exteriorColor}.` : "",
+      photos.length ? `${photos.length} photographs on file.` : "",
+    ]
+      .filter(Boolean)
+      .join(" "),
+    interior: v.interiorColor ? `${v.interiorColor} interior.` : "",
+  };
 
-    const topicText = `${body} ${key === "engine" ? description : ""}`;
+  TOPICS.forEach(({ key, topic }) => {
+    const c = curated?.rows?.[key];
+    const body = c?.body ?? sections[key] ?? "";
+    const resolved = body.trim() || fallback[key];
+    if (!resolved) return;
+
+    const topicText = `${resolved} ${key === "engine" ? description : ""}`;
 
     rows.push({
       n: String(rows.length + 1).padStart(2, "0"),
       topic,
-      title: c?.title ?? firstSentence(body),
-      body,
-      // Topic photos can't be derived — nothing in the feed says which frame is
-      // the engine bay. Curated cars get the right shot; everyone else gets a
-      // positional guess, which is why curation matters for the fill rule.
-      img: c?.img ?? photos[i + 1] ?? photos[0],
+      title: c?.title ?? firstSentence(resolved) ?? topic,
+      body: resolved,
+      img: c?.img ?? topicPhoto(photos, key),
       objectPosition: c?.objectPosition,
       stats: key === "engine" ? c?.stats ?? statsFromCopy(topicText) : undefined,
-      chips: c?.chips ?? chipsFromCopy(body),
+      chips: c?.chips ?? chipsFromCopy(resolved),
     });
   });
 
