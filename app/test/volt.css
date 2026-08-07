@@ -4,6 +4,18 @@
    Values are lifted verbatim from mikalyzed-brand-sheet.html.
    ============================================================ */
 
+/* The live root layout puts `overflow-x: hidden` on <html> and <body>. Any
+   ancestor with a non-visible overflow becomes the scroll container, which
+   silently kills `position: sticky` on descendants — the VDP conversion rail
+   scrolled away instead of holding.
+   `clip` contains horizontally exactly the same way but does NOT establish a
+   scroll container, so sticky keeps working. :has() confines this to pages
+   that actually render .volt, so no live page is affected. */
+html:has(.volt),
+body:has(.volt) {
+  overflow-x: clip;
+}
+
 .volt {
   --bg: #121112;
   --surface: #191819;

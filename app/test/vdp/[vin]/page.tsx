@@ -3,12 +3,13 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import "../../home.css";
 import "../vdp.css";
-import { getVehicleByVin } from "@/lib/vehicles";
+import { getAvailableVehicles, getVehicleByVin } from "@/lib/vehicles";
 import { displayImages, miles, priceLabel, priceNumber, vehicleName } from "../../lib";
 import { Nav, Footer } from "../../components/Chrome";
 import Theater from "../Theater";
 import RailPanel from "../RailPanel";
 import { buildBreakdown } from "../breakdown";
+import Walkaround from "../Walkaround";
 
 export const dynamic = "force-dynamic";
 
@@ -16,6 +17,26 @@ export const metadata = {
   title: "VDP Preview — Mikalyzed Auto Boutique",
   robots: { index: false, follow: false },
 };
+
+/**
+ * Sample Q&A carried over from the mockup so the panel can be judged as a
+ * design. There is no question data in the feed and no model behind it — if
+ * this ships, the questions have to be real ones buyers actually asked.
+ * Inventing them on a live listing would be putting words in customers'
+ * mouths next to a price.
+ */
+const QA = [
+  {
+    who: "MIKE_G",
+    q: "Any documented service history with the car?",
+    a: "Yes, full documented service history comes with it. Happy to email the file.",
+  },
+  {
+    who: "CARLOS_305",
+    q: "Would you ship to California? Ballpark on cost?",
+    a: "Nationwide, fully enclosed and insured. CA runs roughly $1,200–$1,600. We handle the whole thing.",
+  },
+];
 
 const DOCS = [
   "Multi-point inspection report",
@@ -37,6 +58,16 @@ export default async function TestVdp({ params }: { params: Promise<{ vin: strin
   const [head, ...tail] = (v.model || name).split(" ");
 
   const { rows, heritage, pull } = buildBreakdown(v);
+
+  // Real cars rather than the mockup's gradient placeholders — same make first
+  // where there is one, so "more from the showroom" actually relates.
+  const others = (await getAvailableVehicles()).filter(
+    (o) => o.vin !== v.vin && !o.hidden && displayImages(o).length > 0
+  );
+  const more = [
+    ...others.filter((o) => o.make === v.make),
+    ...others.filter((o) => o.make !== v.make),
+  ].slice(0, 3);
 
   return (
     <>
@@ -190,6 +221,17 @@ export default async function TestVdp({ params }: { params: Promise<{ vin: strin
             </section>
           )}
 
+          {v.videoUrl && (
+            <section>
+              <div className="eyebrow">Walkaround</div>
+              <h2>See it move</h2>
+              <p className="pull">
+                Full exterior, interior, and cold start — shot in-house at the boutique.
+              </p>
+              <Walkaround videoUrl={v.videoUrl} label={`${v.year} ${name}`} />
+            </section>
+          )}
+
           <section style={{ marginBottom: 0 }}>
             <div className="eyebrow">Do the homework</div>
             <h2>Documented, not promised</h2>
@@ -224,8 +266,65 @@ export default async function TestVdp({ params }: { params: Promise<{ vin: strin
                   </div>
                 ))}
               </div>
+
+              {/* Stacked under Documentation, not beside it — spec §7.7. */}
+              <div className="panel">
+                <div className="eyebrow">Questions · {QA.length}</div>
+                <div className="ph">Buyers are asking</div>
+                {QA.map((q) => (
+                  <div className="qaItem" key={q.who}>
+                    <div className="qaQ">
+                      <span className="who">{q.who}</span>
+                      {q.q}
+                    </div>
+                    <div className="qaA">
+                      <b>MIKALYZED</b> — {q.a}
+                    </div>
+                  </div>
+                ))}
+                <div className="qaMore">View all {QA.length} questions →</div>
+              </div>
             </div>
           </section>
+
+          {more.length > 0 && (
+            <section style={{ marginBottom: 0 }}>
+              <div className="secHead">
+                <div>
+                  <div className="eyebrow">Keep looking</div>
+                  <h2>More from the showroom</h2>
+                </div>
+                <Link className="qaMore" href="/test/inventory" style={{ margin: 0 }}>
+                  Full collection →
+                </Link>
+              </div>
+              <div className="moreGrid">
+                {more.map((m) => {
+                  const mi = displayImages(m);
+                  return (
+                    <Link className="moreCard" href={`/test/vdp/${m.vin}`} key={m.vin}>
+                      <div className="moreArt">
+                        {mi[0] && (
+                          <Image
+                            src={mi[0]}
+                            alt={`${m.year} ${vehicleName(m)}`}
+                            fill
+                            sizes="(max-width:620px) 100vw, 30vw"
+                            style={{ objectFit: "cover" }}
+                          />
+                        )}
+                        <span className="tag">{m.year}</span>
+                      </div>
+                      <div className="moreMeta">
+                        <div className="n">{vehicleName(m)}</div>
+                        <div className="p">{priceLabel(m)}</div>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            </section>
+          )}
         </main>
 
         <aside>
